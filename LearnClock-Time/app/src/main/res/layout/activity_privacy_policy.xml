@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.mobiapps360.LearnClockTime.PrivacyPolicyActivity">
+
+
+    <ImageView
+        android:id="@+id/privacyWallImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+        android:src="@mipmap/homebg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+
+    <TextView
+        android:id="@+id/txtTitlePrivacyPolicy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="#00FFFFFF"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center_horizontal"
+        android:shadowColor="@color/black"
+        android:shadowDx="4"
+        android:shadowDy="4"
+        android:shadowRadius="5.0"
+        android:singleLine="true"
+        android:text="Wild Animal"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="28dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/privacyWallImage" />
+
+    <ImageButton
+        android:id="@+id/btnHomePrivacyPolicy"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        android:src="@mipmap/home_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/abc_vector_test" />
+
+    <View
+        android:id="@+id/viewWebViewBg"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/border_learn_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtTitlePrivacyPolicy"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <WebView
+        android:id="@+id/webViewPrivacy"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="5dp"
+        android:layout_marginTop="2dp"
+
+        app:layout_constraintStart_toStartOf="@id/viewWebViewBg"
+        app:layout_constraintTop_toTopOf="@id/viewWebViewBg"
+        app:layout_constraintBottom_toBottomOf="@id/viewWebViewBg"
+        app:layout_constraintEnd_toEndOf="@id/viewWebViewBg"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
