@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        Log.v("xxx","Inside getSoundFlag loop----");
 
         imgViewHomeGif = findViewById(R.id.imgViewHomeGif);
         btnImgHomeSound = findViewById(R.id.btnSoundHomeScreen);
@@ -95,7 +96,8 @@ public class MainActivity extends AppCompatActivity {
             btnImgHomeSound.setImageResource(R.mipmap.sound_on);
             playSound();
         }
-       viewSettingBg.setOnClickListener(new View.OnClickListener() {
+
+        viewSettingBg.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (isAllFabsVisible) {
                     fab_img_rateUs.hide();
@@ -222,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void settingClicked(View v){
-        // System.out.println("@@@@@@@@@@@@@@@Home clicked@@@@@@@@@@@");
+         System.out.println("@@@@@@@@@@@@@@@Home clicked@@@@@@@@@@@");
     }
     public boolean isOnline() {
         ConnectivityManager cm =
@@ -356,7 +358,6 @@ public class MainActivity extends AppCompatActivity {
             }
             int idSoundBg = getApplicationContext().getResources().getIdentifier("com.mobiapps360.LearnClockTime:raw/" + "bgmusic", null, null);
             player = MediaPlayer.create(getBaseContext(), idSoundBg);
-            player.setVolume(0.0f, 0.0f);
             player.start();
         }
         player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
