@@ -40,6 +40,7 @@ public class LearnClockActivity extends AppCompatActivity {
     private CardView card_desc;
     private ImageButton btnForward;
     private ImageButton btnBackward;
+    private ImageButton btnLearnClockSound;
     private ImageButton btnSoundOnOffLearn;
 
 
@@ -66,8 +67,11 @@ public class LearnClockActivity extends AppCompatActivity {
         btnForward = findViewById(R.id.btnLearnClockForward);
         btnBackward = findViewById(R.id.btnLearnClockBackward);
         btnSoundOnOffLearn = findViewById(R.id.btnSoundOnOffLearn);
+        btnLearnClockSound = findViewById(R.id.btnLearnClockSound);
         Glide.with(this).load(R.drawable.learn_clock_1).into(imgViewLearnClockGif);
         txtViewDescTxt.setText(Html.fromHtml(Constant.learnClockAnimation_array[0]));
+        btnLearnClockSound.setEnabled(false);
+        btnLearnClockSound.setAlpha(0.5f);
         sharedPreferences = getSharedPreferences(myPreferences, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         if (sharedPreferences.contains(soundLearnActivity)) {
@@ -121,6 +125,8 @@ public class LearnClockActivity extends AppCompatActivity {
         cardNumber = cardNumber + 1;
         subCardNumber = 1;
         btnBackward.setVisibility(View.VISIBLE);
+        btnLearnClockSound.setEnabled(false);
+        btnLearnClockSound.setAlpha(0.5f);
         if (cardNumber == 1) {
             Glide.with(this).load(R.drawable.learn_clock_2).into(imgViewLearnClockGif);
             playSound("screen_1_1");
@@ -155,6 +161,8 @@ public class LearnClockActivity extends AppCompatActivity {
         System.out.println("@@@@@@@@@@@@@@@learnClockBackwardClicked clicked@@@@@@@@@@@");
         cardNumber = cardNumber - 1;
         subCardNumber = 1;
+        btnLearnClockSound.setEnabled(false);
+        btnLearnClockSound.setAlpha(0.5f);
         if (cardNumber == 0) {
             Glide.with(this).load(R.drawable.learn_clock_1).into(imgViewLearnClockGif);
             playSound("screen_0_1");
@@ -192,6 +200,35 @@ public class LearnClockActivity extends AppCompatActivity {
 
     public void learnClockSoundClicked(View v) {
         System.out.println("@@@@@@@@@@@@@@@learnClockSoundClicked clicked@@@@@@@@@@@");
+        subCardNumber = 1;
+        btnLearnClockSound.setEnabled(false);
+        btnLearnClockSound.setAlpha(0.5f);
+        if (cardNumber == 0) {
+            Glide.with(this).load(R.drawable.learn_clock_1).into(imgViewLearnClockGif);
+            playSound("screen_0_1");
+        }
+        if (cardNumber == 1) {
+            Glide.with(this).load(R.drawable.learn_clock_2).into(imgViewLearnClockGif);
+            playSound("screen_1_1");
+        } else if (cardNumber == 2) {
+            Glide.with(this).load(R.drawable.learn_clock_3).into(imgViewLearnClockGif);
+            playSound("screen_2_1");
+        } else if (cardNumber == 3) {
+            Glide.with(this).load(R.drawable.learn_clock_4).into(imgViewLearnClockGif);
+            playSound("screen_3_1");
+        } else if (cardNumber == 4) {
+            imgViewLearnClockGif.setImageResource(R.drawable.learn_clock_5_0);
+            playSound("screen_4_1");
+        } else if (cardNumber == 5) {
+            Glide.with(this).load(R.drawable.learn_clock_6).into(imgViewLearnClockGif);
+            playSound("screen_5_1");
+        } else if (cardNumber == 6) {
+            Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_7_1).into(imgViewLearnClockGif);
+            playSound("screen_6_1");
+        } else if (cardNumber == 7) {
+            Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_8_1).into(imgViewLearnClockGif);
+            playSound("screen_7_1");
+        }
     }
 
     public void playSound(String soundName) {
@@ -254,6 +291,9 @@ public class LearnClockActivity extends AppCompatActivity {
                             }
                         }, 1500);
 
+                    } else {
+                        btnLearnClockSound.setEnabled(true);
+                        btnLearnClockSound.setAlpha(1.0f);
                     }
                 } else if (cardNumber == 1) {
                     if (subCardNumber == 1) {
@@ -277,6 +317,9 @@ public class LearnClockActivity extends AppCompatActivity {
                                 }
                             }
                         }, 600);
+                    } else {
+                        btnLearnClockSound.setEnabled(true);
+                        btnLearnClockSound.setAlpha(1.0f);
                     }
                 } else if (cardNumber == 2) {
                     if (subCardNumber == 1) {
@@ -299,6 +342,9 @@ public class LearnClockActivity extends AppCompatActivity {
                                 }
                             }
                         }, 600);
+                    } else {
+                        btnLearnClockSound.setEnabled(true);
+                        btnLearnClockSound.setAlpha(1.0f);
                     }
                 } else if (cardNumber == 3) {
                     if (subCardNumber == 1) {
@@ -311,6 +357,9 @@ public class LearnClockActivity extends AppCompatActivity {
                                 }
                             }
                         }, 600);
+                    } else {
+                        btnLearnClockSound.setEnabled(true);
+                        btnLearnClockSound.setAlpha(1.0f);
                     }
                 } else if (cardNumber == 4) {
                     if (subCardNumber == 1) {
@@ -395,10 +444,15 @@ public class LearnClockActivity extends AppCompatActivity {
                             playSound("learndesc_clock_" + subCardNumber);
                         }
                         subCardNumber = 0;
+                    } else {
+                        btnLearnClockSound.setEnabled(true);
+                        btnLearnClockSound.setAlpha(1.0f);
                     }
                 } else if (cardNumber == 5) {
                     if (subCardNumber == 1) {
                         subCardNumber = 0;
+                        btnLearnClockSound.setEnabled(true);
+                        btnLearnClockSound.setAlpha(1.0f);
                     }
                 } else if (cardNumber == 6) {
                     if (subCardNumber == 1) {
@@ -449,6 +503,9 @@ public class LearnClockActivity extends AppCompatActivity {
                                 subCardNumber = 0;
                             }
                         }, 200);
+                    } else {
+                        btnLearnClockSound.setEnabled(true);
+                        btnLearnClockSound.setAlpha(1.0f);
                     }
                 } else if (cardNumber == 7) {
                     if (subCardNumber == 1) {
@@ -500,6 +557,9 @@ public class LearnClockActivity extends AppCompatActivity {
                                 subCardNumber = 0;
                             }
                         }, 200);
+                    } else {
+                        btnLearnClockSound.setEnabled(true);
+                        btnLearnClockSound.setAlpha(1.0f);
                     }
                 }
             }
