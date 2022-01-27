@@ -165,6 +165,11 @@ public class LearnClockActivity extends AppCompatActivity {
                 btnSoundOnOffLearn.setImageResource(R.mipmap.sound_on);
             } else {
                 btnSoundOnOffLearn.setImageResource(R.mipmap.sound_off);
+                if (player != null) {
+                    player.stop();
+                }
+                btnLearnClockSound.setEnabled(true);
+                btnLearnClockSound.setAlpha(1.0f);
             }
         }
     }

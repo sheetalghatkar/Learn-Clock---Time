@@ -6,6 +6,7 @@ import java.util.List;
 public class Constant {
 
 
+    public static ArrayList<ClockLearnItem> learnClockDataArray = new ArrayList<>();
 
     String sourceString = "➤ This is a " + "<b>" + "clock dial" + "</b> " + ".";   //"<b>" + "uuusu" + "</b> " + "sheetal";
 //    List<String> learnClockAnimation_array = new ArrayList<String>();

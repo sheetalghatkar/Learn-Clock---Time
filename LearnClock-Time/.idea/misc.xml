@@ -6,13 +6,18 @@
         <entry key="..\:/Users/frien/StudioProjects/Learn-Clock---Time/LearnClock-Time/app/src/main/res/drawable-v24/home_button_option.xml" value="0.14635416666666667" />
         <entry key="..\:/Users/frien/StudioProjects/Learn-Clock---Time/LearnClock-Time/app/src/main/res/drawable-v24/learn_clock_desc_img.xml" value="0.2703125" />
         <entry key="..\:/Users/frien/StudioProjects/Learn-Clock---Time/LearnClock-Time/app/src/main/res/drawable/border_learn_view.xml" value="0.14635416666666667" />
+        <entry key="..\:/Users/frien/StudioProjects/Learn-Clock---Time/LearnClock-Time/app/src/main/res/layout/activity_clock_learn.xml" value="0.1" />
         <entry key="..\:/Users/frien/StudioProjects/Learn-Clock---Time/LearnClock-Time/app/src/main/res/layout/activity_learn_clock.xml" value="0.12360688956433637" />
         <entry key="..\:/Users/frien/StudioProjects/Learn-Clock---Time/LearnClock-Time/app/src/main/res/layout/activity_main.xml" value="0.10092592592592593" />
         <entry key="..\:/Users/frien/StudioProjects/Learn-Clock---Time/LearnClock-Time/app/src/main/res/layout/activity_privacy_policy.xml" value="0.1" />
+        <entry key="..\:/Users/frien/StudioProjects/Learn-Clock---Time/LearnClock-Time/app/src/main/res/layout/activity_xyz.xml" value="0.12360688956433637" />
         <entry key="..\:/Users/frien/StudioProjects/Learn-Clock---Time/LearnClock-Time/app/src/main/res/layout/anim_slide_in_right.xml" value="0.11676798378926039" />
+        <entry key="..\:/Users/frien/StudioProjects/Learn-Clock---Time/LearnClock-Time/app/src/main/res/layout/clock_learn_item.xml" value="0.12360688956433637" />
+        <entry key="..\:/Users/frien/StudioProjects/Learn-Clock---Time/LearnClock-Time/app/src/main/res/layout/clocklearn.xml" value="0.12360688956433637" />
         <entry key="..\:/Users/frien/StudioProjects/Learn-Clock---Time/LearnClock-Time/app/src/main/res/layout/learn_clock.xml" value="0.12360688956433637" />
         <entry key="..\:/Users/frien/StudioProjects/Learn-Clock---Time/LearnClock-Time/app/src/main/res/layout/learn_clock_desc.xml" value="0.12360688956433637" />
         <entry key="..\:/Users/frien/StudioProjects/Learn-Clock---Time/LearnClock-Time/app/src/main/res/layout/sample_animation.xml" value="0.12360688956433637" />
+        <entry key="..\:/Users/frien/StudioProjects/Learn-Clock---Time/LearnClock-Time/app/src/main/res/layout/xyz_item.xml" value="0.12360688956433637" />
         <entry key="..\:/Users/frien/StudioProjects/Learn-Clock---Time/LearnClock-Time/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.2703125" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/content_main.xml" value="0.1" />
