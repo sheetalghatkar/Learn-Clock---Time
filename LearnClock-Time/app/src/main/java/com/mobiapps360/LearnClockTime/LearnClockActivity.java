@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.TranslateAnimation;
@@ -22,6 +23,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.view.ViewCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat;
 
 import com.bumptech.glide.Glide;
@@ -34,7 +39,6 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 
 public class LearnClockActivity extends AppCompatActivity {
-    private ImageView imgViewLearnClockGif;
     private TextView txtViewDescTxt;
     private ImageView imgViewDesc;
     private CardView card_desc;
@@ -42,8 +46,10 @@ public class LearnClockActivity extends AppCompatActivity {
     private ImageButton btnBackward;
     private ImageButton btnLearnClockSound;
     private ImageButton btnSoundOnOffLearn;
-
-
+    private ImageButton btnLearnClockBack;
+    private RecyclerView recycleViewLearnClock;
+    LearnClockAdapter learnClockAdapter;
+    LearnClockDataModel[] learnClockDataModelList;
     //Declare variables
     MediaPlayer player;
     public static SharedPreferences sharedPreferences = null;
@@ -54,30 +60,45 @@ public class LearnClockActivity extends AppCompatActivity {
     int maxVolume = 0;
     int currVolume = 0;
     Boolean getSoundFlag = true;
+    int currentIndex = 0;
+    int clickCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_learn_clock);
 
-        imgViewLearnClockGif = findViewById(R.id.imgViewLearnClockGif);
+        learnClockDataModelList = new LearnClockDataModel[]{
+                new LearnClockDataModel("➤ This is a " + "<b>" + "clock dial" + "</b>" + ".", R.drawable.learn_clock_0),
+                new LearnClockDataModel("➤ There are three hands, " + "<b>" + "hour hand" + "</b>" + ", " + "<b>" + "minute hand" + "</b>" + " and " + "<b>" + "second hand" + "</b>" + " on the face of a clock.", R.drawable.learn_clock_1),
+                new LearnClockDataModel("➤ This is an " + "<b>" + "hour hand" + "</b>" + "." + "<br/><br/>➤ The hour hand is a " + "<b>" + "small" + "</b>" + " hand on a clock which shows " + "<b>" + "hours" + "</b>" + "." + "<br/><br/>➤ When an hour hand completes " + "<b>" + "24 hours" + "</b>" + ", it's called " + "<b>" + "1 day" + "</b>" + ".", R.drawable.learn_clock_2),
+                new LearnClockDataModel("➤ This is a " + "<b>" + "minute hand" + "</b>" + "." + "<br/><br/>➤ The minute hand is the " + "<b>" + "long" + "</b>" + " hand on a clock which shows " + "<b>" + "minutes" + "</b>" + "." + "<br/><br/>➤ When a minute hand completes " + "<b>" + "60 minutes" + "</b>" + ", it's called " + "<b>" + "1 hour" + "</b>" + ".", R.drawable.learn_clock_3),
+                new LearnClockDataModel(" ➤ This is a " + "<b>" + "second hand" + "</b>" + " on a clock which shows " + "<b>" + "seconds" + "</b>" + "." + "<br/><br/>➤ When the second hand completes " + "<b>" + "60 seconds" + "</b>" + ", it's called " + "<b>" + "1 minute" + "</b>" + ".", R.drawable.learn_clock_4),
+                new LearnClockDataModel(" ➤ " + "When the " + "<b>" + "minute hand" + "</b>" + " is at the top of the clock " + "<b>" + "at 12" + "</b>" + ", use the phrase " + "<b>" + "O'clock" + "</b>" + ".", R.drawable.learn_clock_5),
+                new LearnClockDataModel("", R.drawable.learn_clock_6),
+                new LearnClockDataModel("➤ Use the phrase " + "<b>" + "past" + "</b>" + " when the minute hand completes between " + "<b>" + "one to 30 minutes" + "</b>" + " on the dial.", R.drawable.learn_clock_7),
+                new LearnClockDataModel("➤ Use the phrase " + "<b>" + "quarter past" + "</b>" + " when the minute hand completes " + "<b>" + "15 minutes" + "</b>" + " on the dial.", R.drawable.learn_clock_8),
+                new LearnClockDataModel("➤ Use the phrase " + "<b>" + "half past" + "</b>" + " when the minute hand completes " + "<b>" + "30 minutes" + "</b>" + " on the dial.", R.drawable.learn_clock_9),
+                new LearnClockDataModel("", R.drawable.learn_clock_10),
+                new LearnClockDataModel("➤ Use the phrase " + "<b>" + "to" + "</b>" + " when the minute hand completes between " + "<b>" + "31 to 59 minutes" + "</b>" + " on the dial.", R.drawable.learn_clock_11),
+                new LearnClockDataModel("➤ Use the phrase " + "<b>" + "quarter to" + "</b>" + " when the minute hand completes " + "<b>" + "45 minutes" + "</b>" + " on the dial.", R.drawable.learn_clock_12),
+                new LearnClockDataModel("", R.drawable.learn_clock_13)
+        };
         txtViewDescTxt = findViewById(R.id.txtViewDescTxt);
         imgViewDesc = findViewById(R.id.imgViewDesc);
         card_desc = findViewById(R.id.card_desc);
         btnForward = findViewById(R.id.btnLearnClockForward);
         btnBackward = findViewById(R.id.btnLearnClockBackward);
         btnSoundOnOffLearn = findViewById(R.id.btnSoundOnOffLearn);
+        btnLearnClockBack = findViewById(R.id.btnLearnClockBack);
         btnLearnClockSound = findViewById(R.id.btnLearnClockSound);
-        Glide.with(this).load(R.drawable.learn_clock_1).into(imgViewLearnClockGif);
-        txtViewDescTxt.setText(Html.fromHtml(Constant.learnClockAnimation_array[0]));
-        btnLearnClockSound.setEnabled(false);
-        btnLearnClockSound.setAlpha(0.5f);
+        recycleViewLearnClock = findViewById(R.id.recycleViewLearnClock);
+        txtViewDescTxt.setText(Html.fromHtml(learnClockDataModelList[0].getImageName()));
         sharedPreferences = getSharedPreferences(myPreferences, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         if (sharedPreferences.contains(soundLearnActivity)) {
             getSoundFlag = sharedPreferences.getBoolean(soundLearnActivity, false);
             if (getSoundFlag == true) {
-                playSound("screen_0_1");
                 btnSoundOnOffLearn.setImageResource(R.mipmap.sound_on);
             } else {
                 btnSoundOnOffLearn.setImageResource(R.mipmap.sound_off);
@@ -86,7 +107,6 @@ public class LearnClockActivity extends AppCompatActivity {
             editor.putBoolean(soundLearnActivity, true);
             editor.commit();
             btnSoundOnOffLearn.setImageResource(R.mipmap.sound_on);
-            playSound("screen_0_1");
         }
         if (cardNumber == 0) {
             btnBackward.setVisibility(View.GONE);
@@ -94,56 +114,158 @@ public class LearnClockActivity extends AppCompatActivity {
             btnBackward.setVisibility(View.VISIBLE);
         }
         ViewCompat.setTranslationZ(txtViewDescTxt, 15);
+        ViewCompat.setTranslationZ(btnSoundOnOffLearn, 15);
+        ViewCompat.setTranslationZ(btnLearnClockBack, 15);
 
-        if (!getSoundFlag) {
-            btnForward.setEnabled(false);
-            btnForward.setAlpha(0.5f);
-            btnLearnClockSound.setAlpha(0.5f);
-            btnLearnClockSound.setEnabled(false);
+        learnClockAdapter = new LearnClockAdapter(this);
+        learnClockAdapter.setListMenuItem(learnClockDataModelList);
 
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (cardNumber == 0) {
-                        imgViewLearnClockGif.setAlpha(0f);
-                        imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                        imgViewLearnClockGif.animate()
-                                .alpha(0.5f)
-                                .setDuration(400)
-                                .setListener(null);
+        recycleViewLearnClock.setAdapter(learnClockAdapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        SnapHelper snapHelper = new PagerSnapHelper();
+        recycleViewLearnClock.setLayoutManager(layoutManager);
+        snapHelper.attachToRecyclerView(recycleViewLearnClock);
+        recycleViewLearnClock
+                .addOnScrollListener(new RecyclerView.OnScrollListener() {
+                    @Override
+                    public void onScrolled(RecyclerView recyclerView,
+                                           int dx, int dy) {
+                        super.onScrolled(recyclerView, dx, dy);
+                        int offset = recycleViewLearnClock.computeHorizontalScrollOffset();
+                        if (offset % recycleViewLearnClock.getWidth() == 0) {
+                            int position = offset / recycleViewLearnClock.getWidth();
+//                            int idSwipeImg = getApplicationContext().getResources().getIdentifier("com.mobiapps360.LearnClockTime:raw/swipe", null, null);
+                            currentIndex = position;
+                            if ((learnClockDataModelList[position].getImageName() == null) || (learnClockDataModelList[position].getImageName().length() == 0)) {
+                                txtViewDescTxt.setVisibility(View.INVISIBLE);
+                                card_desc.setVisibility(View.INVISIBLE);
+                            } else {
+                                txtViewDescTxt.setVisibility(View.VISIBLE);
+                                card_desc.setVisibility(View.VISIBLE);
+                                txtViewDescTxt.setText(Html.fromHtml(learnClockDataModelList[position].getImageName()));
+                            }
+                            if (currentIndex == learnClockDataModelList.length - 1) {
+                                btnForward.setImageResource(R.drawable.reload);
+                                btnBackward.setVisibility(View.VISIBLE);
+                            } else if (currentIndex == 0) {
+                                btnForward.setImageResource(R.drawable.next_question);
+                                btnBackward.setVisibility(View.INVISIBLE);
+                            } else {
+                                btnForward.setImageResource(R.drawable.next_question);
+                                btnBackward.setVisibility(View.VISIBLE);
+                            }
+//                            clickCount = clickCount + 1;
+//                            if (clickCount > 14) {
+//                                clickCount = 0;
+//                                showInterstitialAds(false);
+//                            } else
+                            if (getSoundFlag == true) {
+                                if (player != null) {
+                                    player.stop();
+                                }
+                                playSound("screen_" + currentIndex);
+                            }
 
-                        imgViewLearnClockGif.setAlpha(0.5f);
-                        imgViewLearnClockGif.animate()
-                                .alpha(0f)
-                                .setDuration(400)
-                                .setListener(new AnimatorListenerAdapter() {
-                                    @Override
-                                    public void onAnimationEnd(Animator animation) {
-                                        imgViewLearnClockGif.setImageResource(R.drawable.learn_clock_1_2);
-                                        imgViewLearnClockGif.setAlpha(0f);
-                                        imgViewLearnClockGif.animate()
-                                                .alpha(0.5f)
-                                                .setDuration(400)
-                                                .setListener(new AnimatorListenerAdapter() {
-                                                    @Override
-                                                    public void onAnimationEnd(Animator animation) {
-                                                        imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                                        imgViewLearnClockGif.setAlpha(1.0f);
-                                                        if (!getSoundFlag) {
-                                                            btnForward.setEnabled(true);
-                                                            btnForward.setAlpha(1.0f);
-                                                            btnLearnClockSound.setAlpha(1.0f);
-                                                            btnLearnClockSound.setEnabled(true);
-                                                        }
-                                                    }
-                                                });
 
+                          /*  if (MainActivity.isSoundFunctionality) {
+                                MediaPlayer playerSwipe = MediaPlayer.create(getBaseContext(), idSwipeImg);
+                                currVolume = 47;
+                                float log1 = (float) (Math.log(maxVolume - currVolume) / Math.log(maxVolume));
+                                playerSwipe.setVolume(log1, log1); //set volume takes two paramater
+                                System.out.println("Current position is" + position);
+                                if (!isFirstTime) {
+                                    if (MainActivity.sharedPreferences.getBoolean(soundLearnActivity, false)) {
+                                        playerSwipe.start();
                                     }
-                                });
+                                } else {
+                                    isFirstTime = false;
+                                }
+                                //int idSoundImg = getApplicationContext().getResources().getIdentifier("com.mobiapps360.LearnNature:raw/" + animalDataArray.get(position).getPictureAnimal(), null, null);
+                                // System.out.println("Activity idsound:" + animalDataArray.get(position).getPictureAnimal());
+                                // System.out.println("#########Start is#########" + position);
+                                clickCount = clickCount + 1;
+                                if (clickCount > 14) {
+                                    clickCount = 0;
+                                    showInterstitialAds(false);
+                                } else {
+                                    if (MainActivity.sharedPreferences.getBoolean(soundLearnActivity, false)) {
+                                        if (playerCard != null) {
+                                            playerCard.stop();
+                                            //  playerCard.release();
+                                        }
+                                        playerCard = MediaPlayer.create(getBaseContext(), idSoundImg);
+                                        Log.i("playCrad","onscroll");
+                                        playerCard.start();
+                                    }
+                                }
+                            }*/
+
+                        }
+                    }
+                });
+
+        btnForward.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN: {
+                        ((ImageButton) v).setAlpha((float) 0.5);
+                        break;
+                    }
+                    case MotionEvent.ACTION_UP: {
+                        ((ImageButton) v).setAlpha((float) 1.0);
+                        btnBackward.setVisibility(View.VISIBLE);
+                        if (currentIndex == learnClockDataModelList.length - 1) {
+                            btnForward.setImageResource(R.drawable.next_question);
+                            recycleViewLearnClock.getLayoutManager().smoothScrollToPosition(recycleViewLearnClock, new RecyclerView.State(), 0);
+                        } else {
+                            recycleViewLearnClock.getLayoutManager().smoothScrollToPosition(recycleViewLearnClock, new RecyclerView.State(), currentIndex + 1);
+                        }
                     }
                 }
-            }, 2000);
-        }
+                return true;
+            }
+        });
+        btnBackward.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN: {
+                        ((ImageButton) v).setAlpha((float) 0.5);
+                        break;
+                    }
+                    case MotionEvent.ACTION_UP: {
+                        ((ImageButton) v).setAlpha((float) 1.0);
+                        if (currentIndex == 0) {
+                            btnBackward.setVisibility(View.INVISIBLE);
+                        } else {
+                            btnBackward.setVisibility(View.VISIBLE);
+                            recycleViewLearnClock.getLayoutManager().smoothScrollToPosition(recycleViewLearnClock, new RecyclerView.State(), currentIndex - 1);
+                        }
+                    }
+                }
+                return true;
+            }
+        });
+        btnLearnClockSound.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN: {
+                        ((ImageButton) v).setAlpha((float) 0.5);
+                        break;
+                    }
+                    case MotionEvent.ACTION_UP: {
+                        ((ImageButton) v).setAlpha((float) 1.0);
+                        learnClockAdapter.setListMenuItem(learnClockDataModelList);
+                        if (getSoundFlag == true) {
+                            playSound("screen_" + currentIndex);
+                        }
+                    }
+                }
+                return true;
+            }
+        });
     }
 
     public void backBtnClicked(View v) {
@@ -155,6 +277,7 @@ public class LearnClockActivity extends AppCompatActivity {
     }
 
     public void soundLearnClockONOffClicked(View v) {
+        Constant.xx = 15;
         if (sharedPreferences.contains(soundLearnActivity)) {
             getSoundFlag = sharedPreferences.getBoolean(soundLearnActivity, false);
             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -168,1388 +291,7 @@ public class LearnClockActivity extends AppCompatActivity {
                 if (player != null) {
                     player.stop();
                 }
-                btnLearnClockSound.setEnabled(true);
-                btnLearnClockSound.setAlpha(1.0f);
             }
-        }
-    }
-
-    public void learnClockForwardClicked(View v) {
-        cardNumber = cardNumber + 1;
-        subCardNumber = 1;
-        btnBackward.setVisibility(View.VISIBLE);
-
-
-        if (cardNumber == 1) {
-            if (!getSoundFlag) {
-                btnForward.setEnabled(false);
-                btnForward.setAlpha(0.5f);
-                btnBackward.setEnabled(false);
-                btnBackward.setAlpha(0.5f);
-                btnLearnClockSound.setAlpha(0.5f);
-                btnLearnClockSound.setEnabled(false);
-            }
-            imgViewLearnClockGif.setAlpha(0f);
-            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-            imgViewLearnClockGif.animate()
-                    .alpha(0.5f)
-                    .setDuration(400)
-                    .setListener(null);
-
-            imgViewLearnClockGif.setAlpha(0.5f);
-            imgViewLearnClockGif.animate()
-                    .alpha(0f)
-                    .setDuration(400)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_2).into(imgViewLearnClockGif);
-                            imgViewLearnClockGif.setAlpha(0f);
-                            imgViewLearnClockGif.animate()
-                                    .alpha(0.5f)
-                                    .setDuration(400)
-                                    .setListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                            imgViewLearnClockGif.setAlpha(1.0f);
-                                            if (!getSoundFlag) {
-                                                btnForward.setEnabled(true);
-                                                btnForward.setAlpha(1.0f);
-                                                btnBackward.setEnabled(true);
-                                                btnBackward.setAlpha(1.0f);
-                                                btnLearnClockSound.setEnabled(true);
-                                                btnLearnClockSound.setAlpha(1.0f);
-                                            }
-                                            if (getSoundFlag) {
-                                                playSound("screen_1_1");
-                                            }
-                                        }
-                                    });
-
-                        }
-                    });
-        } else if (cardNumber == 2) {
-            if (!getSoundFlag) {
-                btnForward.setEnabled(false);
-                btnForward.setAlpha(0.5f);
-                btnBackward.setEnabled(false);
-                btnBackward.setAlpha(0.5f);
-                btnLearnClockSound.setAlpha(0.5f);
-                btnLearnClockSound.setEnabled(false);
-            }
-            Glide.with(this).load(R.drawable.learn_clock_3).into(imgViewLearnClockGif);
-            imgViewLearnClockGif.setAlpha(0f);
-            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-            imgViewLearnClockGif.animate()
-                    .alpha(0.5f)
-                    .setDuration(400)
-                    .setListener(null);
-
-            imgViewLearnClockGif.setAlpha(0.5f);
-            imgViewLearnClockGif.animate()
-                    .alpha(0f)
-                    .setDuration(400)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_3).into(imgViewLearnClockGif);
-                            imgViewLearnClockGif.setAlpha(0f);
-                            imgViewLearnClockGif.animate()
-                                    .alpha(0.5f)
-                                    .setDuration(400)
-                                    .setListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                            imgViewLearnClockGif.setAlpha(1.0f);
-                                            if (getSoundFlag) {
-                                                playSound("screen_2_1");
-                                            } else {
-                                                btnForward.setEnabled(true);
-                                                btnForward.setAlpha(1.0f);
-                                                btnBackward.setEnabled(true);
-                                                btnBackward.setAlpha(1.0f);
-                                                btnLearnClockSound.setEnabled(true);
-                                                btnLearnClockSound.setAlpha(1.0f);
-                                            }
-                                        }
-                                    });
-
-                        }
-                    });
-        } else if (cardNumber == 3) {
-            if (!getSoundFlag) {
-                btnForward.setEnabled(false);
-                btnForward.setAlpha(0.5f);
-                btnBackward.setEnabled(false);
-                btnBackward.setAlpha(0.5f);
-                btnLearnClockSound.setAlpha(0.5f);
-                btnLearnClockSound.setEnabled(false);
-            }
-            Glide.with(this).load(R.drawable.learn_clock_4).into(imgViewLearnClockGif);
-            imgViewLearnClockGif.setAlpha(0f);
-            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-            imgViewLearnClockGif.animate()
-                    .alpha(0.5f)
-                    .setDuration(400)
-                    .setListener(null);
-
-            imgViewLearnClockGif.setAlpha(0.5f);
-            imgViewLearnClockGif.animate()
-                    .alpha(0f)
-                    .setDuration(400)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_4).into(imgViewLearnClockGif);
-                            imgViewLearnClockGif.setAlpha(0f);
-                            imgViewLearnClockGif.animate()
-                                    .alpha(0.5f)
-                                    .setDuration(400)
-                                    .setListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                            imgViewLearnClockGif.setAlpha(1.0f);
-                                            if (getSoundFlag) {
-                                                playSound("screen_3_1");
-                                            } else {
-                                                btnForward.setEnabled(true);
-                                                btnForward.setAlpha(1.0f);
-                                                btnBackward.setEnabled(true);
-                                                btnBackward.setAlpha(1.0f);
-                                                btnLearnClockSound.setEnabled(true);
-                                                btnLearnClockSound.setAlpha(1.0f);
-                                            }
-                                        }
-                                    });
-
-                        }
-                    });
-        } else if (cardNumber == 4) {
-            if (!getSoundFlag) {
-                btnForward.setEnabled(false);
-                btnForward.setAlpha(0.5f);
-                btnBackward.setEnabled(false);
-                btnBackward.setAlpha(0.5f);
-                btnLearnClockSound.setAlpha(0.5f);
-                btnLearnClockSound.setEnabled(false);
-            }
-            Glide.with(this).load(R.drawable.learn_clock_5_1).into(imgViewLearnClockGif);
-            imgViewLearnClockGif.setAlpha(0f);
-            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-            imgViewLearnClockGif.animate()
-                    .alpha(0.5f)
-                    .setDuration(400)
-                    .setListener(null);
-
-            imgViewLearnClockGif.setAlpha(0.5f);
-            imgViewLearnClockGif.animate()
-                    .alpha(0f)
-                    .setDuration(400)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_5_1).into(imgViewLearnClockGif);
-                            imgViewLearnClockGif.setAlpha(0f);
-                            imgViewLearnClockGif.animate()
-                                    .alpha(0.5f)
-                                    .setDuration(400)
-                                    .setListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                            imgViewLearnClockGif.setAlpha(1.0f);
-                                            if (getSoundFlag) {
-                                                playSound("screen_4_1");
-                                            } else {
-                                                imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                                imgViewLearnClockGif.setAlpha(1.0f);
-                                                btnForward.setEnabled(true);
-                                                btnForward.setAlpha(1.0f);
-                                                btnBackward.setEnabled(true);
-                                                btnBackward.setAlpha(1.0f);
-                                                btnLearnClockSound.setEnabled(true);
-                                                btnLearnClockSound.setAlpha(1.0f);
-                                            }
-                                        }
-                                    });
-
-                        }
-                    });
-
-        } else if (cardNumber == 5) {
-            if (!getSoundFlag) {
-                btnForward.setEnabled(false);
-                btnForward.setAlpha(0.5f);
-                btnBackward.setEnabled(false);
-                btnBackward.setAlpha(0.5f);
-                btnLearnClockSound.setAlpha(0.5f);
-                btnLearnClockSound.setEnabled(false);
-            }
-            Glide.with(this).load(R.drawable.learn_clock_6).into(imgViewLearnClockGif);
-            imgViewLearnClockGif.setAlpha(0f);
-            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-            imgViewLearnClockGif.animate()
-                    .alpha(0.5f)
-                    .setDuration(400)
-                    .setListener(null);
-
-            imgViewLearnClockGif.setAlpha(0.5f);
-            imgViewLearnClockGif.animate()
-                    .alpha(0f)
-                    .setDuration(400)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_6).into(imgViewLearnClockGif);
-                            imgViewLearnClockGif.setAlpha(0f);
-                            imgViewLearnClockGif.animate()
-                                    .alpha(0.5f)
-                                    .setDuration(400)
-                                    .setListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                            imgViewLearnClockGif.setAlpha(1.0f);
-                                            if (getSoundFlag) {
-                                                playSound("screen_5_1");
-                                            } else {
-                                                btnForward.setEnabled(true);
-                                                btnForward.setAlpha(1.0f);
-                                                btnBackward.setEnabled(true);
-                                                btnBackward.setAlpha(1.0f);
-                                                btnLearnClockSound.setEnabled(true);
-                                                btnLearnClockSound.setAlpha(1.0f);
-                                            }
-                                        }
-                                    });
-
-                        }
-                    });
-        } else if (cardNumber == 6) {
-            if (!getSoundFlag) {
-                btnForward.setEnabled(false);
-                btnForward.setAlpha(0.5f);
-                btnBackward.setEnabled(false);
-                btnBackward.setAlpha(0.5f);
-                btnLearnClockSound.setAlpha(0.5f);
-                btnLearnClockSound.setEnabled(false);
-            }
-            Glide.with(this).load(R.drawable.learn_clock_7_1).into(imgViewLearnClockGif);
-            imgViewLearnClockGif.setAlpha(0f);
-            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-            imgViewLearnClockGif.animate()
-                    .alpha(0.5f)
-                    .setDuration(400)
-                    .setListener(null);
-
-            imgViewLearnClockGif.setAlpha(0.5f);
-            imgViewLearnClockGif.animate()
-                    .alpha(0f)
-                    .setDuration(400)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_7_1).into(imgViewLearnClockGif);
-                            imgViewLearnClockGif.setAlpha(0f);
-                            imgViewLearnClockGif.animate()
-                                    .alpha(0.5f)
-                                    .setDuration(400)
-                                    .setListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                            imgViewLearnClockGif.setAlpha(1.0f);
-                                            if (getSoundFlag) {
-                                                playSound("screen_6_1");
-                                            } else {
-                                                new Handler().postDelayed(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_7_2).into(imgViewLearnClockGif);
-                                                        imgViewLearnClockGif.setAlpha(0f);
-                                                        imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                                        imgViewLearnClockGif.animate()
-                                                                .alpha(0.5f)
-                                                                .setDuration(400)
-                                                                .setListener(null);
-
-                                                        imgViewLearnClockGif.setAlpha(0.5f);
-                                                        imgViewLearnClockGif.animate()
-                                                                .alpha(0f)
-                                                                .setDuration(400)
-                                                                .setListener(new AnimatorListenerAdapter() {
-                                                                    @Override
-                                                                    public void onAnimationEnd(Animator animation) {
-                                                                        Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_7_2).into(imgViewLearnClockGif);
-                                                                        imgViewLearnClockGif.setAlpha(0f);
-                                                                        imgViewLearnClockGif.animate()
-                                                                                .alpha(0.5f)
-                                                                                .setDuration(400)
-                                                                                .setListener(new AnimatorListenerAdapter() {
-                                                                                    @Override
-                                                                                    public void onAnimationEnd(Animator animation) {
-                                                                                        imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                                                                        imgViewLearnClockGif.setAlpha(1.0f);
-                                                                                        if (!getSoundFlag) {
-                                                                                            btnForward.setEnabled(true);
-                                                                                            btnForward.setAlpha(1.0f);
-                                                                                            btnBackward.setEnabled(true);
-                                                                                            btnBackward.setAlpha(1.0f);
-                                                                                            btnLearnClockSound.setEnabled(true);
-                                                                                            btnLearnClockSound.setAlpha(1.0f);
-                                                                                        }
-                                                                                    }
-                                                                                });
-
-                                                                    }
-                                                                });
-                                                    }
-                                                }, 3000);
-                                            }
-                                        }
-                                    });
-
-                        }
-                    });
-        } else if (cardNumber == 7) {
-            if (!getSoundFlag) {
-                btnBackward.setEnabled(false);
-                btnBackward.setAlpha(0.5f);
-                btnLearnClockSound.setAlpha(0.5f);
-                btnLearnClockSound.setEnabled(false);
-            }
-            btnForward.setVisibility(View.GONE);
-            Glide.with(this).load(R.drawable.learn_clock_8_1).into(imgViewLearnClockGif);
-            imgViewLearnClockGif.setAlpha(0f);
-            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-            imgViewLearnClockGif.animate()
-                    .alpha(0.5f)
-                    .setDuration(400)
-                    .setListener(null);
-
-            imgViewLearnClockGif.setAlpha(0.5f);
-            imgViewLearnClockGif.animate()
-                    .alpha(0f)
-                    .setDuration(400)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_8_1).into(imgViewLearnClockGif);
-                            imgViewLearnClockGif.setAlpha(0f);
-                            imgViewLearnClockGif.animate()
-                                    .alpha(0.5f)
-                                    .setDuration(400)
-                                    .setListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                            imgViewLearnClockGif.setAlpha(1.0f);
-                                            if (getSoundFlag) {
-                                                playSound("screen_7_1");
-                                            } else {
-                                                new Handler().postDelayed(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_8_2).into(imgViewLearnClockGif);
-                                                        imgViewLearnClockGif.setAlpha(0f);
-                                                        imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                                        imgViewLearnClockGif.animate()
-                                                                .alpha(0.5f)
-                                                                .setDuration(400)
-                                                                .setListener(null);
-
-                                                        imgViewLearnClockGif.setAlpha(0.5f);
-                                                        imgViewLearnClockGif.animate()
-                                                                .alpha(0f)
-                                                                .setDuration(400)
-                                                                .setListener(new AnimatorListenerAdapter() {
-                                                                    @Override
-                                                                    public void onAnimationEnd(Animator animation) {
-                                                                        Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_8_2).into(imgViewLearnClockGif);
-                                                                        imgViewLearnClockGif.setAlpha(0f);
-                                                                        imgViewLearnClockGif.animate()
-                                                                                .alpha(0.5f)
-                                                                                .setDuration(400)
-                                                                                .setListener(new AnimatorListenerAdapter() {
-                                                                                    @Override
-                                                                                    public void onAnimationEnd(Animator animation) {
-                                                                                        imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                                                                        imgViewLearnClockGif.setAlpha(1.0f);
-                                                                                        if (!getSoundFlag) {
-                                                                                            btnBackward.setEnabled(true);
-                                                                                            btnBackward.setAlpha(1.0f);
-                                                                                            btnLearnClockSound.setEnabled(true);
-                                                                                            btnLearnClockSound.setAlpha(1.0f);
-                                                                                        }
-                                                                                    }
-                                                                                });
-
-                                                                    }
-                                                                });
-                                                    }
-                                                }, 3000);
-                                            }
-                                        }
-                                    });
-
-                        }
-                    });
-
-
-        }
-
-        if (cardNumber != 7) {
-            btnForward.setVisibility(View.VISIBLE);
-        }
-        txtViewDescTxt.setText(Html.fromHtml(Constant.learnClockAnimation_array[cardNumber]));
-    }
-
-    public void learnClockBackwardClicked(View v) {
-        System.out.println("@@@@@@@@@@@@@@@learnClockBackwardClicked clicked@@@@@@@@@@@");
-        cardNumber = cardNumber - 1;
-        subCardNumber = 1;
-        btnLearnClockSound.setEnabled(false);
-        btnLearnClockSound.setAlpha(0.5f);
-
-        if (cardNumber == 0) {
-            if (!getSoundFlag) {
-                btnForward.setEnabled(false);
-                btnForward.setAlpha(0.5f);
-                btnLearnClockSound.setAlpha(0.5f);
-                btnLearnClockSound.setEnabled(false);
-            }
-            Glide.with(this).load(R.drawable.learn_clock_1).into(imgViewLearnClockGif);
-            imgViewLearnClockGif.setAlpha(0f);
-            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-            imgViewLearnClockGif.animate()
-                    .alpha(0.5f)
-                    .setDuration(400)
-                    .setListener(null);
-
-            imgViewLearnClockGif.setAlpha(0.5f);
-            imgViewLearnClockGif.animate()
-                    .alpha(0f)
-                    .setDuration(400)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_1).into(imgViewLearnClockGif);
-                            imgViewLearnClockGif.setAlpha(0f);
-                            imgViewLearnClockGif.animate()
-                                    .alpha(0.5f)
-                                    .setDuration(400)
-                                    .setListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                            imgViewLearnClockGif.setAlpha(1.0f);
-                                            if (getSoundFlag) {
-                                                playSound("screen_0_1");
-                                            } else {
-                                                new Handler().postDelayed(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        imgViewLearnClockGif.setImageResource(R.drawable.learn_clock_1_2);
-                                                        imgViewLearnClockGif.setAlpha(0f);
-                                                        imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                                        imgViewLearnClockGif.animate()
-                                                                .alpha(0.5f)
-                                                                .setDuration(400)
-                                                                .setListener(null);
-
-                                                        imgViewLearnClockGif.setAlpha(0.5f);
-                                                        imgViewLearnClockGif.animate()
-                                                                .alpha(0f)
-                                                                .setDuration(400)
-                                                                .setListener(new AnimatorListenerAdapter() {
-                                                                    @Override
-                                                                    public void onAnimationEnd(Animator animation) {
-                                                                        imgViewLearnClockGif.setImageResource(R.drawable.learn_clock_1_2);
-                                                                        imgViewLearnClockGif.setAlpha(0f);
-                                                                        imgViewLearnClockGif.animate()
-                                                                                .alpha(0.5f)
-                                                                                .setDuration(400)
-                                                                                .setListener(new AnimatorListenerAdapter() {
-                                                                                    @Override
-                                                                                    public void onAnimationEnd(Animator animation) {
-                                                                                        imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                                                                        imgViewLearnClockGif.setAlpha(1.0f);
-                                                                                        if (!getSoundFlag) {
-                                                                                            btnForward.setEnabled(true);
-                                                                                            btnForward.setAlpha(1.0f);
-                                                                                            btnLearnClockSound.setEnabled(true);
-                                                                                            btnLearnClockSound.setAlpha(1.0f);
-                                                                                        }
-                                                                                    }
-                                                                                });
-
-                                                                    }
-                                                                });
-                                                    }
-                                                }, 3000);
-                                            }
-                                        }
-                                    });
-
-                        }
-                    });
-            btnBackward.setVisibility(View.GONE);
-        } else {
-            btnBackward.setVisibility(View.VISIBLE);
-        }
-
-        if (cardNumber != 7) {
-            btnForward.setVisibility(View.VISIBLE);
-        }
-
-        if (cardNumber == 1) {
-            if (!getSoundFlag) {
-                btnForward.setEnabled(false);
-                btnForward.setAlpha(0.5f);
-                btnBackward.setEnabled(false);
-                btnBackward.setAlpha(0.5f);
-                btnLearnClockSound.setAlpha(0.5f);
-                btnLearnClockSound.setEnabled(false);
-            }
-            imgViewLearnClockGif.setAlpha(0f);
-            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-            imgViewLearnClockGif.animate()
-                    .alpha(0.5f)
-                    .setDuration(400)
-                    .setListener(null);
-
-            imgViewLearnClockGif.setAlpha(0.5f);
-            imgViewLearnClockGif.animate()
-                    .alpha(0f)
-                    .setDuration(400)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_2).into(imgViewLearnClockGif);
-                            imgViewLearnClockGif.setAlpha(0f);
-                            imgViewLearnClockGif.animate()
-                                    .alpha(0.5f)
-                                    .setDuration(400)
-                                    .setListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                            imgViewLearnClockGif.setAlpha(1.0f);
-                                            if (!getSoundFlag) {
-                                                btnForward.setEnabled(true);
-                                                btnForward.setAlpha(1.0f);
-                                                btnBackward.setEnabled(true);
-                                                btnBackward.setAlpha(1.0f);
-                                                btnLearnClockSound.setEnabled(true);
-                                                btnLearnClockSound.setAlpha(1.0f);
-                                            }
-                                            if (getSoundFlag) {
-                                                playSound("screen_1_1");
-                                            }
-                                        }
-                                    });
-
-                        }
-                    });
-        } else if (cardNumber == 2) {
-            if (!getSoundFlag) {
-                btnForward.setEnabled(false);
-                btnForward.setAlpha(0.5f);
-                btnBackward.setEnabled(false);
-                btnBackward.setAlpha(0.5f);
-                btnLearnClockSound.setAlpha(0.5f);
-                btnLearnClockSound.setEnabled(false);
-            }
-            Glide.with(this).load(R.drawable.learn_clock_3).into(imgViewLearnClockGif);
-            imgViewLearnClockGif.setAlpha(0f);
-            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-            imgViewLearnClockGif.animate()
-                    .alpha(0.5f)
-                    .setDuration(400)
-                    .setListener(null);
-
-            imgViewLearnClockGif.setAlpha(0.5f);
-            imgViewLearnClockGif.animate()
-                    .alpha(0f)
-                    .setDuration(400)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_3).into(imgViewLearnClockGif);
-                            imgViewLearnClockGif.setAlpha(0f);
-                            imgViewLearnClockGif.animate()
-                                    .alpha(0.5f)
-                                    .setDuration(400)
-                                    .setListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                            imgViewLearnClockGif.setAlpha(1.0f);
-                                            if (getSoundFlag) {
-                                                playSound("screen_2_1");
-                                            } else {
-                                                btnForward.setEnabled(true);
-                                                btnForward.setAlpha(1.0f);
-                                                btnBackward.setEnabled(true);
-                                                btnBackward.setAlpha(1.0f);
-                                                btnLearnClockSound.setEnabled(true);
-                                                btnLearnClockSound.setAlpha(1.0f);
-                                            }
-                                        }
-                                    });
-
-                        }
-                    });
-        } else if (cardNumber == 3) {
-            if (!getSoundFlag) {
-                btnForward.setEnabled(false);
-                btnForward.setAlpha(0.5f);
-                btnBackward.setEnabled(false);
-                btnBackward.setAlpha(0.5f);
-                btnLearnClockSound.setAlpha(0.5f);
-                btnLearnClockSound.setEnabled(false);
-            }
-            Glide.with(this).load(R.drawable.learn_clock_4).into(imgViewLearnClockGif);
-            imgViewLearnClockGif.setAlpha(0f);
-            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-            imgViewLearnClockGif.animate()
-                    .alpha(0.5f)
-                    .setDuration(400)
-                    .setListener(null);
-
-            imgViewLearnClockGif.setAlpha(0.5f);
-            imgViewLearnClockGif.animate()
-                    .alpha(0f)
-                    .setDuration(400)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_4).into(imgViewLearnClockGif);
-                            imgViewLearnClockGif.setAlpha(0f);
-                            imgViewLearnClockGif.animate()
-                                    .alpha(0.5f)
-                                    .setDuration(400)
-                                    .setListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                            imgViewLearnClockGif.setAlpha(1.0f);
-                                            if (getSoundFlag) {
-                                                playSound("screen_3_1");
-                                            } else {
-                                                btnForward.setEnabled(true);
-                                                btnForward.setAlpha(1.0f);
-                                                btnBackward.setEnabled(true);
-                                                btnBackward.setAlpha(1.0f);
-                                                btnLearnClockSound.setEnabled(true);
-                                                btnLearnClockSound.setAlpha(1.0f);
-                                            }
-                                        }
-                                    });
-
-                        }
-                    });
-        } else if (cardNumber == 4) {
-            if (!getSoundFlag) {
-                btnForward.setEnabled(false);
-                btnForward.setAlpha(0.5f);
-                btnBackward.setEnabled(false);
-                btnBackward.setAlpha(0.5f);
-                btnLearnClockSound.setAlpha(0.5f);
-                btnLearnClockSound.setEnabled(false);
-            }
-            Glide.with(this).load(R.drawable.learn_clock_5_1).into(imgViewLearnClockGif);
-            imgViewLearnClockGif.setAlpha(0f);
-            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-            imgViewLearnClockGif.animate()
-                    .alpha(0.5f)
-                    .setDuration(400)
-                    .setListener(null);
-
-            imgViewLearnClockGif.setAlpha(0.5f);
-            imgViewLearnClockGif.animate()
-                    .alpha(0f)
-                    .setDuration(400)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_5_1).into(imgViewLearnClockGif);
-                            imgViewLearnClockGif.setAlpha(0f);
-                            imgViewLearnClockGif.animate()
-                                    .alpha(0.5f)
-                                    .setDuration(400)
-                                    .setListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                            imgViewLearnClockGif.setAlpha(1.0f);
-                                            if (getSoundFlag) {
-                                                playSound("screen_4_1");
-                                            } else {
-                                                imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                                imgViewLearnClockGif.setAlpha(1.0f);
-                                                btnForward.setEnabled(true);
-                                                btnForward.setAlpha(1.0f);
-                                                btnBackward.setEnabled(true);
-                                                btnBackward.setAlpha(1.0f);
-                                                btnLearnClockSound.setEnabled(true);
-                                                btnLearnClockSound.setAlpha(1.0f);
-                                            }
-                                        }
-                                    });
-
-                        }
-                    });
-
-        } else if (cardNumber == 5) {
-            if (!getSoundFlag) {
-                btnForward.setEnabled(false);
-                btnForward.setAlpha(0.5f);
-                btnBackward.setEnabled(false);
-                btnBackward.setAlpha(0.5f);
-                btnLearnClockSound.setAlpha(0.5f);
-                btnLearnClockSound.setEnabled(false);
-            }
-            Glide.with(this).load(R.drawable.learn_clock_6).into(imgViewLearnClockGif);
-            imgViewLearnClockGif.setAlpha(0f);
-            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-            imgViewLearnClockGif.animate()
-                    .alpha(0.5f)
-                    .setDuration(400)
-                    .setListener(null);
-
-            imgViewLearnClockGif.setAlpha(0.5f);
-            imgViewLearnClockGif.animate()
-                    .alpha(0f)
-                    .setDuration(400)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_6).into(imgViewLearnClockGif);
-                            imgViewLearnClockGif.setAlpha(0f);
-                            imgViewLearnClockGif.animate()
-                                    .alpha(0.5f)
-                                    .setDuration(400)
-                                    .setListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                            imgViewLearnClockGif.setAlpha(1.0f);
-                                            if (getSoundFlag) {
-                                                playSound("screen_5_1");
-                                            } else {
-                                                btnForward.setEnabled(true);
-                                                btnForward.setAlpha(1.0f);
-                                                btnBackward.setEnabled(true);
-                                                btnBackward.setAlpha(1.0f);
-                                                btnLearnClockSound.setEnabled(true);
-                                                btnLearnClockSound.setAlpha(1.0f);
-                                            }
-                                        }
-                                    });
-
-                        }
-                    });
-        } else if (cardNumber == 6) {
-            if (!getSoundFlag) {
-                btnForward.setEnabled(false);
-                btnForward.setAlpha(0.5f);
-                btnBackward.setEnabled(false);
-                btnBackward.setAlpha(0.5f);
-                btnLearnClockSound.setAlpha(0.5f);
-                btnLearnClockSound.setEnabled(false);
-            }
-            Glide.with(this).load(R.drawable.learn_clock_7_1).into(imgViewLearnClockGif);
-            imgViewLearnClockGif.setAlpha(0f);
-            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-            imgViewLearnClockGif.animate()
-                    .alpha(0.5f)
-                    .setDuration(400)
-                    .setListener(null);
-
-            imgViewLearnClockGif.setAlpha(0.5f);
-            imgViewLearnClockGif.animate()
-                    .alpha(0f)
-                    .setDuration(400)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_7_1).into(imgViewLearnClockGif);
-                            imgViewLearnClockGif.setAlpha(0f);
-                            imgViewLearnClockGif.animate()
-                                    .alpha(0.5f)
-                                    .setDuration(400)
-                                    .setListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                            imgViewLearnClockGif.setAlpha(1.0f);
-                                            if (getSoundFlag) {
-                                                playSound("screen_6_1");
-                                            } else {
-                                                new Handler().postDelayed(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_7_2).into(imgViewLearnClockGif);
-                                                        imgViewLearnClockGif.setAlpha(0f);
-                                                        imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                                        imgViewLearnClockGif.animate()
-                                                                .alpha(0.5f)
-                                                                .setDuration(400)
-                                                                .setListener(null);
-
-                                                        imgViewLearnClockGif.setAlpha(0.5f);
-                                                        imgViewLearnClockGif.animate()
-                                                                .alpha(0f)
-                                                                .setDuration(400)
-                                                                .setListener(new AnimatorListenerAdapter() {
-                                                                    @Override
-                                                                    public void onAnimationEnd(Animator animation) {
-                                                                        Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_7_2).into(imgViewLearnClockGif);
-                                                                        imgViewLearnClockGif.setAlpha(0f);
-                                                                        imgViewLearnClockGif.animate()
-                                                                                .alpha(0.5f)
-                                                                                .setDuration(400)
-                                                                                .setListener(new AnimatorListenerAdapter() {
-                                                                                    @Override
-                                                                                    public void onAnimationEnd(Animator animation) {
-                                                                                        imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                                                                        imgViewLearnClockGif.setAlpha(1.0f);
-                                                                                        if (!getSoundFlag) {
-                                                                                            btnForward.setEnabled(true);
-                                                                                            btnForward.setAlpha(1.0f);
-                                                                                            btnBackward.setEnabled(true);
-                                                                                            btnBackward.setAlpha(1.0f);
-                                                                                            btnLearnClockSound.setEnabled(true);
-                                                                                            btnLearnClockSound.setAlpha(1.0f);
-                                                                                        }
-                                                                                    }
-                                                                                });
-
-                                                                    }
-                                                                });
-                                                    }
-                                                }, 3000);
-                                            }
-                                        }
-                                    });
-
-                        }
-                    });
-        }
-        txtViewDescTxt.setText(Html.fromHtml(Constant.learnClockAnimation_array[cardNumber]));
-    }
-
-    public void learnClockSoundClicked(View v) {
-        System.out.println("@@@@@@@@@@@@@@@learnClockSoundClicked clicked@@@@@@@@@@@");
-        subCardNumber = 1;
-        if (getSoundFlag) {
-            btnLearnClockSound.setEnabled(false);
-            btnLearnClockSound.setAlpha(0.5f);
-        }
-
-        if (cardNumber == 0) {
-            if (!getSoundFlag) {
-                btnForward.setEnabled(false);
-                btnForward.setAlpha(0.5f);
-                btnLearnClockSound.setAlpha(0.5f);
-                btnLearnClockSound.setEnabled(false);
-            }
-            Glide.with(this).load(R.drawable.learn_clock_1).into(imgViewLearnClockGif);
-            imgViewLearnClockGif.setAlpha(0f);
-            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-            imgViewLearnClockGif.animate()
-                    .alpha(0.5f)
-                    .setDuration(400)
-                    .setListener(null);
-
-            imgViewLearnClockGif.setAlpha(0.5f);
-            imgViewLearnClockGif.animate()
-                    .alpha(0f)
-                    .setDuration(400)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_1).into(imgViewLearnClockGif);
-                            imgViewLearnClockGif.setAlpha(0f);
-                            imgViewLearnClockGif.animate()
-                                    .alpha(0.5f)
-                                    .setDuration(400)
-                                    .setListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                            imgViewLearnClockGif.setAlpha(1.0f);
-                                            if (getSoundFlag) {
-                                                playSound("screen_0_1");
-                                            } else {
-                                                new Handler().postDelayed(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        imgViewLearnClockGif.setImageResource(R.drawable.learn_clock_1_2);
-                                                        imgViewLearnClockGif.setAlpha(0f);
-                                                        imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                                        imgViewLearnClockGif.animate()
-                                                                .alpha(0.5f)
-                                                                .setDuration(400)
-                                                                .setListener(null);
-
-                                                        imgViewLearnClockGif.setAlpha(0.5f);
-                                                        imgViewLearnClockGif.animate()
-                                                                .alpha(0f)
-                                                                .setDuration(400)
-                                                                .setListener(new AnimatorListenerAdapter() {
-                                                                    @Override
-                                                                    public void onAnimationEnd(Animator animation) {
-                                                                        imgViewLearnClockGif.setImageResource(R.drawable.learn_clock_1_2);
-                                                                        imgViewLearnClockGif.setAlpha(0f);
-                                                                        imgViewLearnClockGif.animate()
-                                                                                .alpha(0.5f)
-                                                                                .setDuration(400)
-                                                                                .setListener(new AnimatorListenerAdapter() {
-                                                                                    @Override
-                                                                                    public void onAnimationEnd(Animator animation) {
-                                                                                        imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                                                                        imgViewLearnClockGif.setAlpha(1.0f);
-                                                                                        if (!getSoundFlag) {
-                                                                                            btnForward.setEnabled(true);
-                                                                                            btnForward.setAlpha(1.0f);
-                                                                                            btnLearnClockSound.setEnabled(true);
-                                                                                            btnLearnClockSound.setAlpha(1.0f);
-                                                                                        }
-                                                                                    }
-                                                                                });
-
-                                                                    }
-                                                                });
-                                                    }
-                                                }, 3000);
-                                            }
-                                        }
-                                    });
-
-                        }
-                    });
-        } else if (cardNumber == 1) {
-            if (!getSoundFlag) {
-                btnForward.setEnabled(false);
-                btnForward.setAlpha(0.5f);
-                btnBackward.setEnabled(false);
-                btnBackward.setAlpha(0.5f);
-                btnLearnClockSound.setAlpha(0.5f);
-                btnLearnClockSound.setEnabled(false);
-            }
-            imgViewLearnClockGif.setAlpha(0f);
-            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-            imgViewLearnClockGif.animate()
-                    .alpha(0.5f)
-                    .setDuration(400)
-                    .setListener(null);
-
-            imgViewLearnClockGif.setAlpha(0.5f);
-            imgViewLearnClockGif.animate()
-                    .alpha(0f)
-                    .setDuration(400)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_2).into(imgViewLearnClockGif);
-                            imgViewLearnClockGif.setAlpha(0f);
-                            imgViewLearnClockGif.animate()
-                                    .alpha(0.5f)
-                                    .setDuration(400)
-                                    .setListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                            imgViewLearnClockGif.setAlpha(1.0f);
-                                            if (!getSoundFlag) {
-                                                btnForward.setEnabled(true);
-                                                btnForward.setAlpha(1.0f);
-                                                btnBackward.setEnabled(true);
-                                                btnBackward.setAlpha(1.0f);
-                                                btnLearnClockSound.setEnabled(true);
-                                                btnLearnClockSound.setAlpha(1.0f);
-                                            }
-                                            if (getSoundFlag) {
-                                                playSound("screen_1_1");
-                                            }
-                                        }
-                                    });
-
-                        }
-                    });
-        } else if (cardNumber == 2) {
-            if (!getSoundFlag) {
-                btnForward.setEnabled(false);
-                btnForward.setAlpha(0.5f);
-                btnBackward.setEnabled(false);
-                btnBackward.setAlpha(0.5f);
-                btnLearnClockSound.setAlpha(0.5f);
-                btnLearnClockSound.setEnabled(false);
-            }
-            Glide.with(this).load(R.drawable.learn_clock_3).into(imgViewLearnClockGif);
-            imgViewLearnClockGif.setAlpha(0f);
-            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-            imgViewLearnClockGif.animate()
-                    .alpha(0.5f)
-                    .setDuration(400)
-                    .setListener(null);
-
-            imgViewLearnClockGif.setAlpha(0.5f);
-            imgViewLearnClockGif.animate()
-                    .alpha(0f)
-                    .setDuration(400)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_3).into(imgViewLearnClockGif);
-                            imgViewLearnClockGif.setAlpha(0f);
-                            imgViewLearnClockGif.animate()
-                                    .alpha(0.5f)
-                                    .setDuration(400)
-                                    .setListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                            imgViewLearnClockGif.setAlpha(1.0f);
-                                            if (getSoundFlag) {
-                                                playSound("screen_2_1");
-                                            } else {
-                                                btnForward.setEnabled(true);
-                                                btnForward.setAlpha(1.0f);
-                                                btnBackward.setEnabled(true);
-                                                btnBackward.setAlpha(1.0f);
-                                                btnLearnClockSound.setEnabled(true);
-                                                btnLearnClockSound.setAlpha(1.0f);
-                                            }
-                                        }
-                                    });
-
-                        }
-                    });
-        } else if (cardNumber == 3) {
-            if (!getSoundFlag) {
-                btnForward.setEnabled(false);
-                btnForward.setAlpha(0.5f);
-                btnBackward.setEnabled(false);
-                btnBackward.setAlpha(0.5f);
-                btnLearnClockSound.setAlpha(0.5f);
-                btnLearnClockSound.setEnabled(false);
-            }
-            Glide.with(this).load(R.drawable.learn_clock_4).into(imgViewLearnClockGif);
-            imgViewLearnClockGif.setAlpha(0f);
-            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-            imgViewLearnClockGif.animate()
-                    .alpha(0.5f)
-                    .setDuration(400)
-                    .setListener(null);
-
-            imgViewLearnClockGif.setAlpha(0.5f);
-            imgViewLearnClockGif.animate()
-                    .alpha(0f)
-                    .setDuration(400)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_4).into(imgViewLearnClockGif);
-                            imgViewLearnClockGif.setAlpha(0f);
-                            imgViewLearnClockGif.animate()
-                                    .alpha(0.5f)
-                                    .setDuration(400)
-                                    .setListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                            imgViewLearnClockGif.setAlpha(1.0f);
-                                            if (getSoundFlag) {
-                                                playSound("screen_3_1");
-                                            } else {
-                                                btnForward.setEnabled(true);
-                                                btnForward.setAlpha(1.0f);
-                                                btnBackward.setEnabled(true);
-                                                btnBackward.setAlpha(1.0f);
-                                                btnLearnClockSound.setEnabled(true);
-                                                btnLearnClockSound.setAlpha(1.0f);
-                                            }
-                                        }
-                                    });
-
-                        }
-                    });
-        } else if (cardNumber == 4) {
-            if (!getSoundFlag) {
-                btnForward.setEnabled(false);
-                btnForward.setAlpha(0.5f);
-                btnBackward.setEnabled(false);
-                btnBackward.setAlpha(0.5f);
-                btnLearnClockSound.setAlpha(0.5f);
-                btnLearnClockSound.setEnabled(false);
-            }
-            Glide.with(this).load(R.drawable.learn_clock_5_1).into(imgViewLearnClockGif);
-            imgViewLearnClockGif.setAlpha(0f);
-            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-            imgViewLearnClockGif.animate()
-                    .alpha(0.5f)
-                    .setDuration(400)
-                    .setListener(null);
-
-            imgViewLearnClockGif.setAlpha(0.5f);
-            imgViewLearnClockGif.animate()
-                    .alpha(0f)
-                    .setDuration(400)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_5_1).into(imgViewLearnClockGif);
-                            imgViewLearnClockGif.setAlpha(0f);
-                            imgViewLearnClockGif.animate()
-                                    .alpha(0.5f)
-                                    .setDuration(400)
-                                    .setListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                            imgViewLearnClockGif.setAlpha(1.0f);
-                                            if (getSoundFlag) {
-                                                playSound("screen_4_1");
-                                            } else {
-                                                imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                                imgViewLearnClockGif.setAlpha(1.0f);
-                                                btnForward.setEnabled(true);
-                                                btnForward.setAlpha(1.0f);
-                                                btnBackward.setEnabled(true);
-                                                btnBackward.setAlpha(1.0f);
-                                                btnLearnClockSound.setEnabled(true);
-                                                btnLearnClockSound.setAlpha(1.0f);
-                                            }
-                                        }
-                                    });
-
-                        }
-                    });
-
-        } else if (cardNumber == 5) {
-            if (!getSoundFlag) {
-                btnForward.setEnabled(false);
-                btnForward.setAlpha(0.5f);
-                btnBackward.setEnabled(false);
-                btnBackward.setAlpha(0.5f);
-                btnLearnClockSound.setAlpha(0.5f);
-                btnLearnClockSound.setEnabled(false);
-            }
-            Glide.with(this).load(R.drawable.learn_clock_6).into(imgViewLearnClockGif);
-            imgViewLearnClockGif.setAlpha(0f);
-            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-            imgViewLearnClockGif.animate()
-                    .alpha(0.5f)
-                    .setDuration(400)
-                    .setListener(null);
-
-            imgViewLearnClockGif.setAlpha(0.5f);
-            imgViewLearnClockGif.animate()
-                    .alpha(0f)
-                    .setDuration(400)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_6).into(imgViewLearnClockGif);
-                            imgViewLearnClockGif.setAlpha(0f);
-                            imgViewLearnClockGif.animate()
-                                    .alpha(0.5f)
-                                    .setDuration(400)
-                                    .setListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                            imgViewLearnClockGif.setAlpha(1.0f);
-                                            if (getSoundFlag) {
-                                                playSound("screen_5_1");
-                                            } else {
-                                                btnForward.setEnabled(true);
-                                                btnForward.setAlpha(1.0f);
-                                                btnBackward.setEnabled(true);
-                                                btnBackward.setAlpha(1.0f);
-                                                btnLearnClockSound.setEnabled(true);
-                                                btnLearnClockSound.setAlpha(1.0f);
-                                            }
-                                        }
-                                    });
-
-                        }
-                    });
-        } else if (cardNumber == 6) {
-            if (!getSoundFlag) {
-                btnForward.setEnabled(false);
-                btnForward.setAlpha(0.5f);
-                btnBackward.setEnabled(false);
-                btnBackward.setAlpha(0.5f);
-                btnLearnClockSound.setAlpha(0.5f);
-                btnLearnClockSound.setEnabled(false);
-            }
-            Glide.with(this).load(R.drawable.learn_clock_7_1).into(imgViewLearnClockGif);
-            imgViewLearnClockGif.setAlpha(0f);
-            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-            imgViewLearnClockGif.animate()
-                    .alpha(0.5f)
-                    .setDuration(400)
-                    .setListener(null);
-
-            imgViewLearnClockGif.setAlpha(0.5f);
-            imgViewLearnClockGif.animate()
-                    .alpha(0f)
-                    .setDuration(400)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_7_1).into(imgViewLearnClockGif);
-                            imgViewLearnClockGif.setAlpha(0f);
-                            imgViewLearnClockGif.animate()
-                                    .alpha(0.5f)
-                                    .setDuration(400)
-                                    .setListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                            imgViewLearnClockGif.setAlpha(1.0f);
-                                            if (getSoundFlag) {
-                                                playSound("screen_6_1");
-                                            } else {
-                                                new Handler().postDelayed(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_7_2).into(imgViewLearnClockGif);
-                                                        imgViewLearnClockGif.setAlpha(0f);
-                                                        imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                                        imgViewLearnClockGif.animate()
-                                                                .alpha(0.5f)
-                                                                .setDuration(400)
-                                                                .setListener(null);
-
-                                                        imgViewLearnClockGif.setAlpha(0.5f);
-                                                        imgViewLearnClockGif.animate()
-                                                                .alpha(0f)
-                                                                .setDuration(400)
-                                                                .setListener(new AnimatorListenerAdapter() {
-                                                                    @Override
-                                                                    public void onAnimationEnd(Animator animation) {
-                                                                        Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_7_2).into(imgViewLearnClockGif);
-                                                                        imgViewLearnClockGif.setAlpha(0f);
-                                                                        imgViewLearnClockGif.animate()
-                                                                                .alpha(0.5f)
-                                                                                .setDuration(400)
-                                                                                .setListener(new AnimatorListenerAdapter() {
-                                                                                    @Override
-                                                                                    public void onAnimationEnd(Animator animation) {
-                                                                                        imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                                                                        imgViewLearnClockGif.setAlpha(1.0f);
-                                                                                        if (!getSoundFlag) {
-                                                                                            btnForward.setEnabled(true);
-                                                                                            btnForward.setAlpha(1.0f);
-                                                                                            btnBackward.setEnabled(true);
-                                                                                            btnBackward.setAlpha(1.0f);
-                                                                                            btnLearnClockSound.setEnabled(true);
-                                                                                            btnLearnClockSound.setAlpha(1.0f);
-                                                                                        }
-                                                                                    }
-                                                                                });
-
-                                                                    }
-                                                                });
-                                                    }
-                                                }, 3000);
-                                            }
-                                        }
-                                    });
-
-                        }
-                    });
-        } else if (cardNumber == 7) {
-            if (!getSoundFlag) {
-                btnBackward.setEnabled(false);
-                btnBackward.setAlpha(0.5f);
-                btnLearnClockSound.setAlpha(0.5f);
-                btnLearnClockSound.setEnabled(false);
-            }
-            btnForward.setVisibility(View.GONE);
-            Glide.with(this).load(R.drawable.learn_clock_8_1).into(imgViewLearnClockGif);
-            imgViewLearnClockGif.setAlpha(0f);
-            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-            imgViewLearnClockGif.animate()
-                    .alpha(0.5f)
-                    .setDuration(400)
-                    .setListener(null);
-
-            imgViewLearnClockGif.setAlpha(0.5f);
-            imgViewLearnClockGif.animate()
-                    .alpha(0f)
-                    .setDuration(400)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_8_1).into(imgViewLearnClockGif);
-                            imgViewLearnClockGif.setAlpha(0f);
-                            imgViewLearnClockGif.animate()
-                                    .alpha(0.5f)
-                                    .setDuration(400)
-                                    .setListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                            imgViewLearnClockGif.setAlpha(1.0f);
-                                            if (getSoundFlag) {
-                                                playSound("screen_7_1");
-                                            } else {
-                                                new Handler().postDelayed(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_8_2).into(imgViewLearnClockGif);
-                                                        imgViewLearnClockGif.setAlpha(0f);
-                                                        imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                                        imgViewLearnClockGif.animate()
-                                                                .alpha(0.5f)
-                                                                .setDuration(400)
-                                                                .setListener(null);
-
-                                                        imgViewLearnClockGif.setAlpha(0.5f);
-                                                        imgViewLearnClockGif.animate()
-                                                                .alpha(0f)
-                                                                .setDuration(400)
-                                                                .setListener(new AnimatorListenerAdapter() {
-                                                                    @Override
-                                                                    public void onAnimationEnd(Animator animation) {
-                                                                        Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_8_2).into(imgViewLearnClockGif);
-                                                                        imgViewLearnClockGif.setAlpha(0f);
-                                                                        imgViewLearnClockGif.animate()
-                                                                                .alpha(0.5f)
-                                                                                .setDuration(400)
-                                                                                .setListener(new AnimatorListenerAdapter() {
-                                                                                    @Override
-                                                                                    public void onAnimationEnd(Animator animation) {
-                                                                                        imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                                                                        imgViewLearnClockGif.setAlpha(1.0f);
-                                                                                        if (!getSoundFlag) {
-                                                                                            btnBackward.setEnabled(true);
-                                                                                            btnBackward.setAlpha(1.0f);
-                                                                                            btnLearnClockSound.setEnabled(true);
-                                                                                            btnLearnClockSound.setAlpha(1.0f);
-                                                                                        }
-                                                                                    }
-                                                                                });
-
-                                                                    }
-                                                                });
-                                                    }
-                                                }, 3000);
-                                            }
-                                        }
-                                    });
-
-                        }
-                    });
         }
     }
 
@@ -1568,323 +310,7 @@ public class LearnClockActivity extends AppCompatActivity {
 
             @Override
             public void onCompletion(MediaPlayer mp) {
-                System.out.println("----setOnCompletionListener-----");
-                if (cardNumber == 0) {
-                    if (subCardNumber == 1) {
-                        subCardNumber = 0;
-                        imgViewLearnClockGif.setAlpha(0f);
-                        imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                        imgViewLearnClockGif.animate()
-                                .alpha(0.5f)
-                                .setDuration(400)
-                                .setListener(null);
 
-                        imgViewLearnClockGif.setAlpha(0.5f);
-                        imgViewLearnClockGif.animate()
-                                .alpha(0f)
-                                .setDuration(400)
-                                .setListener(new AnimatorListenerAdapter() {
-                                    @Override
-                                    public void onAnimationEnd(Animator animation) {
-                                        imgViewLearnClockGif.setImageResource(R.drawable.learn_clock_1_2);
-                                        imgViewLearnClockGif.setAlpha(0f);
-                                        imgViewLearnClockGif.animate()
-                                                .alpha(0.5f)
-                                                .setDuration(400)
-                                                .setListener(new AnimatorListenerAdapter() {
-                                                    @Override
-                                                    public void onAnimationEnd(Animator animation) {
-                                                        imgViewLearnClockGif.setVisibility(View.VISIBLE);
-                                                        imgViewLearnClockGif.setAlpha(1.0f);
-                                                    }
-                                                });
-
-                                    }
-                                });
-
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (cardNumber == 0) {
-                                    playSound("screen_0_2");
-                                }
-                            }
-                        }, 1500);
-
-                    } else {
-                        btnLearnClockSound.setEnabled(true);
-                        btnLearnClockSound.setAlpha(1.0f);
-                    }
-                } else if (cardNumber == 1) {
-                    if (subCardNumber == 1) {
-                        subCardNumber = 2;
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (cardNumber == 1) {
-                                    playSound("screen_1_2");
-                                }
-                            }
-                        }, 500);
-
-                    } else if (subCardNumber == 2) {
-                        subCardNumber = 0;
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (cardNumber == 1) {
-                                    playSound("screen_1_3");
-                                }
-                            }
-                        }, 600);
-                    } else {
-                        btnLearnClockSound.setEnabled(true);
-                        btnLearnClockSound.setAlpha(1.0f);
-                    }
-                } else if (cardNumber == 2) {
-                    if (subCardNumber == 1) {
-                        subCardNumber = 2;
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (cardNumber == 2) {
-                                    playSound("screen_2_2");
-                                }
-                            }
-                        }, 600);
-                    } else if (subCardNumber == 2) {
-                        subCardNumber = 0;
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (cardNumber == 2) {
-                                    playSound("screen_2_3");
-                                }
-                            }
-                        }, 600);
-                    } else {
-                        btnLearnClockSound.setEnabled(true);
-                        btnLearnClockSound.setAlpha(1.0f);
-                    }
-                } else if (cardNumber == 3) {
-                    if (subCardNumber == 1) {
-                        subCardNumber = 0;
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (cardNumber == 3) {
-                                    playSound("screen_3_2");
-                                }
-                            }
-                        }, 600);
-                    } else {
-                        btnLearnClockSound.setEnabled(true);
-                        btnLearnClockSound.setAlpha(1.0f);
-                    }
-                } else if (cardNumber == 4) {
-                    if (subCardNumber == 1) {
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                Glide.with(LearnClockActivity.this)
-                                        .asGif()
-                                        .load(R.drawable.learn_clock_5) //Your gif resource
-                                        .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE))
-                                        .skipMemoryCache(true)
-                                        .listener(new RequestListener<GifDrawable>() {
-                                            @Override
-                                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<GifDrawable> target, boolean isFirstResource) {
-                                                return false;
-                                            }
-
-                                            @Override
-                                            public boolean onResourceReady(GifDrawable resource, Object model, Target<GifDrawable> target, DataSource dataSource, boolean isFirstResource) {
-                                                resource.setLoopCount(1);
-                                                return false;
-                                            }
-                                        })
-                                        .into(imgViewLearnClockGif);
-                                if (cardNumber == 4) {
-                                    playSound("learndesc_clock_" + subCardNumber);
-                                }
-                                subCardNumber = 2;
-                            }
-                        }, 200);
-                    } else if (subCardNumber == 2) {
-                        if (cardNumber == 4) {
-                            playSound("learndesc_clock_" + subCardNumber);
-                        }
-                        subCardNumber = 3;
-                    } else if (subCardNumber == 3) {
-                        if (cardNumber == 4) {
-                            playSound("learndesc_clock_" + subCardNumber);
-                        }
-                        subCardNumber = 4;
-                    } else if (subCardNumber == 4) {
-                        if (cardNumber == 4) {
-                            playSound("learndesc_clock_" + subCardNumber);
-                        }
-                        subCardNumber = 5;
-                    } else if (subCardNumber == 5) {
-                        if (cardNumber == 4) {
-                            playSound("learndesc_clock_" + subCardNumber);
-                        }
-                        subCardNumber = 6;
-                    } else if (subCardNumber == 6) {
-                        if (cardNumber == 4) {
-                            playSound("learndesc_clock_" + subCardNumber);
-                        }
-                        subCardNumber = 7;
-                    } else if (subCardNumber == 7) {
-                        if (cardNumber == 4) {
-                            playSound("learndesc_clock_" + subCardNumber);
-                        }
-                        subCardNumber = 8;
-                    } else if (subCardNumber == 8) {
-                        if (cardNumber == 4) {
-                            playSound("learndesc_clock_" + subCardNumber);
-                        }
-                        subCardNumber = 9;
-                    } else if (subCardNumber == 9) {
-                        if (cardNumber == 4) {
-                            playSound("learndesc_clock_" + subCardNumber);
-                        }
-                        subCardNumber = 10;
-                    } else if (subCardNumber == 10) {
-                        if (cardNumber == 4) {
-                            playSound("learndesc_clock_" + subCardNumber);
-                        }
-                        subCardNumber = 11;
-                    } else if (subCardNumber == 11) {
-                        if (cardNumber == 4) {
-                            playSound("learndesc_clock_" + subCardNumber);
-                        }
-                        subCardNumber = 12;
-                    } else if (subCardNumber == 12) {
-                        if (cardNumber == 4) {
-                            playSound("learndesc_clock_" + subCardNumber);
-                        }
-                        subCardNumber = 0;
-                    } else {
-                        btnLearnClockSound.setEnabled(true);
-                        btnLearnClockSound.setAlpha(1.0f);
-                    }
-                } else if (cardNumber == 5) {
-                    if (subCardNumber == 1) {
-                        subCardNumber = 0;
-                        btnLearnClockSound.setEnabled(true);
-                        btnLearnClockSound.setAlpha(1.0f);
-                    }
-                } else if (cardNumber == 6) {
-                    if (subCardNumber == 1) {
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                subCardNumber = 2;
-                                Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_7_2).into(imgViewLearnClockGif);
-                                if (cardNumber == 6) {
-                                    playSound("screen_6_2");
-                                }
-                            }
-                        }, 300);
-                    } else if (subCardNumber == 2) {
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                subCardNumber = 3;
-                                if (cardNumber == 6) {
-                                    playSound("screen_6_3");
-                                }
-                            }
-                        }, 300);
-                    } else if (subCardNumber == 3) {
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                Glide.with(LearnClockActivity.this)
-                                        .asGif()
-                                        .load(R.drawable.learn_clock_7_3) //Your gif resource
-                                        .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE))
-                                        .skipMemoryCache(true)
-                                        .listener(new RequestListener<GifDrawable>() {
-                                            @Override
-                                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<GifDrawable> target, boolean isFirstResource) {
-                                                return false;
-                                            }
-
-                                            @Override
-                                            public boolean onResourceReady(GifDrawable resource, Object model, Target<GifDrawable> target, DataSource dataSource, boolean isFirstResource) {
-                                                resource.setLoopCount(1);
-                                                return false;
-                                            }
-                                        })
-                                        .into(imgViewLearnClockGif);
-                                if (cardNumber == 6) {
-                                    playSound("screen_6_4");
-                                }
-                                subCardNumber = 0;
-                            }
-                        }, 200);
-                    } else {
-                        btnLearnClockSound.setEnabled(true);
-                        btnLearnClockSound.setAlpha(1.0f);
-                    }
-                } else if (cardNumber == 7) {
-                    if (subCardNumber == 1) {
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                subCardNumber = 2;
-                                Glide.with(LearnClockActivity.this).load(R.drawable.learn_clock_8_2).into(imgViewLearnClockGif);
-                                if (cardNumber == 7) {
-                                    playSound("screen_7_2");
-                                }
-                            }
-                        }, 200); //Time in milisecond
-                    } else if (subCardNumber == 2) {
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                subCardNumber = 3;
-                                if (cardNumber == 7) {
-                                    playSound("screen_7_3");
-                                }
-                            }
-                        }, 200); //Time in milisecond
-
-                    } else if (subCardNumber == 3) {
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                Glide.with(LearnClockActivity.this)
-                                        .asGif()
-                                        .load(R.drawable.learn_clock_8_3) //Your gif resource
-                                        .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE))
-                                        .skipMemoryCache(true)
-                                        .listener(new RequestListener<GifDrawable>() {
-                                            @Override
-                                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<GifDrawable> target, boolean isFirstResource) {
-                                                return false;
-                                            }
-
-                                            @Override
-                                            public boolean onResourceReady(GifDrawable resource, Object model, Target<GifDrawable> target, DataSource dataSource, boolean isFirstResource) {
-                                                resource.setLoopCount(1);
-                                                return false;
-                                            }
-                                        })
-                                        .into(imgViewLearnClockGif);
-                                if (cardNumber == 7) {
-                                    playSound("screen_7_4");
-                                }
-                                subCardNumber = 0;
-                            }
-                        }, 200);
-                    } else {
-                        btnLearnClockSound.setEnabled(true);
-                        btnLearnClockSound.setAlpha(1.0f);
-                    }
-                }
             }
         });
     }

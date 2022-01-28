@@ -12,8 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LearnClockTime">
         <activity android:name="com.mobiapps360.LearnClockTime.PrivacyPolicyActivity" />
-        <activity android:name="com.mobiapps360.LearnClockTime.ClockLearnActivity" />
-        <activity android:name="com.mobiapps360.LearnClockTime.XyzActivity" />
+        <activity android:name="com.mobiapps360.LearnClockTime.LearnClockActivity" />
 
         <activity
             android:name=".MainActivity"

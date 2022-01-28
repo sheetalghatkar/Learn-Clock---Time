@@ -274,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void learnClockClicked(View v) {
         System.out.println("@@@@@@@@@@@@@@@learnClockClicked clicked@@@@@@@@@@@");
-        Intent intent = new Intent(this, ClockLearnActivity.class);
+        Intent intent = new Intent(this, LearnClockActivity.class);
         startActivity(intent);
     }
     public void guessTimeClicked(View v) {

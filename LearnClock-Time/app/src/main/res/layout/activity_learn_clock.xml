@@ -46,11 +46,13 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@mipmap/sound_on" />
 
-    <ImageView
-        android:id="@+id/imgViewLearnClockGif"
-        android:layout_width="280dp"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id = "@+id/recycleViewLearnClock"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="10dp"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -62,41 +64,35 @@
         android:layout_height="37dp"
         android:layout_marginStart="20dp"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="30dp"
-        android:onClick="learnClockBackwardClicked"
         android:scaleType="fitCenter"
         app:srcCompat="@drawable/back_question"
         android:background="@null"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgViewLearnClockGif" />
+        app:layout_constraintTop_toBottomOf="@+id/recycleViewLearnClock" />
 
     <ImageButton
         android:id="@+id/btnLearnClockSound"
         android:layout_width="37dp"
         android:layout_height="37dp"
-        android:layout_marginTop="30dp"
         android:layout_centerInParent="true"
         app:srcCompat="@drawable/play_again_red"
         android:background="@null"
-        android:onClick="learnClockSoundClicked"
         android:scaleType="fitCenter"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgViewLearnClockGif" />
+        app:layout_constraintTop_toBottomOf="@+id/recycleViewLearnClock" />
 
     <ImageButton
         android:id="@+id/btnLearnClockForward"
         android:layout_width="37dp"
         android:layout_height="37dp"
-        android:layout_marginTop="30dp"
         android:layout_marginEnd="20dp"
         android:layout_marginRight="20dp"
         app:srcCompat="@drawable/next_question"
         android:background="@null"
-        android:onClick="learnClockForwardClicked"
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgViewLearnClockGif" />
+        app:layout_constraintTop_toBottomOf="@+id/recycleViewLearnClock" />
 
 
     <androidx.cardview.widget.CardView
@@ -129,7 +125,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="25dp"
         android:layout_marginRight="20dp"
         android:padding="10dp"
         android:text="TextView"

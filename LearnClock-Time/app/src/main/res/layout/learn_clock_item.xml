@@ -13,7 +13,7 @@
         android:id="@+id/viewEmptyLearn"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/border_learn_view"
+        android:background="@null"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -22,21 +22,32 @@
         app:layout_constraintVertical_bias="0.0"/>
 
     <ImageView
-        android:id="@+id/imageViewLearn"
+        android:id="@+id/imageViewLearnClock"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
         android:scaleType="fitXY"
-        android:src="@drawable/learn_clock_5_0"
         app:layout_constraintEnd_toEndOf="@+id/viewEmptyLearn"
         app:layout_constraintStart_toStartOf="@+id/viewEmptyLearn"
         app:layout_constraintTop_toTopOf="@+id/viewEmptyLearn"
         app:layout_constraintBottom_toBottomOf="@+id/viewEmptyLearn"/>
+
+    <TextView
+        android:id="@+id/textViewCardNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text = "1/13"
+        android:textColor="#ff0c94"
+        android:textSize="20sp"
+        android:textStyle= "normal"
+        app:layout_constraintEnd_toEndOf="@+id/viewEmptyLearn"
+        app:layout_constraintTop_toTopOf="@+id/viewEmptyLearn"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="0dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
