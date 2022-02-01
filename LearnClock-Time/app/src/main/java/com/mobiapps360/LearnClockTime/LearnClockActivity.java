@@ -204,6 +204,61 @@ public class LearnClockActivity extends AppCompatActivity {
                     }
                 });
 
+        btnSoundOnOffLearn.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN: {
+                        ((ImageButton) v).setAlpha((float) 0.5);
+                        break;
+                    }
+                    case MotionEvent.ACTION_UP: {
+                        ((ImageButton) v).setAlpha((float) 1.0);
+                        btnLearnClockBack.setVisibility(View.VISIBLE);
+                        if (sharedPreferences.contains(soundLearnActivity)) {
+                            getSoundFlag = sharedPreferences.getBoolean(soundLearnActivity, false);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            getSoundFlag = !getSoundFlag;
+                            editor.putBoolean(soundLearnActivity, getSoundFlag);
+                            editor.commit();
+                            if (getSoundFlag == true) {
+                                btnSoundOnOffLearn.setImageResource(R.mipmap.sound_on);
+                            } else {
+                                btnSoundOnOffLearn.setImageResource(R.mipmap.sound_off);
+                                if (player != null) {
+                                    player.stop();
+                                }
+                            }
+                        }
+                    }
+                }
+                return true;
+            }
+        });
+
+        btnLearnClockBack.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN: {
+                        ((ImageButton) v).setAlpha((float) 0.5);
+                        break;
+                    }
+                    case MotionEvent.ACTION_UP: {
+                        ((ImageButton) v).setAlpha((float) 1.0);
+                        btnLearnClockBack.setVisibility(View.VISIBLE);
+                        if (player != null) {
+                            player.stop();
+                            player.release();
+                        }
+                        LearnClockActivity.super.onBackPressed();
+                    }
+                }
+                return true;
+            }
+        });
+
+
         btnForward.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -266,33 +321,6 @@ public class LearnClockActivity extends AppCompatActivity {
                 return true;
             }
         });
-    }
-
-    public void backBtnClicked(View v) {
-        if (player != null) {
-            player.stop();
-            player.release();
-        }
-        LearnClockActivity.super.onBackPressed();
-    }
-
-    public void soundLearnClockONOffClicked(View v) {
-        Constant.xx = 15;
-        if (sharedPreferences.contains(soundLearnActivity)) {
-            getSoundFlag = sharedPreferences.getBoolean(soundLearnActivity, false);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            getSoundFlag = !getSoundFlag;
-            editor.putBoolean(soundLearnActivity, getSoundFlag);
-            editor.commit();
-            if (getSoundFlag == true) {
-                btnSoundOnOffLearn.setImageResource(R.mipmap.sound_on);
-            } else {
-                btnSoundOnOffLearn.setImageResource(R.mipmap.sound_off);
-                if (player != null) {
-                    player.stop();
-                }
-            }
-        }
     }
 
     public void playSound(String soundName) {

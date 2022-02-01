@@ -279,6 +279,8 @@ public class MainActivity extends AppCompatActivity {
     }
     public void guessTimeClicked(View v) {
         System.out.println("@@@@@@@@@@@@@@@guessTimeClicked clicked@@@@@@@@@@@");
+        Intent intent = new Intent(this, GuessTimeActivity.class);
+        startActivity(intent);
     }
     public void setTimeClicked(View v) {
         System.out.println("@@@@@@@@@@@@@@@setTimeClicked clicked@@@@@@@@@@@");
