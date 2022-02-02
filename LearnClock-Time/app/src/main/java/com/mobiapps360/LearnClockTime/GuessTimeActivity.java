@@ -173,9 +173,9 @@ public class GuessTimeActivity extends AppCompatActivity {
         cardStack.swipeTopCardRight(500);
     }
 
-    public void swipeLeftCardOnCorrectOptionClicked() {
-
-        cardStack.swipeTopCardLeft(500);
-    }
+//    public void swipeLeftCardOnCorrectOptionClicked() {
+//
+//        cardStack.swipeTopCardLeft(500);
+//    }
 
 }

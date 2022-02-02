@@ -66,8 +66,8 @@ public class DeckAdapter extends BaseAdapter {
         buttonGuessOption2 = v.findViewById(R.id.buttonGuessOption2);
         buttonGuessOption3 = v.findViewById(R.id.buttonGuessOption3);
         buttonGuessOption4 = v.findViewById(R.id.buttonGuessOption4);
-        guessClockView.setHour = 8;
-        guessClockView.setMinute = 10;
+        guessClockView.setHour = 10;
+        guessClockView.setMinute = 0;
 
 
         buttonGuessOption1.setOnTouchListener(new View.OnTouchListener() {
@@ -82,12 +82,14 @@ public class DeckAdapter extends BaseAdapter {
                     case MotionEvent.ACTION_UP: {
                         ((ImageButton) v).setAlpha((float) 1.0);
                         buttonGuessOption1.setImageResource(R.drawable.green_bubble);
+//                        GuessTimeActivity activity = (GuessTimeActivity) context;
+//                        activity.swipeRightCardOnCorrectOptionClicked();
                         final Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 GuessTimeActivity activity = (GuessTimeActivity) context;
-                                activity.swipeLeftCardOnCorrectOptionClicked();
+                                activity.swipeRightCardOnCorrectOptionClicked();
                             }
                         }, 500);
                         break;
@@ -124,7 +126,7 @@ public class DeckAdapter extends BaseAdapter {
                     case MotionEvent.ACTION_UP: {
                         ((ImageButton) v).setAlpha((float) 1.0);
                         GuessTimeActivity activity = (GuessTimeActivity) context;
-                        activity.swipeLeftCardOnCorrectOptionClicked();
+                        activity.swipeRightCardOnCorrectOptionClicked();
                     }
                 }
                 return true;
