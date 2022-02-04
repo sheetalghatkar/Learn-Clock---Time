@@ -132,6 +132,9 @@ public class GuessClockView extends View {
 
     public void setHourHand(double handPosition) {
         handPosition = handPosition * 5f;
+
+       // double multiplyer = (5 * setMinute) / 60;
+
         System.out.println("---handPosition hr----"+ handPosition);
         System.out.println("---Math.PI----"+ Math.PI);
 

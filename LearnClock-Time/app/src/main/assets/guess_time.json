@@ -1,5 +1,5 @@
 {"guess_time":[
-  {"hour":3, "minute":15,"options":["Half past 3", "Quarter to 3", "3 O'Clock", "Quarter past 3"], "answer":0},
+  {"hour":3, "minute":30,"options":["Half past 3", "Quarter to 3", "3 O'Clock", "Quarter past 3"], "answer":0},
   {"hour":10, "minute":0,"options":["10 minutes to 10", "11 O'Clock", "6 O'Clock", "10 O'Clock"], "answer":3},
   {"hour":12, "minute":15,"options":["12 O'Clock", "20 minutes to 12", "Quarter past 12", "Half past 12"], "answer":2},
   {"hour":2, "minute":45,"options":["10 minutes to 2", "Quarter to 3", "5 minutes to 2", "Quarter past 2"], "answer":1},
