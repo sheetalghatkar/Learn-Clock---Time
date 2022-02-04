@@ -49,8 +49,9 @@ public class GuessClockView extends View {
     }
 
     public void initClock() {
-        System.out.println("wwww" + getHeight());
-        System.out.println("hhhhh" + getWidth());
+        System.out.println("------------------------------------------------------");
+//        System.out.println("wwww" + getHeight());
+//        System.out.println("hhhhh" + getWidth());
         height = getHeight();
         width =  getWidth();
 //        height = 700;
@@ -72,25 +73,23 @@ public class GuessClockView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         if (!isInit) { initClock();
+        } else {
+            int min = Math.min(height, width);
+            radius = min / 2 - padding;
+            //paint = new Paint();
         }
         System.out.println("onDraw!!!!!");
         canvas1 = canvas;
-//        canvas1.drawColor(Color.parseColor("#f48adf"));
-                    System.out.println("--getWidth***"+width);
-            System.out.println("--getHeight***"+height);
-
-//        canvas1 = canvas;
-//        Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.minutehand);
-
-      //  canvas = canvas;
-        //  canvas.drawPath(hour,paint);
+//        System.out.println("--getWidth***"+width);
+//        System.out.println("--getHeight***"+height);
+       // drawNumeral();
         drawCircle();
         drawCircleBorder();
         drawCenter();
+        drawNumeral();
+
         drawMinuteMark();
 
-//        drawHands(canvas);
-        drawNumeral();
         setHourHand(setHour);
         setMinuteHand(setMinute);
     }
@@ -133,7 +132,11 @@ public class GuessClockView extends View {
 
     public void setHourHand(double handPosition) {
         handPosition = handPosition * 5f;
+        System.out.println("---handPosition hr----"+ handPosition);
+        System.out.println("---Math.PI----"+ Math.PI);
+
         double angle = Math.PI * handPosition / 30 - Math.PI / 2;
+        System.out.println("---angle Hour----"+ angle);
         int handRadius = radius - handTruncation - hourHandTruncation + 20;
         paint.setColor(getResources().getColor(android.R.color.black));
         paint.setStrokeWidth(15f);
@@ -144,7 +147,9 @@ public class GuessClockView extends View {
     }
 
     public void setMinuteHand(double handPosition) {
+        System.out.println("---handPosition minute----"+ handPosition);
         double angle = Math.PI * handPosition / 30 - Math.PI / 2;
+        System.out.println("---angle minute----"+ angle);
         int handRadius = radius - handTruncation - 10;
         paint.setColor(getResources().getColor(android.R.color.black));
         paint.setStrokeWidth(6f);
@@ -155,6 +160,7 @@ public class GuessClockView extends View {
     }
 
     public void drawNumeral() {
+        int fixedRadius = radius;
         paint.setTextSize(fontSize);
         radius = radius - 35;
         for (int number : numbers) {
@@ -162,54 +168,28 @@ public class GuessClockView extends View {
             paint.getTextBounds(tmp, 0, tmp.length(), rect);
             paint.setColor(Color.parseColor("#1891ff"));
             double angle = Math.PI / 6 * (number - 3);
-            radius = radius;
-            int x = (int) (getWidth() / 2 + Math.cos(angle) * (radius) - rect.width() / 2);
-            int y = (int) (getHeight() / 2 + Math.sin(angle) * (radius) + rect.height() / 2);
-//            paint.setShadowLayer(5.0f, 2.0f, 2.0f, 0xFF000000);
+            int x = (int) (width / 2 + Math.cos(angle) * (radius) - rect.width() / 2);
+            int y = (int) (height / 2 + Math.sin(angle) * (radius) + rect.height() / 2);
+            paint.setShadowLayer(5.0f, 2.0f, 2.0f, 0xFF000000);
             canvas1.drawText(tmp, x, y, paint);
         }
+        radius = fixedRadius;
     }
 
     public void drawMinuteMark() {
 
-//            System.out.println("------------------------------");
-//            System.out.println("--number***"+number);
-//            System.out.println("--angle***"+angle);
-//            System.out.println("--rect width***"+rect.width());
-//            System.out.println("--rect height***"+rect.height());
-//            System.out.println("--radius***"+radius);
-//            System.out.println("--getWidth***"+getWidth());
-//            System.out.println("--getHeight***"+getHeight());
-//            System.out.println("--cos***"+Math.cos(angle));
-//            System.out.println("--sin***"+Math.sin(angle));
-//
-//            int x = (int) (getWidth()  / 2 + Math.cos(angle) * (radius) - rect.width() / 2);
-//            int y = (int) (getHeight() / 2 + Math.sin(angle) * (radius) + rect.height() / 2);
-//            canvas.drawText(tmp, x , y , paint);
-//           /*  x = (int) (getWidth()  / 2 + Math.cos(angle) * (radius ) - rect.width() / 4.5);
-//             y = (int) (getHeight() / 2 + Math.sin(angle) * (radius) + rect.height() / 4.5);
-//            paint.setColor(Color.parseColor("#fd1494"));
-//            canvas.drawLine(x, y,
-//                    (float) (x + Math.cos(angle) * (25)),
-//                    (float) (y + Math.sin(angle) * (25)),
-//                    paint);*/
-////            canvas.drawLine(x, y,
-////                    (float) (x + Math.cos(angle) * (radius - 25)),
-////                    (float) (y + Math.sin(angle) *  (radius - 25)),
-////                    paint);
-//           // System.out.println("--radius---"+radius);
-////            System.out.println("Digit--"+tmp+"xx--"+String.valueOf( (x + Math.cos(angle) * (radius - 25)))+"yy--"+String.valueOf((y + Math.sin(angle) *  (radius - 25))));
-////            canvas.drawLine(x, y,
-////                    (float) (x + Math.cos(angle) * (radius - 25) - rect.width() / 2),
-////                    (float) (y + Math.sin(angle) *  (radius - 25) + rect.height() / 2),
-////                    paint);
-//        }
+            System.out.println("-------I am inside drawMinuteMark------------------");
+
+//        paint.getTextBounds("9", 0, "9".length(), rect);
+
         int tempradiusBigMark = radius - 10;
         int tempradiusSmallMark = radius + 5;
 
         for (int number : minutes) {
             String tmp = String.valueOf(number);
             double angle = Math.PI / 30 * (number - 1);
+
+            //big mark with diff of 5 ADDITIONAL  3- 6- 9-12 big mark
             if ((number == 6) || (number == 11)  || (number == 21) || (number == 26) || (number == 36) || (number == 41) || (number == 51) || (number == 56)) {
                 paint.setStrokeWidth(9f);
                 paint.setShadowLayer(4.0f, 0.0f, 2.0f, 0xFF000000);
@@ -224,13 +204,11 @@ public class GuessClockView extends View {
                 paint.setStrokeWidth(4f);
                 radius = tempradiusSmallMark;
             }
-
-//            paint.getTextBounds(tmp, 0, tmp.length(), rect);
-//            int x = (int) (getWidth()  / 2 + Math.cos(angle) * (radius) - rect.width() / 2);
-//            int y = (int) (getHeight() / 2 + Math.sin(angle) * (radius) + rect.height() / 2);
-//            canvas.drawText(tmp, x , y , paint);
-            int x = (int) (getWidth() / 2 + Math.cos(angle) * (radius) - rect.width() / 4.5);
-            int y = (int) (getHeight() / 2 + Math.sin(angle) * (radius) + rect.height() / 4.5);
+//w 1.93
+//h 2.195 var
+            //small mark with diff of 5
+            int x = (int) (width / 1.93 + Math.cos(angle) * (radius) - rect.width() / 4.5);
+            int y = (int) (height / 2.06 + Math.sin(angle) * (radius) + rect.height() / 4.5);
             paint.setColor(Color.parseColor("#fd1494"));
             int minuteMarkLength = 14;
             if ((number == 6) || (number == 11)  || (number == 21) || (number == 26) || (number == 36) || (number == 41) || (number == 51) || (number == 56)) {
@@ -245,7 +223,7 @@ public class GuessClockView extends View {
                     paint);
         }
 
-
+       // radius = fixedRadius;
     }
 
     public void drawCenter() {

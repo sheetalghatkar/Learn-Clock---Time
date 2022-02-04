@@ -18,25 +18,25 @@ public class DeckAdapter extends BaseAdapter {
 
     // on below line we have created variables
     // for our array list and context.
-    private ArrayList<CourseModal> courseData;
+    private ArrayList<GuessTimeItem> guessTimeData;
     private Context context;
 
     // on below line we have created constructor for our variables.
-    public DeckAdapter(ArrayList<CourseModal> courseData, Context context) {
-        this.courseData = courseData;
+    public DeckAdapter(ArrayList<GuessTimeItem> guessTimeData, Context context) {
+        this.guessTimeData = guessTimeData;
         this.context = context;
     }
 
     @Override
     public int getCount() {
         // in get count method we are returning the size of our array list.
-        return courseData.size();
+        return guessTimeData.size();
     }
 
     @Override
     public Object getItem(int position) {
         // in get item method we are returning the item from our array list.
-        return courseData.get(position);
+        return guessTimeData.get(position);
     }
 
     @Override
@@ -55,6 +55,12 @@ public class DeckAdapter extends BaseAdapter {
         ImageButton buttonGuessOption3;
         ImageButton buttonGuessOption4;
 
+        TextView txtViewOption1;
+        TextView txtViewOption2;
+        TextView txtViewOption3;
+        TextView txtViewOption4;
+
+
         if (v == null) {
             // on below line we are inflating our layout.
             v = LayoutInflater.from(parent.getContext()).inflate(R.layout.course_rv_item, parent, false);
@@ -66,8 +72,20 @@ public class DeckAdapter extends BaseAdapter {
         buttonGuessOption2 = v.findViewById(R.id.buttonGuessOption2);
         buttonGuessOption3 = v.findViewById(R.id.buttonGuessOption3);
         buttonGuessOption4 = v.findViewById(R.id.buttonGuessOption4);
-        guessClockView.setHour = 10;
-        guessClockView.setMinute = 0;
+
+        txtViewOption1 = v.findViewById(R.id.txtViewOption1);
+        txtViewOption2 = v.findViewById(R.id.txtViewOption2);
+        txtViewOption3 = v.findViewById(R.id.txtViewOption3);
+        txtViewOption4 = v.findViewById(R.id.txtViewOption4);
+
+        guessClockView.setHour = guessTimeData.get(position).hour;
+        guessClockView.setMinute = guessTimeData.get(position).minutes;
+
+
+        txtViewOption1.setText(guessTimeData.get(position).arrayOption.get(0));
+        txtViewOption2.setText(guessTimeData.get(position).arrayOption.get(1));
+        txtViewOption3.setText(guessTimeData.get(position).arrayOption.get(2));
+        txtViewOption4.setText(guessTimeData.get(position).arrayOption.get(3));
 
 
         buttonGuessOption1.setOnTouchListener(new View.OnTouchListener() {
@@ -76,23 +94,27 @@ public class DeckAdapter extends BaseAdapter {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN: {
                         ((ImageButton) v).setAlpha((float) 0.5);
-                        buttonGuessOption1.setImageResource(R.drawable.green_bubble);
+//                        buttonGuessOption1.setImageResource(R.drawable.green_bubble);
                         break;
                     }
                     case MotionEvent.ACTION_UP: {
                         ((ImageButton) v).setAlpha((float) 1.0);
-                        buttonGuessOption1.setImageResource(R.drawable.green_bubble);
-//                        GuessTimeActivity activity = (GuessTimeActivity) context;
-//                        activity.swipeRightCardOnCorrectOptionClicked();
-                        final Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                GuessTimeActivity activity = (GuessTimeActivity) context;
-                                activity.swipeRightCardOnCorrectOptionClicked();
-                            }
-                        }, 500);
-                        break;
+                        if (guessTimeData.get(position).getAnswer() == 0) {
+                            buttonGuessOption1.setImageResource(R.drawable.green_bubble);
+                            final Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    GuessTimeActivity activity = (GuessTimeActivity) context;
+                                    activity.swipeRightCardOnCorrectOptionClicked();
+                                }
+                            }, 500);
+                            break;
+                        } else {
+                            //buttonGuessOption1.setImageResource(R.drawable.red_bubble);
+                            buttonGuessOption1.setBackgroundResource(R.drawable.border_learn_view);
+
+                        }
                     }
                 }
                 return true;
@@ -108,8 +130,20 @@ public class DeckAdapter extends BaseAdapter {
                     }
                     case MotionEvent.ACTION_UP: {
                         ((ImageButton) v).setAlpha((float) 1.0);
-                        GuessTimeActivity activity = (GuessTimeActivity) context;
-                        activity.swipeRightCardOnCorrectOptionClicked();
+                        if (guessTimeData.get(position).getAnswer() == 1) {
+                            buttonGuessOption2.setImageResource(R.drawable.green_bubble);
+                            final Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    GuessTimeActivity activity = (GuessTimeActivity) context;
+                                    activity.swipeRightCardOnCorrectOptionClicked();
+                                }
+                            }, 500);
+                            break;
+                        } else {
+                            buttonGuessOption2.setImageResource(R.drawable.red_bubble);
+                        }
                     }
                 }
                 return true;
@@ -125,8 +159,20 @@ public class DeckAdapter extends BaseAdapter {
                     }
                     case MotionEvent.ACTION_UP: {
                         ((ImageButton) v).setAlpha((float) 1.0);
-                        GuessTimeActivity activity = (GuessTimeActivity) context;
-                        activity.swipeRightCardOnCorrectOptionClicked();
+                        if (guessTimeData.get(position).getAnswer() == 2) {
+                            buttonGuessOption3.setImageResource(R.drawable.green_bubble);
+                            final Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    GuessTimeActivity activity = (GuessTimeActivity) context;
+                                    activity.swipeRightCardOnCorrectOptionClicked();
+                                }
+                            }, 500);
+                            break;
+                        } else {
+                            buttonGuessOption3.setImageResource(R.drawable.red_bubble);
+                        }
                     }
                 }
                 return true;
@@ -142,8 +188,20 @@ public class DeckAdapter extends BaseAdapter {
                     }
                     case MotionEvent.ACTION_UP: {
                         ((ImageButton) v).setAlpha((float) 1.0);
-                        GuessTimeActivity activity = (GuessTimeActivity) context;
-                        activity.swipeRightCardOnCorrectOptionClicked();
+                        if (guessTimeData.get(position).getAnswer() == 3) {
+                            buttonGuessOption4.setImageResource(R.drawable.green_bubble);
+                            final Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    GuessTimeActivity activity = (GuessTimeActivity) context;
+                                    activity.swipeRightCardOnCorrectOptionClicked();
+                                }
+                            }, 500);
+                            break;
+                        } else {
+                            buttonGuessOption4.setImageResource(R.drawable.red_bubble);
+                        }
                     }
                 }
                 return true;

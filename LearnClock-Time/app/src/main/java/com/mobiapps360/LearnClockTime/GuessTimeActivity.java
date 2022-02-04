@@ -29,6 +29,7 @@ public class GuessTimeActivity extends AppCompatActivity {
     Boolean getSoundFlag = true;
     private SwipeDeck swipe_deck;
     private ImageView imgViewWallPaper;
+    public static ArrayList<GuessTimeItem>  guessTimeDataArray;
 
     //Declare variables
     MediaPlayer player;
@@ -66,6 +67,9 @@ public class GuessTimeActivity extends AppCompatActivity {
 //        ViewCompat.setTranslationZ(imgViewWallPaper,10);
         ViewCompat.setTranslationZ(swipe_deck, 15);
 
+
+
+
         // on below line we are adding data to our array list.
         courseModalArrayList.add(new CourseModal("C++", "30 days", "20 Tracks", "C++ Self Paced Course", R.drawable.learn_clock_1));
         courseModalArrayList.add(new CourseModal("Java", "30 days", "20 Tracks", "Java Self Paced Course", R.drawable.learn_clock_1));
@@ -74,7 +78,7 @@ public class GuessTimeActivity extends AppCompatActivity {
         courseModalArrayList.add(new CourseModal("PHP", "30 days", "20 Tracks", "PHP Self Paced Course", R.drawable.learn_clock_1));
 
         // on below line we are creating a variable for our adapter class and passing array list to it.
-        final DeckAdapter adapter = new DeckAdapter(courseModalArrayList, this);
+        final DeckAdapter adapter = new DeckAdapter(MainActivity.guessTimeDataArray, this);
         /// cardStack.layoutManager = CardStackLayoutManager();
         // on below line we are setting adapter to our card stack.
         cardStack.setAdapter(adapter);

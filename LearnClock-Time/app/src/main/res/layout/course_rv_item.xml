@@ -63,6 +63,20 @@
                     android:scaleType="fitXY"
                     android:src="@drawable/white_bubble" />
 
+                <TextView
+                    android:id="@+id/txtViewOption1"
+                    android:layout_width="160dp"
+                    android:layout_height="55dp"
+                    android:gravity="center"
+                    android:text="TextView"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/buttonGuessOption1"
+                    app:layout_constraintEnd_toEndOf="@+id/buttonGuessOption1"
+                    app:layout_constraintStart_toStartOf="@+id/buttonGuessOption1"
+                    app:layout_constraintTop_toTopOf="@+id/buttonGuessOption1" />
+
             </androidx.cardview.widget.CardView>
 
 
@@ -84,6 +98,22 @@
                     android:background="@null"
                     android:scaleType="fitXY"
                     android:src="@drawable/white_bubble" />
+
+                <TextView
+                    android:id="@+id/txtViewOption2"
+                    android:layout_width="160dp"
+                    android:layout_height="55dp"
+                    android:gravity="center"
+                    android:text="TextView"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/buttonGuessOption2"
+                    app:layout_constraintEnd_toEndOf="@+id/buttonGuessOption2"
+                    app:layout_constraintStart_toStartOf="@+id/buttonGuessOption2"
+                    app:layout_constraintTop_toTopOf="@+id/buttonGuessOption2" />
+
+
             </androidx.cardview.widget.CardView>
 
 
@@ -115,6 +145,20 @@
                     android:background="@null"
                     android:scaleType="fitXY"
                     android:src="@drawable/white_bubble" />
+
+                <TextView
+                    android:id="@+id/txtViewOption3"
+                    android:layout_width="160dp"
+                    android:layout_height="55dp"
+                    android:gravity="center"
+                    android:text="TextView"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/buttonGuessOption3"
+                    app:layout_constraintEnd_toEndOf="@+id/buttonGuessOption3"
+                    app:layout_constraintStart_toStartOf="@+id/buttonGuessOption3"
+                    app:layout_constraintTop_toTopOf="@+id/buttonGuessOption3" />
             </androidx.cardview.widget.CardView>
 
 
@@ -136,6 +180,20 @@
                     android:background="@null"
                     android:scaleType="fitXY"
                     android:src="@drawable/white_bubble" />
+
+                <TextView
+                    android:id="@+id/txtViewOption4"
+                    android:layout_width="160dp"
+                    android:layout_height="55dp"
+                    android:gravity="center"
+                    android:text="TextView"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/buttonGuessOption4"
+                    app:layout_constraintEnd_toEndOf="@+id/buttonGuessOption4"
+                    app:layout_constraintStart_toStartOf="@+id/buttonGuessOption4"
+                    app:layout_constraintTop_toTopOf="@+id/buttonGuessOption4" />
             </androidx.cardview.widget.CardView>
 
         </LinearLayout>

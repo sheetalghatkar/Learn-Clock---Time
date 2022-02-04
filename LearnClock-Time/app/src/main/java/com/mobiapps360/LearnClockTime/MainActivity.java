@@ -41,6 +41,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
@@ -52,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imgViewBottom;
     private ImageView imgViewWallBg;
     MediaPlayer player;
+    public static ArrayList<GuessTimeItem>  guessTimeDataArray;
     public static SharedPreferences sharedPreferences = null;
     public static final String myPreferences = "myPref";
     public static final String soundHomeActivity = "soundHomeActivityKey";
@@ -96,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
             btnImgHomeSound.setImageResource(R.mipmap.sound_on);
             playSound();
         }
+        guessTimeDataArray = parseGuessTimeArray("guess_time");
 
         viewSettingBg.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -382,5 +393,68 @@ public class MainActivity extends AppCompatActivity {
             player.stop();
         }
         // Log.i("eerrr","onStop########");
+    }
+
+    public ArrayList parseGuessTimeArray(String fileName) {
+        System.out.println("parseGuessTimeArray****");
+
+        String strJson = null;
+        ArrayList<GuessTimeItem> guessTimeDataArray;
+        guessTimeDataArray = new ArrayList<>();
+
+        try {
+            strJson = readFile(fileName+".json");
+
+            String data = "";
+            try {
+
+                // Create the root JSONObject from the JSON string.
+                JSONObject jsonRootObject = new JSONObject(strJson);
+                //Get the instance of JSONArray that contains JSONObjects
+                JSONArray jsonArray = jsonRootObject.optJSONArray(fileName);
+                System.out.println("jsonArray#####"+jsonArray);
+
+                //Iterate the jsonArray and print the info of JSONObjects
+                for(int i=0; i < jsonArray.length(); i++){
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    try {
+                            //  System.out.println("jsonObject#####"+jsonObject);
+                            JSONArray jOptions = jsonObject.getJSONArray("options");
+                            ArrayList<String> listOptions = new ArrayList<String>();
+                            for (int iCnt=0; iCnt<jOptions.length(); iCnt++) {
+
+                                if (jOptions.length() != 0) {
+                                    listOptions.add(jOptions.getString(iCnt));
+                                }
+                            }
+                            GuessTimeItem guessTimeItem = new GuessTimeItem(jsonObject.getInt("hour"), jsonObject.getInt("minute"), listOptions,jsonObject.getInt("answer"));
+                             System.out.println("guessTimeItem!!!!!"+guessTimeItem);
+                            //  System.out.println("yyyyyyy"+quizItem.arrayCaption);
+                            guessTimeDataArray.add(guessTimeItem);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                System.out.println("----guessTimeDataArray---"+guessTimeDataArray);
+                return guessTimeDataArray;
+            } catch (JSONException e) {e.printStackTrace();}
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return guessTimeDataArray;
+    }
+
+    public String readFile(String fileName) throws IOException
+    {
+        BufferedReader reader = null;
+        reader = new BufferedReader(new InputStreamReader(getAssets().open(fileName), "UTF-8"));
+
+        String content = "";
+        String line;
+        while ((line = reader.readLine()) != null)
+        {
+            content = content + line;
+        }
+        return content;
     }
 }
