@@ -80,18 +80,16 @@ public class GuessClockView extends View {
         }
         System.out.println("onDraw!!!!!");
         canvas1 = canvas;
-//        System.out.println("--getWidth***"+width);
-//        System.out.println("--getHeight***"+height);
-       // drawNumeral();
+
         drawCircle();
-        drawCircleBorder();
-        drawCenter();
         drawNumeral();
+        drawCircleBorder();
 
         drawMinuteMark();
 
         setHourHand(setHour);
         setMinuteHand(setMinute);
+        drawCenter();
     }
 
     public void drawHand(Canvas canvas, double loc, boolean isHour) {
@@ -131,18 +129,59 @@ public class GuessClockView extends View {
 //    }
 
     public void setHourHand(double handPosition) {
+//        handPosition = handPosition * 5f;
+
+        float multiplyer = (float) ((5f * setMinute) / 60.0);
         handPosition = handPosition * 5f;
-
-       // double multiplyer = (5 * setMinute) / 60;
-
-        System.out.println("---handPosition hr----"+ handPosition);
-        System.out.println("---Math.PI----"+ Math.PI);
+        handPosition = handPosition + multiplyer;
+//        System.out.println("---multiplyer hr----"+ multiplyer);
+//        System.out.println("---handPosition----"+ handPosition);
 
         double angle = Math.PI * handPosition / 30 - Math.PI / 2;
-        System.out.println("---angle Hour----"+ angle);
-        int handRadius = radius - handTruncation - hourHandTruncation + 20;
-        paint.setColor(getResources().getColor(android.R.color.black));
-        paint.setStrokeWidth(15f);
+     //   System.out.println("---angle Hour----"+ angle);
+        int handRadius = radius - handTruncation - hourHandTruncation - 15;
+//        handRadius = handRadius - 25;
+        paint.setStrokeWidth(20f);
+        System.out.println("---handRadius----"+ handRadius);
+        System.out.println("---setMinuteHand drawLine- W---"+ getWidth() / 2);
+        System.out.println("---setMinuteHand drawLine- H---"+ getHeight() / 2);
+
+        System.out.println("---stop x drawLine----"+ (float) (getWidth() / 2 + Math.cos(angle) * handRadius));
+        System.out.println("---stop y drawLine----"+ (float) (getHeight() / 2 + Math.sin(angle) * handRadius));
+
+
+
+//        canvas1.drawLine(getWidth() / 2, getHeight() / 2,
+//                447,
+//                300,
+//                paint);
+
+//        paint.setStrokeCap(Paint.Cap.ROUND);
+//        paint.setColor(getResources().getColor(android.R.color.black));
+//
+//        canvas1.drawLine(getWidth() / 2, 100,
+//                447,
+//                341,
+//                paint);
+//        paint.setColor(getResources().getColor(android.R.color.black));
+//        canvas1.drawLine(getWidth() / 2, getHeight() / 2,
+//                (float) (getWidth() / 2 + Math.cos(angle) * handRadius),
+//                (float) (getHeight() / 2 + Math.sin(angle) * handRadius),
+//                paint);
+
+
+        paint.setStrokeCap(Paint.Cap.ROUND);
+            paint.setColor(getResources().getColor(android.R.color.black));
+
+
+        canvas1.drawLine(getWidth() / 2, getHeight() / 2,
+                (float) (getWidth() / 2 + Math.cos(angle) * handRadius),
+                (float) (getHeight() / 2 + Math.sin(angle) * handRadius),
+                paint);
+
+
+        paint.setColor(Color.parseColor("#FFAA1D"));
+        handRadius = 35;
         canvas1.drawLine(getWidth() / 2, getHeight() / 2,
                 (float) (getWidth() / 2 + Math.cos(angle) * handRadius),
                 (float) (getHeight() / 2 + Math.sin(angle) * handRadius),
@@ -150,16 +189,29 @@ public class GuessClockView extends View {
     }
 
     public void setMinuteHand(double handPosition) {
-        System.out.println("---handPosition minute----"+ handPosition);
+      //  System.out.println("---handPosition minute----"+ handPosition);
         double angle = Math.PI * handPosition / 30 - Math.PI / 2;
-        System.out.println("---angle minute----"+ angle);
-        int handRadius = radius - handTruncation - 10;
+       // System.out.println("---angle minute----"+ angle);
+        int handRadius = radius - handTruncation - 45;
+
+        paint.setStrokeWidth(15f);
+
+        paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setColor(getResources().getColor(android.R.color.black));
-        paint.setStrokeWidth(6f);
+
         canvas1.drawLine(getWidth() / 2, getHeight() / 2,
                 (float) (getWidth() / 2 + Math.cos(angle) * handRadius),
                 (float) (getHeight() / 2 + Math.sin(angle) * handRadius),
                 paint);
+
+        paint.setColor(Color.parseColor("#FFAA1D"));
+        handRadius = 80;
+
+        canvas1.drawLine(getWidth() / 2, getHeight() / 2,
+                (float) (getWidth() / 2 + Math.cos(angle) * handRadius),
+                (float) (getHeight() / 2 + Math.sin(angle) * handRadius),
+                paint);
+
     }
 
     public void drawNumeral() {

@@ -49,6 +49,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imgViewWallBg;
     MediaPlayer player;
     public static ArrayList<GuessTimeItem>  guessTimeDataArray;
+    public static ArrayList<GuessTimeItem>  guessTimeFinalArray;
     public static SharedPreferences sharedPreferences = null;
     public static final String myPreferences = "myPref";
     public static final String soundHomeActivity = "soundHomeActivityKey";
@@ -290,6 +292,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void guessTimeClicked(View v) {
         System.out.println("@@@@@@@@@@@@@@@guessTimeClicked clicked@@@@@@@@@@@");
+        guessTimeFinalArray = createRandomTimeArray();
         Intent intent = new Intent(this, GuessTimeActivity.class);
         startActivity(intent);
     }
@@ -394,6 +397,26 @@ public class MainActivity extends AppCompatActivity {
         }
         // Log.i("eerrr","onStop########");
     }
+    public ArrayList<GuessTimeItem> createRandomTimeArray() {
+        int maxCount = guessTimeDataArray.size();
+        guessTimeFinalArray =  new ArrayList<GuessTimeItem>();
+        ArrayList<Integer> selectedArrayOfIndex = new ArrayList<Integer>();
+        for (int i = 0; i < maxCount; i++) {
+
+            Boolean isQuestionSelected = false;
+            do {
+                Random rand = new Random();
+                int random = rand.nextInt(maxCount);
+                if (!(selectedArrayOfIndex.contains(random))) {
+                    selectedArrayOfIndex.add(random);
+                    guessTimeFinalArray.add(guessTimeDataArray.get(random));
+                    isQuestionSelected = true;
+                }
+
+            } while (!isQuestionSelected);
+        }
+        return guessTimeFinalArray;
+    }
 
     public ArrayList parseGuessTimeArray(String fileName) {
         System.out.println("parseGuessTimeArray****");
@@ -428,7 +451,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                             GuessTimeItem guessTimeItem = new GuessTimeItem(jsonObject.getInt("hour"), jsonObject.getInt("minute"), listOptions,jsonObject.getInt("answer"));
-                             System.out.println("guessTimeItem!!!!!"+guessTimeItem);
+                            System.out.println("guessTimeItem!!!!!"+guessTimeItem);
                             //  System.out.println("yyyyyyy"+quizItem.arrayCaption);
                             guessTimeDataArray.add(guessTimeItem);
                     } catch (JSONException e) {

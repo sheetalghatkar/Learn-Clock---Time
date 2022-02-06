@@ -51,7 +51,6 @@
                 android:layout_height="55dp"
                 android:layout_gravity="center"
                 android:layout_margin="5dp"
-                android:foreground="@drawable/border_option_guess"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="5dp">
 
@@ -86,7 +85,6 @@
                 android:layout_height="55dp"
                 android:layout_gravity="center"
                 android:layout_margin="5dp"
-                android:foreground="@drawable/border_option_guess"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="5dp">
 
@@ -133,7 +131,6 @@
                 android:layout_height="55dp"
                 android:layout_gravity="center"
                 android:layout_margin="5dp"
-                android:foreground="@drawable/border_option_guess"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="5dp">
 
@@ -168,7 +165,6 @@
                 android:layout_height="55dp"
                 android:layout_gravity="center"
                 android:layout_margin="5dp"
-                android:foreground="@drawable/border_option_guess"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="5dp">
 

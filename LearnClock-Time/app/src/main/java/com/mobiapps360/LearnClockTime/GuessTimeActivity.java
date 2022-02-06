@@ -78,7 +78,7 @@ public class GuessTimeActivity extends AppCompatActivity {
         courseModalArrayList.add(new CourseModal("PHP", "30 days", "20 Tracks", "PHP Self Paced Course", R.drawable.learn_clock_1));
 
         // on below line we are creating a variable for our adapter class and passing array list to it.
-        final DeckAdapter adapter = new DeckAdapter(MainActivity.guessTimeDataArray, this);
+        final DeckAdapter adapter = new DeckAdapter(MainActivity.guessTimeFinalArray, this);
         /// cardStack.layoutManager = CardStackLayoutManager();
         // on below line we are setting adapter to our card stack.
         cardStack.setAdapter(adapter);

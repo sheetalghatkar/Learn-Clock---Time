@@ -2,6 +2,7 @@ package com.mobiapps360.LearnClockTime;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -11,6 +12,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.cardview.widget.CardView;
 
 import java.util.ArrayList;
 
@@ -60,6 +63,11 @@ public class DeckAdapter extends BaseAdapter {
         TextView txtViewOption3;
         TextView txtViewOption4;
 
+        CardView cardViewOption1;
+        CardView cardViewOption2;
+        CardView cardViewOption3;
+        CardView cardViewOption4;
+
 
         if (v == null) {
             // on below line we are inflating our layout.
@@ -77,6 +85,11 @@ public class DeckAdapter extends BaseAdapter {
         txtViewOption2 = v.findViewById(R.id.txtViewOption2);
         txtViewOption3 = v.findViewById(R.id.txtViewOption3);
         txtViewOption4 = v.findViewById(R.id.txtViewOption4);
+
+        cardViewOption1 = v.findViewById(R.id.cardViewOption1);
+        cardViewOption2 = v.findViewById(R.id.cardViewOption2);
+        cardViewOption3 = v.findViewById(R.id.cardViewOption3);
+        cardViewOption4 = v.findViewById(R.id.cardViewOption4);
 
         guessClockView.setHour = guessTimeData.get(position).hour;
         guessClockView.setMinute = guessTimeData.get(position).minutes;
@@ -111,8 +124,9 @@ public class DeckAdapter extends BaseAdapter {
                             }, 500);
                             break;
                         } else {
-                            //buttonGuessOption1.setImageResource(R.drawable.red_bubble);
-                            buttonGuessOption1.setBackgroundResource(R.drawable.border_learn_view);
+                            buttonGuessOption1.setImageResource(R.drawable.red_bubble);
+
+//                            buttonGuessOption1.setBackgroundResource(R.drawable.border_learn_view);
 
                         }
                     }
