@@ -1,60 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:id="@+id/learnActivityLayout"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:background="@color/cardview_shadow_start_color"
-tools:context=".GuessTimeActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/learnActivityLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/cardview_shadow_start_color"
+    tools:context=".GuessTimeActivity">
 
-<ImageView
-    android:id="@+id/guessTimeWallImage"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:scaleType="fitXY"
-    android:src="@mipmap/homebg"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+    <ImageView
+        android:id="@+id/guessTimeWallImage"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scaleType="fitXY"
+        android:src="@mipmap/homebg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-<ImageButton
-    android:id="@+id/btnGuessTimeBack"
-    android:layout_width="50dp"
-    android:layout_height="50dp"
-    android:layout_marginStart="10dp"
-    android:layout_marginLeft="10dp"
-    android:layout_marginTop="12dp"
-    android:background="@null"
-    android:scaleType="fitCenter"
-    android:src="@mipmap/home_icon"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
-
-
-<ImageButton
-    android:id="@+id/btnSoundGuessTimeOnOff"
-    android:layout_width="37dp"
-    android:layout_height="37dp"
-    android:layout_marginTop="20dp"
-    android:layout_marginEnd="15dp"
-    android:layout_marginRight="15dp"
-    android:background="@null"
-    android:scaleType="fitCenter"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:srcCompat="@mipmap/sound_on" />
+    <ImageButton
+        android:id="@+id/btnGuessTimeBack"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="12dp"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        android:src="@mipmap/home_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
+    <ImageButton
+        android:id="@+id/btnSoundGuessTimeOnOff"
+        android:layout_width="37dp"
+        android:layout_height="37dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        android:src="@mipmap/home_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <com.daprlabs.cardstack.SwipeFrameLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+
+    <View
+        android:id="@+id/dividerGuessTime"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageViewLoaderGif"
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:background="@null"
+        android:scaleType="fitXY"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/imageViewStartGif"
+        app:srcCompat="@mipmap/sound_on" />
+
+    <ImageView
+        android:id="@+id/imageViewStartGif"
+        android:layout_width="180dp"
+        android:layout_height="60dp"
+        android:background="@null"
+        android:scaleType="fitXY"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/dividerGuessTime"
+        app:srcCompat="@mipmap/sound_on" />
+
+
+    <ImageView
+        android:id="@+id/imageViewAgainGif"
+        android:layout_width="150dp"
+        android:layout_height="60dp"
+        android:background="@null"
+        android:scaleType="fitXY"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dividerGuessTime"
+        app:srcCompat="@mipmap/sound_on" />
+
+    <com.daprlabs.cardstack.SwipeFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:swipedeck="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:paddingTop="0dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
 
         <com.daprlabs.cardstack.SwipeDeck
@@ -62,20 +104,17 @@ tools:context=".GuessTimeActivity">
             android:layout_width="match_parent"
             android:layout_height="550dp"
             android:paddingStart="15dp"
-            android:paddingEnd="15dp"
             android:paddingTop="100dp"
+            android:paddingEnd="15dp"
             swipedeck:card_spacing="10dp"
             swipedeck:max_visible="3"
-            swipedeck:render_below ="false"
-            swipedeck:render_above ="false"
-            swipedeck:rotation_degrees="15"
-            swipedeck:opacity_end="0.33"/>
+            swipedeck:opacity_end="0.33"
+            swipedeck:render_above="false"
+            swipedeck:render_below="false"
+            swipedeck:rotation_degrees="15" />
 
 
     </com.daprlabs.cardstack.SwipeFrameLayout>
-
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

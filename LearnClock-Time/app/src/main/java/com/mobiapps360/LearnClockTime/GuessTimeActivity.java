@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import com.bumptech.glide.Glide;
 import com.daprlabs.cardstack.SwipeDeck;
 
 public class GuessTimeActivity extends AppCompatActivity {
@@ -29,6 +30,10 @@ public class GuessTimeActivity extends AppCompatActivity {
     Boolean getSoundFlag = true;
     private SwipeDeck swipe_deck;
     private ImageView imgViewWallPaper;
+    private ImageView imageViewStartGif;
+    private ImageView imageViewAgainGif;
+    private ImageView imageViewLoaderGif;
+
     public static ArrayList<GuessTimeItem>  guessTimeDataArray;
 
     //Declare variables
@@ -44,6 +49,9 @@ public class GuessTimeActivity extends AppCompatActivity {
         btnSoundGuessTimeOnOff = findViewById(R.id.btnSoundGuessTimeOnOff);
         btnGuessTimeBack = findViewById(R.id.btnGuessTimeBack);
         swipe_deck = findViewById(R.id.swipe_deck);
+        imageViewStartGif = findViewById(R.id.imageViewStartGif);
+        imageViewAgainGif = findViewById(R.id.imageViewAgainGif);
+        imageViewLoaderGif = findViewById(R.id.imageViewLoaderGif);
         imgViewWallPaper = findViewById(R.id.guessTimeWallImage);
         sharedPreferences = getSharedPreferences(myPreferences, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -67,6 +75,11 @@ public class GuessTimeActivity extends AppCompatActivity {
 //        ViewCompat.setTranslationZ(imgViewWallPaper,10);
         ViewCompat.setTranslationZ(swipe_deck, 15);
 
+        Glide.with(this).load(R.drawable.starting).into(imageViewStartGif);
+        Glide.with(this).load(R.drawable.again).into(imageViewAgainGif);
+        Glide.with(this).load(R.drawable.preloader).into(imageViewLoaderGif);
+
+
 
 
 
@@ -88,31 +101,33 @@ public class GuessTimeActivity extends AppCompatActivity {
             @Override
             public void cardSwipedLeft(int position) {
                 // on card swipe left we are displaying a toast message.
-                Toast.makeText(GuessTimeActivity.this, "", Toast.LENGTH_SHORT).show();
+             //   Toast.makeText(GuessTimeActivity.this, "", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void cardSwipedRight(int position) {
                 // on card swiped to right we are displaying a toast message.
-                Toast.makeText(GuessTimeActivity.this, "", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(GuessTimeActivity.this, "", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void cardsDepleted() {
                 // this method is called when no card is present
-                Toast.makeText(GuessTimeActivity.this, "", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(GuessTimeActivity.this, "", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void cardActionDown() {
                 // this method is called when card is swiped down.
-                Log.i("TAG", "CARDS MOVED DOWN");
+                 Toast.makeText(GuessTimeActivity.this, "CARDS MOVED DOWN", Toast.LENGTH_SHORT).show();
+
+                //  Log.i("TAG", "CARDS MOVED DOWN");
             }
 
             @Override
             public void cardActionUp() {
                 // this method is called when card is moved up.
-                Log.i("TAG", "CARDS MOVED UP");
+               // Log.i("TAG", "CARDS MOVED UP");
             }
         });
 

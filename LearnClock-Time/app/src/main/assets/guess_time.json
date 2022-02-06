@@ -57,7 +57,7 @@
   {"hour":12, "minute":10,"options":["10 minutes past 12", "Quarter to 12", "Quarter past 12", "10 minutes to 12"], "answer":0},
   {"hour":3, "minute":25,"options":["25 minutes past 4", "25 minutes past 9", "25 minutes past 10", "25 minutes past 3"], "answer":3},
   {"hour":7, "minute":40,"options":["20 minutes past 7", "20 minutes to 8", "20 minutes to 7", "20 minutes past 8"], "answer":1},
-  {"hour":9, "minute":50,"options":["10 minutes to 9", "Quarter to 10", "10 minutes to 10", "9 O'Clock"], "answer":2},
+  {"hour":9, "minute":50,"options":["20 minutes to 10", "Quarter to 10", "10 minutes to 10", "9 O'Clock"], "answer":2},
   {"hour":6, "minute":20,"options":["20 minutes past 7", "Quarter past 6", "20 minutes past 6", "10 minutes past 6"], "answer":2},
   {"hour":11, "minute":35,"options":["25 minutes to 12", "20 minutes to 12", "Half past 11", "11 O'Clock"], "answer":0},
   {"hour":10, "minute":55,"options":["5 minutes to 10", "5 minutes to 11", "5 minutes to 12", "5 minutes to 9"], "answer":1},
