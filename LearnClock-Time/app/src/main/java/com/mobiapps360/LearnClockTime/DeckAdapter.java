@@ -100,6 +100,7 @@ public class DeckAdapter extends BaseAdapter {
         txtViewOption3.setText(guessTimeData.get(position).arrayOption.get(2));
         txtViewOption4.setText(guessTimeData.get(position).arrayOption.get(3));
 
+        GuessTimeActivity activity = (GuessTimeActivity) context;
 
         buttonGuessOption1.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -114,6 +115,7 @@ public class DeckAdapter extends BaseAdapter {
                         ((ImageButton) v).setAlpha((float) 1.0);
                         if (guessTimeData.get(position).getAnswer() == 0) {
                             buttonGuessOption1.setImageResource(R.drawable.green_bubble);
+                            activity.playSoundGuessTime("excellent");
                             final Handler handler = new Handler();
                             handler.postDelayed(new Runnable() {
                                 @Override
@@ -121,9 +123,10 @@ public class DeckAdapter extends BaseAdapter {
                                     GuessTimeActivity activity = (GuessTimeActivity) context;
                                     activity.swipeRightCardOnCorrectOptionClicked();
                                 }
-                            }, 500);
+                            }, 1000);
                             break;
                         } else {
+                            activity.playSoundGuessTime("wrong_beep");
                             buttonGuessOption1.setImageResource(R.drawable.red_bubble);
 
 //                            buttonGuessOption1.setBackgroundResource(R.drawable.border_learn_view);
@@ -146,6 +149,7 @@ public class DeckAdapter extends BaseAdapter {
                         ((ImageButton) v).setAlpha((float) 1.0);
                         if (guessTimeData.get(position).getAnswer() == 1) {
                             buttonGuessOption2.setImageResource(R.drawable.green_bubble);
+                            activity.playSoundGuessTime("great_job");
                             final Handler handler = new Handler();
                             handler.postDelayed(new Runnable() {
                                 @Override
@@ -153,9 +157,10 @@ public class DeckAdapter extends BaseAdapter {
                                     GuessTimeActivity activity = (GuessTimeActivity) context;
                                     activity.swipeRightCardOnCorrectOptionClicked();
                                 }
-                            }, 500);
+                            }, 1000);
                             break;
                         } else {
+                            activity.playSoundGuessTime("wrong_beep");
                             buttonGuessOption2.setImageResource(R.drawable.red_bubble);
                         }
                     }
@@ -175,6 +180,7 @@ public class DeckAdapter extends BaseAdapter {
                         ((ImageButton) v).setAlpha((float) 1.0);
                         if (guessTimeData.get(position).getAnswer() == 2) {
                             buttonGuessOption3.setImageResource(R.drawable.green_bubble);
+                            activity.playSoundGuessTime("perfect");
                             final Handler handler = new Handler();
                             handler.postDelayed(new Runnable() {
                                 @Override
@@ -182,9 +188,10 @@ public class DeckAdapter extends BaseAdapter {
                                     GuessTimeActivity activity = (GuessTimeActivity) context;
                                     activity.swipeRightCardOnCorrectOptionClicked();
                                 }
-                            }, 500);
+                            }, 1000);
                             break;
                         } else {
+                            activity.playSoundGuessTime("wrong_beep");
                             buttonGuessOption3.setImageResource(R.drawable.red_bubble);
                         }
                     }
@@ -204,6 +211,7 @@ public class DeckAdapter extends BaseAdapter {
                         ((ImageButton) v).setAlpha((float) 1.0);
                         if (guessTimeData.get(position).getAnswer() == 3) {
                             buttonGuessOption4.setImageResource(R.drawable.green_bubble);
+                            activity.playSoundGuessTime("well_done");
                             final Handler handler = new Handler();
                             handler.postDelayed(new Runnable() {
                                 @Override
@@ -211,10 +219,11 @@ public class DeckAdapter extends BaseAdapter {
                                     GuessTimeActivity activity = (GuessTimeActivity) context;
                                     activity.swipeRightCardOnCorrectOptionClicked();
                                 }
-                            }, 500);
+                            }, 1000);
                             break;
                         } else {
                             buttonGuessOption4.setImageResource(R.drawable.red_bubble);
+                            activity.playSoundGuessTime("wrong_beep");
                         }
                     }
                 }

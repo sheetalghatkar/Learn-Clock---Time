@@ -88,19 +88,19 @@ public class GuessTimeActivity extends AppCompatActivity {
             @Override
             public void cardSwipedLeft(int position) {
                 // on card swipe left we are displaying a toast message.
-                Toast.makeText(GuessTimeActivity.this, "Card Swiped Left", Toast.LENGTH_SHORT).show();
+                Toast.makeText(GuessTimeActivity.this, "", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void cardSwipedRight(int position) {
                 // on card swiped to right we are displaying a toast message.
-                Toast.makeText(GuessTimeActivity.this, "Card Swiped Right", Toast.LENGTH_SHORT).show();
+                Toast.makeText(GuessTimeActivity.this, "", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void cardsDepleted() {
                 // this method is called when no card is present
-                Toast.makeText(GuessTimeActivity.this, "No more courses present", Toast.LENGTH_SHORT).show();
+                Toast.makeText(GuessTimeActivity.this, "", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -177,9 +177,28 @@ public class GuessTimeActivity extends AppCompatActivity {
         cardStack.swipeTopCardRight(500);
     }
 
-//    public void swipeLeftCardOnCorrectOptionClicked() {
-//
-//        cardStack.swipeTopCardLeft(500);
-//    }
+
+    public void playSoundGuessTime(String soundName) {
+        System.out.println("playSound clicked ---------" + soundName);
+        if (MainActivity.sharedPreferences.getBoolean(soundLearnActivity, false)) {
+            if (player != null) {
+                player.stop();
+            }
+            int idSoundBg = getApplicationContext().getResources().getIdentifier("com.mobiapps360.LearnClockTime:raw/" + soundName, null, null);
+            player = MediaPlayer.create(getBaseContext(), idSoundBg);
+            //   player.setVolume(0.0f, 0.0f);
+            player.start();
+
+
+            player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+
+                }
+            });
+        }
+
+    }
 
 }

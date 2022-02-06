@@ -47,7 +47,7 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardViewOption1"
-                android:layout_width="160dp"
+                android:layout_width="165dp"
                 android:layout_height="55dp"
                 android:layout_gravity="center"
                 android:layout_margin="5dp"
@@ -64,7 +64,7 @@
 
                 <TextView
                     android:id="@+id/txtViewOption1"
-                    android:layout_width="160dp"
+                    android:layout_width="165dp"
                     android:layout_height="55dp"
                     android:gravity="center"
                     android:text="TextView"
@@ -81,7 +81,7 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardViewOption2"
-                android:layout_width="160dp"
+                android:layout_width="165dp"
                 android:layout_height="55dp"
                 android:layout_gravity="center"
                 android:layout_margin="5dp"
@@ -99,7 +99,7 @@
 
                 <TextView
                     android:id="@+id/txtViewOption2"
-                    android:layout_width="160dp"
+                    android:layout_width="165dp"
                     android:layout_height="55dp"
                     android:gravity="center"
                     android:text="TextView"
@@ -127,7 +127,7 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardViewOption3"
-                android:layout_width="160dp"
+                android:layout_width="165dp"
                 android:layout_height="55dp"
                 android:layout_gravity="center"
                 android:layout_margin="5dp"
@@ -145,7 +145,7 @@
 
                 <TextView
                     android:id="@+id/txtViewOption3"
-                    android:layout_width="160dp"
+                    android:layout_width="165dp"
                     android:layout_height="55dp"
                     android:gravity="center"
                     android:text="TextView"
@@ -161,7 +161,7 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardViewOption4"
-                android:layout_width="160dp"
+                android:layout_width="165dp"
                 android:layout_height="55dp"
                 android:layout_gravity="center"
                 android:layout_margin="5dp"
@@ -179,7 +179,7 @@
 
                 <TextView
                     android:id="@+id/txtViewOption4"
-                    android:layout_width="160dp"
+                    android:layout_width="165dp"
                     android:layout_height="55dp"
                     android:gravity="center"
                     android:text="TextView"
