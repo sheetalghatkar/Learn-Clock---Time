@@ -297,13 +297,13 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
     public void setTimeClicked(View v) {
-        System.out.println("@@@@@@@@@@@@@@@setTimeClicked clicked@@@@@@@@@@@");
+       // System.out.println("@@@@@@@@@@@@@@@setTimeClicked clicked@@@@@@@@@@@");
     }
     public void playWithClockClicked(View v) {
-        System.out.println("@@@@@@@@@@@@@@@playWithClockClicked clicked@@@@@@@@@@@");
+       // System.out.println("@@@@@@@@@@@@@@@playWithClockClicked clicked@@@@@@@@@@@");
     }
     public void otherAppsTabClicked(View v) {
-        System.out.println("@@@@@@@@@@@@@@@Our other apps clicked@@@@@@@@@@@");
+      //  System.out.println("@@@@@@@@@@@@@@@Our other apps clicked@@@@@@@@@@@");
     }
 
     public void closeFab(){

@@ -68,6 +68,7 @@ public class DeckAdapter extends BaseAdapter {
         CardView cardViewOption3;
         CardView cardViewOption4;
 
+        TextView textViewCount;
 
         if (v == null) {
             // on below line we are inflating our layout.
@@ -91,6 +92,8 @@ public class DeckAdapter extends BaseAdapter {
         cardViewOption3 = v.findViewById(R.id.cardViewOption3);
         cardViewOption4 = v.findViewById(R.id.cardViewOption4);
 
+        textViewCount = v.findViewById(R.id.txtCount);
+
         guessClockView.setHour = guessTimeData.get(position).hour;
         guessClockView.setMinute = guessTimeData.get(position).minutes;
 
@@ -99,6 +102,8 @@ public class DeckAdapter extends BaseAdapter {
         txtViewOption2.setText(guessTimeData.get(position).arrayOption.get(1));
         txtViewOption3.setText(guessTimeData.get(position).arrayOption.get(2));
         txtViewOption4.setText(guessTimeData.get(position).arrayOption.get(3));
+
+        textViewCount.setText(String.valueOf((position)+1)+"/"+guessTimeData.size());
 
         GuessTimeActivity activity = (GuessTimeActivity) context;
 
