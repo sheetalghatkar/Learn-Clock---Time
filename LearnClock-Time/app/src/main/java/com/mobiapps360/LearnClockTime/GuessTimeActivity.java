@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,7 +25,6 @@ public class GuessTimeActivity extends AppCompatActivity {
     // on below line we are creating variable
     // for our array list and swipe deck.
     private SwipeDeck cardStack;
-    private ArrayList<CourseModal> courseModalArrayList;
     private ImageButton btnSoundGuessTimeOnOff;
     private ImageButton btnGuessTimeBack;
     Boolean getSoundFlag = true;
@@ -41,7 +41,7 @@ public class GuessTimeActivity extends AppCompatActivity {
     public static SharedPreferences sharedPreferences = null;
     public static final String myPreferences = "myPref";
     public static final String soundLearnActivity = "soundLearnActivityKey";
-
+    DeckAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,10 +69,8 @@ public class GuessTimeActivity extends AppCompatActivity {
         }
 
         // on below line we are initializing our array list and swipe deck.
-        courseModalArrayList = new ArrayList<>();
         cardStack = (SwipeDeck) findViewById(R.id.swipe_deck);
         cardStack.swipeTopCardRight(10);
-//        ViewCompat.setTranslationZ(imgViewWallPaper,10);
         ViewCompat.setTranslationZ(swipe_deck, 15);
 
         Glide.with(this).load(R.drawable.starting).into(imageViewStartGif);
@@ -83,19 +81,11 @@ public class GuessTimeActivity extends AppCompatActivity {
 
 
 
-        // on below line we are adding data to our array list.
-        courseModalArrayList.add(new CourseModal("C++", "30 days", "20 Tracks", "C++ Self Paced Course", R.drawable.learn_clock_1));
-        courseModalArrayList.add(new CourseModal("Java", "30 days", "20 Tracks", "Java Self Paced Course", R.drawable.learn_clock_1));
-        courseModalArrayList.add(new CourseModal("Python", "30 days", "20 Tracks", "Python Self Paced Course", R.drawable.learn_clock_1));
-        courseModalArrayList.add(new CourseModal("DSA", "30 days", "20 Tracks", "DSA Self Paced Course", R.drawable.learn_clock_1));
-        courseModalArrayList.add(new CourseModal("PHP", "30 days", "20 Tracks", "PHP Self Paced Course", R.drawable.learn_clock_1));
-
         // on below line we are creating a variable for our adapter class and passing array list to it.
-        final DeckAdapter adapter = new DeckAdapter(MainActivity.guessTimeFinalArray, this);
+         adapter = new DeckAdapter(MainActivity.guessTimeFinalArray, this);
         /// cardStack.layoutManager = CardStackLayoutManager();
         // on below line we are setting adapter to our card stack.
         cardStack.setAdapter(adapter);
-
         // on below line we are setting event callback to our card stack.
         cardStack.setEventCallback(new SwipeDeck.SwipeEventCallback() {
             @Override
@@ -114,14 +104,34 @@ public class GuessTimeActivity extends AppCompatActivity {
             public void cardsDepleted() {
                 // this method is called when no card is present
                // Toast.makeText(GuessTimeActivity.this, "", Toast.LENGTH_SHORT).show();
+                final Handler handler = new Handler();
+
+                imageViewAgainGif.setAlpha(1.0f);
+                imageViewStartGif.setAlpha(1.0f);
+                imageViewLoaderGif.setAlpha(1.0f);
+
+                cardStack.setAlpha(0.0f);
+                        cardStack.setAdapter(adapter);
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                cardStack.setAlpha(1.0f);
+                                imageViewAgainGif.setAlpha(0.0f);
+                                imageViewStartGif.setAlpha(0.0f);
+                                imageViewLoaderGif.setAlpha(0.0f);
+                            }
+                        }, 2000);
+
             }
 
             @Override
             public void cardActionDown() {
                 // this method is called when card is swiped down.
-                 Toast.makeText(GuessTimeActivity.this, "CARDS MOVED DOWN", Toast.LENGTH_SHORT).show();
+              //   Toast.makeText(GuessTimeActivity.this, "CARDS MOVED DOWN", Toast.LENGTH_SHORT).show();
 
                 //  Log.i("TAG", "CARDS MOVED DOWN");
+
+
             }
 
             @Override

@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(MainActivity.this, "Person Added", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this, "Person Added", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -216,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         Log.i("sddas","aala");
-                        Toast.makeText(MainActivity.this, "Alarm Added", Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(MainActivity.this, "Alarm Added", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -282,7 +282,7 @@ public class MainActivity extends AppCompatActivity {
             this.startActivity(intent);
         } else {
             closeFab();
-            Toast.makeText(MainActivity.this, "No Internet Connection.", Toast.LENGTH_SHORT).show();
+         //   Toast.makeText(MainActivity.this, "No Internet Connection.", Toast.LENGTH_SHORT).show();
         }
     }
     public void learnClockClicked(View v) {
