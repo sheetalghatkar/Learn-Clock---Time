@@ -121,6 +121,10 @@ public class DeckAdapter extends BaseAdapter {
                         if (guessTimeData.get(position).getAnswer() == 0) {
                             buttonGuessOption1.setImageResource(R.drawable.green_bubble);
                             activity.playSoundGuessTime("excellent");
+                            buttonGuessOption2.setEnabled(false);
+                            buttonGuessOption3.setEnabled(false);
+                            buttonGuessOption4.setEnabled(false);
+
                             final Handler handler = new Handler();
                             handler.postDelayed(new Runnable() {
                                 @Override
@@ -155,6 +159,9 @@ public class DeckAdapter extends BaseAdapter {
                         if (guessTimeData.get(position).getAnswer() == 1) {
                             buttonGuessOption2.setImageResource(R.drawable.green_bubble);
                             activity.playSoundGuessTime("great_job");
+                            buttonGuessOption1.setEnabled(false);
+                            buttonGuessOption3.setEnabled(false);
+                            buttonGuessOption4.setEnabled(false);
                             final Handler handler = new Handler();
                             handler.postDelayed(new Runnable() {
                                 @Override
@@ -184,6 +191,9 @@ public class DeckAdapter extends BaseAdapter {
                     case MotionEvent.ACTION_UP: {
                         ((ImageButton) v).setAlpha((float) 1.0);
                         if (guessTimeData.get(position).getAnswer() == 2) {
+                            buttonGuessOption2.setEnabled(false);
+                            buttonGuessOption1.setEnabled(false);
+                            buttonGuessOption4.setEnabled(false);
                             buttonGuessOption3.setImageResource(R.drawable.green_bubble);
                             activity.playSoundGuessTime("perfect");
                             final Handler handler = new Handler();
@@ -215,6 +225,9 @@ public class DeckAdapter extends BaseAdapter {
                     case MotionEvent.ACTION_UP: {
                         ((ImageButton) v).setAlpha((float) 1.0);
                         if (guessTimeData.get(position).getAnswer() == 3) {
+                            buttonGuessOption2.setEnabled(false);
+                            buttonGuessOption1.setEnabled(false);
+                            buttonGuessOption3.setEnabled(false);
                             buttonGuessOption4.setImageResource(R.drawable.green_bubble);
                             activity.playSoundGuessTime("well_done");
                             final Handler handler = new Handler();
