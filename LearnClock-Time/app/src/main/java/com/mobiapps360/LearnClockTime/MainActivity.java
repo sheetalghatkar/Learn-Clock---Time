@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imgViewWallBg;
     MediaPlayer player;
     private AdView mAdView;
+    AdRequest adRequest;
     public static ArrayList<GuessTimeItem>  guessTimeDataArray;
     public static ArrayList<GuessTimeItem>  guessTimeFinalArray;
     public static SharedPreferences sharedPreferences = null;
@@ -105,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         mAdView = findViewById(R.id.adViewBannerMainActivity);
-        AdRequest adRequest = new AdRequest.Builder().build();
+        adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
         mAdView.setAdListener(new AdListener() {

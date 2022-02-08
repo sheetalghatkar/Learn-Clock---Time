@@ -115,6 +115,7 @@ public class LearnClockActivity extends AppCompatActivity {
         txtViewDescTxt.setText(Html.fromHtml(learnClockDataModelList[0].getImageName()));
         sharedPreferences = getSharedPreferences(myPreferences, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
+        Glide.with(this).load(R.drawable.loader).into(imgVwLearnLoader);
         if (sharedPreferences.contains(soundLearnActivity)) {
             getSoundFlag = sharedPreferences.getBoolean(soundLearnActivity, false);
             if (getSoundFlag == true) {

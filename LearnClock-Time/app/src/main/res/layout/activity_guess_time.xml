@@ -115,6 +115,29 @@
 
 
     </com.daprlabs.cardstack.SwipeFrameLayout>
+    <View
+        android:id="@+id/viewLoaderGuessTimeBg"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#99000000"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ImageView
+        android:id="@+id/imgVwGuessTimeLoader"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/loader"
+        android:scaleType="fitXY"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/adViewBannerGuessTimeActivity"

@@ -12,6 +12,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,10 +22,14 @@ import java.util.ArrayList;
 
 import com.bumptech.glide.Glide;
 import com.daprlabs.cardstack.SwipeDeck;
+import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
 public class GuessTimeActivity extends AppCompatActivity {
     // on below line we are creating variable
@@ -38,8 +43,13 @@ public class GuessTimeActivity extends AppCompatActivity {
     private ImageView imageViewStartGif;
     private ImageView imageViewAgainGif;
     private ImageView imageViewLoaderGif;
+    int clickCount = 1;
+    int adShowCount = 12;
     private AdView mAdView;
-
+    ImageView imgVwLearnLoader;
+    View viewLearnLoader;
+    AdRequest adRequest;
+    private InterstitialAd mInterstitialAd;
     public static ArrayList<GuessTimeItem> guessTimeDataArray;
 
     //Declare variables
@@ -60,6 +70,9 @@ public class GuessTimeActivity extends AppCompatActivity {
         imageViewAgainGif = findViewById(R.id.imageViewAgainGif);
         imageViewLoaderGif = findViewById(R.id.imageViewLoaderGif);
         imgViewWallPaper = findViewById(R.id.guessTimeWallImage);
+        imgVwLearnLoader = findViewById(R.id.imgVwGuessTimeLoader);
+        viewLearnLoader = findViewById(R.id.viewLoaderGuessTimeBg);
+        Glide.with(this).load(R.drawable.loader).into(imgVwLearnLoader);
         sharedPreferences = getSharedPreferences(myPreferences, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         if (sharedPreferences.contains(soundLearnActivity)) {
@@ -85,7 +98,7 @@ public class GuessTimeActivity extends AppCompatActivity {
         Glide.with(this).load(R.drawable.preloader).into(imageViewLoaderGif);
 
         mAdView = findViewById(R.id.adViewBannerGuessTimeActivity);
-        AdRequest adRequest = new AdRequest.Builder().build();
+        adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
         mAdView.setAdListener(new AdListener() {
@@ -136,13 +149,23 @@ public class GuessTimeActivity extends AppCompatActivity {
             @Override
             public void cardSwipedLeft(int position) {
                 // on card swipe left we are displaying a toast message.
-                //   Toast.makeText(GuessTimeActivity.this, "", Toast.LENGTH_SHORT).show();
+                 //  Toast.makeText(GuessTimeActivity.this, "", Toast.LENGTH_SHORT).show();
+                clickCount = clickCount + 1;
+                if (clickCount > adShowCount) {
+                    clickCount = 0;
+                    showInterstitialAds(false);
+                }
             }
 
             @Override
             public void cardSwipedRight(int position) {
                 // on card swiped to right we are displaying a toast message.
                 // Toast.makeText(GuessTimeActivity.this, "", Toast.LENGTH_SHORT).show();
+                clickCount = clickCount + 1;
+                if (clickCount > adShowCount) {
+                    clickCount = 0;
+                    showInterstitialAds(false);
+                }
             }
 
             @Override
@@ -263,7 +286,7 @@ public class GuessTimeActivity extends AppCompatActivity {
             //   player.setVolume(0.0f, 0.0f);
             try {
                 player = MediaPlayer.create(getBaseContext(), idSoundBg);
-                player.setVolume(1.0f, 1.0f);
+//                player.setVolume(1.0f, 1.0f);
 
 //                player.start();
             } catch (Exception e) {
@@ -287,5 +310,70 @@ public class GuessTimeActivity extends AppCompatActivity {
         }
 
     }
+    //Show interstitial Ads
+    public void showHideLoader(boolean adFlag) {
+        if (adFlag) {
+            imgVwLearnLoader.setVisibility(View.VISIBLE);
+            viewLearnLoader.setVisibility(View.VISIBLE);
+        } else {
+            imgVwLearnLoader.setVisibility(View.INVISIBLE);
+            viewLearnLoader.setVisibility(View.INVISIBLE);
+        }
+    }
 
+    public void showInterstitialAds(Boolean fromHome) {
+        System.out.println("Inside showInterstitialAds---");
+        showHideLoader(true);
+        InterstitialAd.load(this, Constant.INTERSTITIAL_ID, adRequest, new InterstitialAdLoadCallback() {
+            @Override
+            public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                // The mInterstitialAd reference will be null until
+                // an ad is loaded.
+                mInterstitialAd = interstitialAd;
+                mInterstitialAd.show(GuessTimeActivity.this);
+
+                // Log.i(TAG, "onAdLoaded");
+                mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                    @Override
+                    public void onAdDismissedFullScreenContent() {
+                        // Called when fullscreen content is dismissed.
+                        Log.i("TAG", "The ad was dismissed.");
+                        if (fromHome) {
+                            Log.i("playCrad", "The ad was dismissed---if");
+                            GuessTimeActivity.super.onBackPressed();
+                            showHideLoader(false);
+                        } else {
+                            Log.i("playCrad", "The ad was dismissed-----else.");
+                            showHideLoader(false);
+                        }
+                    }
+
+                    @Override
+                    public void onAdFailedToShowFullScreenContent(AdError adError) {
+                        // Called when fullscreen content failed to show.
+                        showHideLoader(false);
+                        Log.d("TAG", "The ad failed to show.");
+                    }
+
+                    @Override
+                    public void onAdShowedFullScreenContent() {
+                        //showHideLoader(false);
+                        // Called when fullscreen content is shown.
+                        // Make sure to set your reference to null so you don't
+                        // show it a second time.
+                        mInterstitialAd = null;
+                        // Log.d("TAG", "The ad was shown.");
+                    }
+                });
+
+            }
+
+            @Override
+            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                // Handle the error
+                showHideLoader(false);
+                mInterstitialAd = null;
+            }
+        });
+    }
 }
