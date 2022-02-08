@@ -49,11 +49,11 @@ public class GuessClockView extends View {
     }
 
     public void initClock() {
-        System.out.println("------------------------------------------------------");
-//        System.out.println("wwww" + getHeight());
-//        System.out.println("hhhhh" + getWidth());
+//        System.out.println("------------------------------------------------------");
+//        System.out.println("wwwww" + getWidth());
+//        System.out.println("hhhhh" + getHeight());
         height = getHeight();
-        width =  getWidth();
+        width = getWidth();
 //        height = 700;
 //        width =  700;
         padding = numeralSpacing + 50;
@@ -61,8 +61,8 @@ public class GuessClockView extends View {
                 getResources().getDisplayMetrics());
         int min = Math.min(height, width);
         radius = min / 2 - padding;
-        System.out.println("---initClock radius****" + (radius));
-        System.out.println("---initClock padding****" + (padding));
+//        System.out.println("---initClock radius****" + (radius));
+//        System.out.println("---initClock padding****" + (padding));
 
         handTruncation = min / 20;
         hourHandTruncation = min / 7;
@@ -142,12 +142,12 @@ public class GuessClockView extends View {
         int handRadius = radius - handTruncation - hourHandTruncation - 15;
 //        handRadius = handRadius - 25;
         paint.setStrokeWidth(20f);
-        System.out.println("---handRadius----"+ handRadius);
-        System.out.println("---setMinuteHand drawLine- W---"+ getWidth() / 2);
-        System.out.println("---setMinuteHand drawLine- H---"+ getHeight() / 2);
-
-        System.out.println("---stop x drawLine----"+ (float) (getWidth() / 2 + Math.cos(angle) * handRadius));
-        System.out.println("---stop y drawLine----"+ (float) (getHeight() / 2 + Math.sin(angle) * handRadius));
+//        System.out.println("---handRadius----"+ handRadius);
+//        System.out.println("---setMinuteHand drawLine- W---"+ getWidth() / 2);
+//        System.out.println("---setMinuteHand drawLine- H---"+ getHeight() / 2);
+//
+//        System.out.println("---stop x drawLine----"+ (float) (getWidth() / 2 + Math.cos(angle) * handRadius));
+//        System.out.println("---stop y drawLine----"+ (float) (getHeight() / 2 + Math.sin(angle) * handRadius));
 
 
 
@@ -225,7 +225,7 @@ public class GuessClockView extends View {
             double angle = Math.PI / 6 * (number - 3);
             int x = (int) (width / 2 + Math.cos(angle) * (radius) - rect.width() / 2);
             int y = (int) (height / 2 + Math.sin(angle) * (radius) + rect.height() / 2);
-            paint.setShadowLayer(5.0f, 2.0f, 2.0f, 0xFF000000);
+            //paint.setShadowLayer(5.0f, 2.0f, 2.0f, 0xFF000000);
             canvas1.drawText(tmp, x, y, paint);
         }
         radius = fixedRadius;
@@ -233,7 +233,7 @@ public class GuessClockView extends View {
 
     public void drawMinuteMark() {
 
-            System.out.println("-------I am inside drawMinuteMark------------------");
+         //   System.out.println("-------I am inside drawMinuteMark------------------");
 
 //        paint.getTextBounds("9", 0, "9".length(), rect);
 
@@ -247,12 +247,12 @@ public class GuessClockView extends View {
             //big mark with diff of 5 ADDITIONAL  3- 6- 9-12 big mark
             if ((number == 6) || (number == 11)  || (number == 21) || (number == 26) || (number == 36) || (number == 41) || (number == 51) || (number == 56)) {
                 paint.setStrokeWidth(9f);
-                paint.setShadowLayer(4.0f, 0.0f, 2.0f, 0xFF000000);
+              //  paint.setShadowLayer(4.0f, 0.0f, 2.0f, 0xFF000000);
 
                 radius = tempradiusSmallMark;
             } else if ((number == 1) || (number == 16) || (number == 31) || (number == 46)) {
                 paint.setStrokeWidth(13);
-                paint.setShadowLayer(4.0f, 0.0f, 2.0f, 0xFF000000);
+               // paint.setShadowLayer(4.0f, 0.0f, 2.0f, 0xFF000000);
 
                 radius = tempradiusSmallMark;
             } else {
@@ -302,7 +302,7 @@ public class GuessClockView extends View {
         paint.setStrokeWidth(10);
         paint.setStyle(Paint.Style.STROKE);
         paint.setAntiAlias(true);
-        paint.setShadowLayer(5.0f, 2.0f, 2.0f, 0xFF000000);
+      //  paint.setShadowLayer(5.0f, 2.0f, 2.0f, 0xFF000000);
         canvas1.drawCircle(width / 2, height / 2, radius + padding - 10, paint);
     }
 }
