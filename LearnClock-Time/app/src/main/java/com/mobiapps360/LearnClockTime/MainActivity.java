@@ -1,5 +1,6 @@
 package com.mobiapps360.LearnClockTime;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -531,5 +532,18 @@ public class MainActivity extends AppCompatActivity {
             content = content + line;
         }
         return content;
+    }
+    public void onActivityPaused(Activity activity) {
+        System.out.println("onActivityPaused------");
+        if (player != null) {
+            player.release();
+        }
+    }
+
+    public void onActivityStopped(Activity activity) {
+        System.out.println("onActivityStopped------");
+        if (player != null) {
+            player.release();
+        }
     }
 }

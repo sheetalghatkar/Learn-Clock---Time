@@ -72,7 +72,7 @@ public class LearnClockActivity extends AppCompatActivity {
     Boolean getSoundFlag = true;
     int currentIndex = 0;
     int clickCount = 1;
-    int adShowCount = 12;
+    int adShowCount = 13;
     private AdView mAdView;
     ImageView imgVwLearnLoader;
     View viewLearnLoader;
@@ -221,11 +221,13 @@ public class LearnClockActivity extends AppCompatActivity {
                                 btnForward.setImageResource(R.drawable.next_question);
                                 btnBackward.setVisibility(View.VISIBLE);
                             }
-                            System.out.println("I m here" + clickCount);
+//                            System.out.println("I m here" + clickCount);
                             clickCount = clickCount + 1;
                             if (clickCount > adShowCount) {
                                 clickCount = 0;
-                                player.release();
+                                if (player != null) {
+                                    player.release();
+                                }
                                 showInterstitialAds(false);
                             } else if (getSoundFlag == true) {
                                 if (player != null) {
@@ -386,6 +388,7 @@ public class LearnClockActivity extends AppCompatActivity {
         } else {
             imgVwLearnLoader.setVisibility(View.INVISIBLE);
             viewLearnLoader.setVisibility(View.INVISIBLE);
+            learnClockAdapter.setListMenuItem(learnClockDataModelList);
             playSound("screen_" + currentIndex);
         }
     }

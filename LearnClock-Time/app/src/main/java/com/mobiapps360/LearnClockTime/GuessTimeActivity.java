@@ -44,7 +44,7 @@ public class GuessTimeActivity extends AppCompatActivity {
     private ImageView imageViewAgainGif;
     private ImageView imageViewLoaderGif;
     int clickCount = 1;
-    int adShowCount = 12;
+    int adShowCount = 13;
     private AdView mAdView;
     ImageView imgVwLearnLoader;
     View viewLearnLoader;
