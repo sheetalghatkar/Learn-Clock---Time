@@ -151,14 +151,7 @@ public class GuessTimeActivity extends AppCompatActivity {
                     case MotionEvent.ACTION_UP: {
                         ((ImageButton) v).setAlpha((float) 1.0);
                         if (player != null) {
-                            if (player.getCurrentPosition() != 0) {
-                                if (player.isPlaying()) {
-                                    player.stop();
-                                    player.release();
-                                }
-                            } else {
-                                player.release();
-                            }
+                            player.release();
                         }
                         GuessTimeActivity.super.onBackPressed();
                     }
@@ -188,15 +181,7 @@ public class GuessTimeActivity extends AppCompatActivity {
                             if (getSoundFlag == true) {
                                 btnSoundGuessTimeOnOff.setImageResource(R.mipmap.sound_on);
                             } else {
-
                                 btnSoundGuessTimeOnOff.setImageResource(R.mipmap.sound_off);
-                                if (player != null) {
-                                    if (player.getCurrentPosition() != 0) {
-                                        if (player.isPlaying()) {
-                                            player.stop();
-                                        }
-                                    }
-                                }
                             }
                         }
                     }
@@ -232,6 +217,8 @@ public class GuessTimeActivity extends AppCompatActivity {
             //   player.setVolume(0.0f, 0.0f);
             try {
                 player = MediaPlayer.create(getBaseContext(), idSoundBg);
+                player.setVolume(1.0f, 1.0f);
+
 //                player.start();
             } catch (Exception e) {
                 Log.e("Music Exception", "catch button click sound play");
