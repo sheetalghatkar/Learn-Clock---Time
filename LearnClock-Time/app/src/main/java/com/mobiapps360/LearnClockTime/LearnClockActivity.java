@@ -56,9 +56,6 @@ public class LearnClockActivity extends AppCompatActivity {
     public static final String myPreferences = "myPref";
     public static final String soundLearnActivity = "soundLearnActivityKey";
     int cardNumber = 0;
-    int subCardNumber = 1;
-    int maxVolume = 0;
-    int currVolume = 0;
     Boolean getSoundFlag = true;
     int currentIndex = 0;
     int clickCount = 0;
