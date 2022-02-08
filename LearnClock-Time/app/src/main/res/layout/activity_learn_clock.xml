@@ -45,7 +45,7 @@
         app:srcCompat="@mipmap/sound_on" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id = "@+id/recycleViewLearnClock"
+        android:id="@+id/recycleViewLearnClock"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="10dp"
@@ -62,23 +62,23 @@
         android:layout_height="37dp"
         android:layout_marginStart="20dp"
         android:layout_marginLeft="20dp"
-        android:scaleType="fitCenter"
-        app:srcCompat="@drawable/back_question"
         android:background="@null"
+        android:scaleType="fitCenter"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recycleViewLearnClock" />
+        app:layout_constraintTop_toBottomOf="@+id/recycleViewLearnClock"
+        app:srcCompat="@drawable/back_question" />
 
     <ImageButton
         android:id="@+id/btnLearnClockSound"
         android:layout_width="37dp"
         android:layout_height="37dp"
         android:layout_centerInParent="true"
-        app:srcCompat="@drawable/play_again_red"
         android:background="@null"
         android:scaleType="fitCenter"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recycleViewLearnClock" />
+        app:layout_constraintTop_toBottomOf="@+id/recycleViewLearnClock"
+        app:srcCompat="@drawable/play_again_red" />
 
     <ImageButton
         android:id="@+id/btnLearnClockForward"
@@ -86,11 +86,11 @@
         android:layout_height="37dp"
         android:layout_marginEnd="20dp"
         android:layout_marginRight="20dp"
-        app:srcCompat="@drawable/next_question"
         android:background="@null"
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recycleViewLearnClock" />
+        app:layout_constraintTop_toBottomOf="@+id/recycleViewLearnClock"
+        app:srcCompat="@drawable/next_question" />
 
 
     <androidx.cardview.widget.CardView
@@ -129,10 +129,48 @@
         android:text="TextView"
         android:textColor="@color/white"
         android:textSize="20sp"
-        android:textStyle= "normal"
+        android:textStyle="normal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnLearnClockSound" />
+
+    <View
+        android:id="@+id/viewLoaderLearnClockBg"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#99000000"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ImageView
+        android:id="@+id/imgVwLearnClockLoader"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/loader"
+        android:scaleType="fitXY"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adViewBannerLearnActivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        app:adSize="BANNER"
+        app:adUnitId="ca-app-pub-7546454767986772/6322877958"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="1.0"></com.google.android.gms.ads.AdView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

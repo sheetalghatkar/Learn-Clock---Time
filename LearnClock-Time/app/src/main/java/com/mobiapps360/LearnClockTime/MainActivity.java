@@ -10,6 +10,13 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -62,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imgViewBottom;
     private ImageView imgViewWallBg;
     MediaPlayer player;
+    private AdView mAdView;
     public static ArrayList<GuessTimeItem>  guessTimeDataArray;
     public static ArrayList<GuessTimeItem>  guessTimeFinalArray;
     public static SharedPreferences sharedPreferences = null;
@@ -73,8 +81,7 @@ public class MainActivity extends AppCompatActivity {
     TextView fab_txt_rateUs, fab_txt_shareApp, fab_txt_otherApps, fab_txt_privacyPolicy;
     // to check whether sub FAB buttons are visible or not.
     Boolean isAllFabsVisible = false;
-    public  static final String APP_PNAME = "Learn Clock - Time";
-    public  static final String BUNDLE_ID = "com.mobiapps360.LearnClockTime";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +98,50 @@ public class MainActivity extends AppCompatActivity {
         imgViewsettingBg = findViewById(R.id.imgViewSettingBg);
 
         Glide.with(this).load(R.drawable.clock_learn).into(imgViewHomeGif);
+
+        MobileAds.initialize(getApplicationContext(), new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+        mAdView = findViewById(R.id.adViewBannerMainActivity);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
+        mAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+                super.onAdLoaded();
+                // Toast.makeText(MainActivity.this,"ad loaded",Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdFailedToLoad(LoadAdError adError) {
+                // Code to be executed when an ad request fails.
+                super.onAdFailedToLoad(adError);
+                System.out.println("Show error####"+adError);
+                mAdView.loadAd(adRequest);
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when an ad opens an overlay that
+                // covers the screen.
+            }
+
+            @Override
+            public void onAdClicked() {
+                // Code to be executed when the user clicks on an ad.
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when the user is about to return
+                // to the app after tapping on an ad.
+            }
+        });
+
 
         sharedPreferences = getSharedPreferences(myPreferences, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -251,9 +302,9 @@ public class MainActivity extends AppCompatActivity {
         try {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType("text/plain");
-            shareIntent.putExtra(Intent.EXTRA_SUBJECT, MainActivity.APP_PNAME);
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, Constant.APP_PNAME);
             String shareMessage= "Best app for kids to learn clock.\n\n";
-            shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + MainActivity.BUNDLE_ID;
+            shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + Constant.BUNDLE_ID;
             shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
             startActivity(Intent.createChooser(shareIntent, "choose one"));
         } catch(Exception e) {

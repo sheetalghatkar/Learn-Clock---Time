@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.icu.text.SymbolTable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.media.MediaPlayer;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -37,6 +39,17 @@ import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
 public class LearnClockActivity extends AppCompatActivity {
     private TextView txtViewDescTxt;
@@ -58,7 +71,13 @@ public class LearnClockActivity extends AppCompatActivity {
     int cardNumber = 0;
     Boolean getSoundFlag = true;
     int currentIndex = 0;
-    int clickCount = 0;
+    int clickCount = 1;
+    int adShowCount = 12;
+    private AdView mAdView;
+    ImageView imgVwLearnLoader;
+    View viewLearnLoader;
+    AdRequest adRequest;
+    private InterstitialAd mInterstitialAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +109,9 @@ public class LearnClockActivity extends AppCompatActivity {
         btnLearnClockBack = findViewById(R.id.btnLearnClockBack);
         btnLearnClockSound = findViewById(R.id.btnLearnClockSound);
         recycleViewLearnClock = findViewById(R.id.recycleViewLearnClock);
+        imgVwLearnLoader = findViewById(R.id.imgVwLearnClockLoader);
+        viewLearnLoader = findViewById(R.id.viewLoaderLearnClockBg);
+        Glide.with(this).load(R.drawable.loader).into(imgVwLearnLoader);
         txtViewDescTxt.setText(Html.fromHtml(learnClockDataModelList[0].getImageName()));
         sharedPreferences = getSharedPreferences(myPreferences, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -110,6 +132,53 @@ public class LearnClockActivity extends AppCompatActivity {
         } else {
             btnBackward.setVisibility(View.VISIBLE);
         }
+        //-----------------------------------------
+        //Load Advertisement
+        MobileAds.initialize(getApplicationContext(), new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+        mAdView = findViewById(R.id.adViewBannerLearnActivity);
+        adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
+        mAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+                super.onAdLoaded();
+                // Toast.makeText(MainActivity.this,"ad loaded",Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdFailedToLoad(LoadAdError adError) {
+                // Code to be executed when an ad request fails.
+                super.onAdFailedToLoad(adError);
+                System.out.println("Show error####" + adError);
+                mAdView.loadAd(adRequest);
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when an ad opens an overlay that
+                // covers the screen.
+            }
+
+            @Override
+            public void onAdClicked() {
+                // Code to be executed when the user clicks on an ad.
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when the user is about to return
+                // to the app after tapping on an ad.
+            }
+        });
+        //-----------------------------------------
+
+
         ViewCompat.setTranslationZ(txtViewDescTxt, 15);
         ViewCompat.setTranslationZ(btnSoundOnOffLearn, 15);
         ViewCompat.setTranslationZ(btnLearnClockBack, 15);
@@ -151,52 +220,18 @@ public class LearnClockActivity extends AppCompatActivity {
                                 btnForward.setImageResource(R.drawable.next_question);
                                 btnBackward.setVisibility(View.VISIBLE);
                             }
-//                            clickCount = clickCount + 1;
-//                            if (clickCount > 14) {
-//                                clickCount = 0;
-//                                showInterstitialAds(false);
-//                            } else
-                            if (getSoundFlag == true) {
+                            System.out.println("I m here" + clickCount);
+                            clickCount = clickCount + 1;
+                            if (clickCount > adShowCount) {
+                                clickCount = 0;
+                                player.release();
+                                showInterstitialAds(false);
+                            } else if (getSoundFlag == true) {
                                 if (player != null) {
-                                    player.stop();
+                                    player.release();
                                 }
                                 playSound("screen_" + currentIndex);
                             }
-
-
-                          /*  if (MainActivity.isSoundFunctionality) {
-                                MediaPlayer playerSwipe = MediaPlayer.create(getBaseContext(), idSwipeImg);
-                                currVolume = 47;
-                                float log1 = (float) (Math.log(maxVolume - currVolume) / Math.log(maxVolume));
-                                playerSwipe.setVolume(log1, log1); //set volume takes two paramater
-                                System.out.println("Current position is" + position);
-                                if (!isFirstTime) {
-                                    if (MainActivity.sharedPreferences.getBoolean(soundLearnActivity, false)) {
-                                        playerSwipe.start();
-                                    }
-                                } else {
-                                    isFirstTime = false;
-                                }
-                                //int idSoundImg = getApplicationContext().getResources().getIdentifier("com.mobiapps360.LearnNature:raw/" + animalDataArray.get(position).getPictureAnimal(), null, null);
-                                // System.out.println("Activity idsound:" + animalDataArray.get(position).getPictureAnimal());
-                                // System.out.println("#########Start is#########" + position);
-                                clickCount = clickCount + 1;
-                                if (clickCount > 14) {
-                                    clickCount = 0;
-                                    showInterstitialAds(false);
-                                } else {
-                                    if (MainActivity.sharedPreferences.getBoolean(soundLearnActivity, false)) {
-                                        if (playerCard != null) {
-                                            playerCard.stop();
-                                            //  playerCard.release();
-                                        }
-                                        playerCard = MediaPlayer.create(getBaseContext(), idSoundImg);
-                                        Log.i("playCrad","onscroll");
-                                        playerCard.start();
-                                    }
-                                }
-                            }*/
-
                         }
                     }
                 });
@@ -223,7 +258,7 @@ public class LearnClockActivity extends AppCompatActivity {
                             } else {
                                 btnSoundOnOffLearn.setImageResource(R.mipmap.sound_off);
                                 if (player != null) {
-                                    player.stop();
+                                    player.release();
                                 }
                             }
                         }
@@ -245,7 +280,6 @@ public class LearnClockActivity extends AppCompatActivity {
                         ((ImageButton) v).setAlpha((float) 1.0);
                         btnLearnClockBack.setVisibility(View.VISIBLE);
                         if (player != null) {
-                            player.stop();
                             player.release();
                         }
                         LearnClockActivity.super.onBackPressed();
@@ -323,9 +357,6 @@ public class LearnClockActivity extends AppCompatActivity {
     public void playSound(String soundName) {
         System.out.println("playSound clicked ---------" + soundName);
         if (MainActivity.sharedPreferences.getBoolean(soundLearnActivity, false)) {
-            if (player != null) {
-                player.stop();
-            }
             int idSoundBg = getApplicationContext().getResources().getIdentifier("com.mobiapps360.LearnClockTime:raw/" + soundName, null, null);
             player = MediaPlayer.create(getBaseContext(), idSoundBg);
             //   player.setVolume(0.0f, 0.0f);
@@ -335,7 +366,7 @@ public class LearnClockActivity extends AppCompatActivity {
 
             @Override
             public void onCompletion(MediaPlayer mp) {
-
+                player.release();
             }
         });
     }
@@ -344,5 +375,72 @@ public class LearnClockActivity extends AppCompatActivity {
         if (player != null) {
             player.stop();
         }
+    }
+
+    //Show interstitial Ads
+    public void showHideLoader(boolean adFlag) {
+        if (adFlag) {
+            imgVwLearnLoader.setVisibility(View.VISIBLE);
+            viewLearnLoader.setVisibility(View.VISIBLE);
+        } else {
+            imgVwLearnLoader.setVisibility(View.INVISIBLE);
+            viewLearnLoader.setVisibility(View.INVISIBLE);
+            playSound("screen_" + currentIndex);
+        }
+    }
+
+    public void showInterstitialAds(Boolean fromHome) {
+        showHideLoader(true);
+        InterstitialAd.load(this, Constant.INTERSTITIAL_ID, adRequest, new InterstitialAdLoadCallback() {
+            @Override
+            public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                // The mInterstitialAd reference will be null until
+                // an ad is loaded.
+                mInterstitialAd = interstitialAd;
+                mInterstitialAd.show(LearnClockActivity.this);
+
+                // Log.i(TAG, "onAdLoaded");
+                mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                    @Override
+                    public void onAdDismissedFullScreenContent() {
+                        // Called when fullscreen content is dismissed.
+                        Log.i("TAG", "The ad was dismissed.");
+                        if (fromHome) {
+                            Log.i("playCrad", "The ad was dismissed---if");
+                            LearnClockActivity.super.onBackPressed();
+                            showHideLoader(false);
+                        } else {
+                            Log.i("playCrad", "The ad was dismissed-----else.");
+                            showHideLoader(false);
+                        }
+                    }
+
+                    @Override
+                    public void onAdFailedToShowFullScreenContent(AdError adError) {
+                        // Called when fullscreen content failed to show.
+                        showHideLoader(false);
+                        Log.d("TAG", "The ad failed to show.");
+                    }
+
+                    @Override
+                    public void onAdShowedFullScreenContent() {
+                        //showHideLoader(false);
+                        // Called when fullscreen content is shown.
+                        // Make sure to set your reference to null so you don't
+                        // show it a second time.
+                        mInterstitialAd = null;
+                        // Log.d("TAG", "The ad was shown.");
+                    }
+                });
+
+            }
+
+            @Override
+            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                // Handle the error
+                showHideLoader(false);
+                mInterstitialAd = null;
+            }
+        });
     }
 }

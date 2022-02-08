@@ -21,6 +21,10 @@ import java.util.ArrayList;
 
 import com.bumptech.glide.Glide;
 import com.daprlabs.cardstack.SwipeDeck;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
 
 public class GuessTimeActivity extends AppCompatActivity {
     // on below line we are creating variable
@@ -34,6 +38,7 @@ public class GuessTimeActivity extends AppCompatActivity {
     private ImageView imageViewStartGif;
     private ImageView imageViewAgainGif;
     private ImageView imageViewLoaderGif;
+    private AdView mAdView;
 
     public static ArrayList<GuessTimeItem> guessTimeDataArray;
 
@@ -78,6 +83,47 @@ public class GuessTimeActivity extends AppCompatActivity {
         Glide.with(this).load(R.drawable.starting).into(imageViewStartGif);
         Glide.with(this).load(R.drawable.again).into(imageViewAgainGif);
         Glide.with(this).load(R.drawable.preloader).into(imageViewLoaderGif);
+
+        mAdView = findViewById(R.id.adViewBannerGuessTimeActivity);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
+        mAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+                super.onAdLoaded();
+                // Toast.makeText(MainActivity.this,"ad loaded",Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdFailedToLoad(LoadAdError adError) {
+                // Code to be executed when an ad request fails.
+                super.onAdFailedToLoad(adError);
+                System.out.println("Show error####"+adError);
+                mAdView.loadAd(adRequest);
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when an ad opens an overlay that
+                // covers the screen.
+            }
+
+            @Override
+            public void onAdClicked() {
+                // Code to be executed when the user clicks on an ad.
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when the user is about to return
+                // to the app after tapping on an ad.
+            }
+        });
+        //-----------------------------------------
+
+
 
 
         // on below line we are creating a variable for our adapter class and passing array list to it.
