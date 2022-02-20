@@ -351,6 +351,8 @@ public class MainActivity extends AppCompatActivity {
     }
     public void setTimeClicked(View v) {
        // System.out.println("@@@@@@@@@@@@@@@setTimeClicked clicked@@@@@@@@@@@");
+        Intent intent = new Intent(this, SetTimeActivity.class);
+        startActivity(intent);
     }
     public void playWithClockClicked(View v) {
        // System.out.println("@@@@@@@@@@@@@@@playWithClockClicked clicked@@@@@@@@@@@");

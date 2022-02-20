@@ -44,6 +44,36 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@mipmap/sound_on" />
 
+    <ImageView
+        android:id="@+id/learnTimeBgTitle"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="-7dp"
+        android:scaleType="fitXY"
+        android:src="@mipmap/blue_bg_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnSoundOnOffLearn" />
+
+    <TextView
+        android:id="@+id/txtViewLearnTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="4dp"
+        android:fontFamily="@font/waltograph"
+        android:text="Learn Time"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        android:textStyle="normal"
+        android:gravity="center_horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/btnSoundOnOffLearn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycleViewLearnClock"
         android:layout_width="match_parent"
