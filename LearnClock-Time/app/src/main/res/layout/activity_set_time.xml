@@ -100,12 +100,14 @@
 
     <ImageView
         android:id="@+id/imgVwSetTimeMinuteHand"
-        android:layout_width="50dp"
-        android:layout_height="370dp"
-        android:layout_marginLeft="150dp"
-        android:paddingBottom="145dp"
+        android:layout_width="60dp"
+        android:layout_height="295dp"
+        android:layout_marginLeft="145dp"
+        android:paddingLeft="13dp"
+        android:paddingRight="13dp"
+        android:paddingBottom="165dp"
         android:scaleType="fitXY"
-        android:src="@drawable/minute_hand_shadow"
+        android:src="@drawable/minute_hand"
         app:layout_constraintStart_toStartOf="@+id/imgVwClockDial"
         app:layout_constraintBottom_toBottomOf="@+id/imgVwClockDial"
         app:layout_constraintTop_toTopOf="@+id/imgVwClockDial"></ImageView>

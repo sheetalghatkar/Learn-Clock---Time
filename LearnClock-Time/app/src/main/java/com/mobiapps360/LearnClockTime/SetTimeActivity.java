@@ -45,6 +45,8 @@ public class SetTimeActivity extends AppCompatActivity {
     View viewLearnLoader;
     AdRequest adRequest;
     private InterstitialAd mInterstitialAd;
+    int hourArrayLength = 0;
+    int tempMinAngle;
 
     boolean isTouchOnAnalogClock = false;
     int[] hourArray;
@@ -103,6 +105,7 @@ public class SetTimeActivity extends AppCompatActivity {
         imgVwClockDial.setOnTouchListener(handleTouch);
         hourArray = new int[]{0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360};
         minuteArrayList = new ArrayList<Integer>();
+        hourArrayLength = hourArray.length;
         int iCount = 0;
         do {
             minuteArrayList.add(iCount);
@@ -118,6 +121,13 @@ public class SetTimeActivity extends AppCompatActivity {
             minuteArray[i] = minuteArrayList.get(i);
             //     System.out.println("---minuteArray---" + minuteArray[i]);
         }
+
+
+        tempMinAngle = 360;
+        newHourAngle = 300;
+        newMinuteAngle = 60;
+        imgVwSetTimeHourHand.setRotation((float) newHourAngle);
+        imgVwSetTimeMinuteHand.setRotation((float) newMinuteAngle);
 
         mAdView = findViewById(R.id.adViewBannerSetTimeActivity);
 //        adRequest = new AdRequest.Builder().build();
@@ -279,7 +289,7 @@ public class SetTimeActivity extends AppCompatActivity {
         public boolean onTouch(View v, MotionEvent event) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    System.out.println("***ACTION_DOWN Parent view***");
+//                    System.out.println("***ACTION_DOWN Parent view***");
                     break;
 
                 case MotionEvent.ACTION_MOVE:
@@ -297,21 +307,35 @@ public class SetTimeActivity extends AppCompatActivity {
                         isTouchMinuteHand = false;
                         imgVwSetTimeHourHand.setRotation((float) clockAngle);
                     } else if (!isTouchMinuteHand) {
+                        System.out.println("***ACTION_MOVE minute continue angle***" + clockAngle);
+                        if ((int)clockAngle == 0) {
+                            clockAngle = 360;
+                        }
                         imgVwSetTimeMinuteHand.setRotation((float) clockAngle);
+                        if (!(tempMinAngle == (int)clockAngle)){
+                            tempMinAngle = (int)clockAngle;
+                            newHourAngle = nearest_small_value(newHourAngle);
+                            newHourAngle = newHourAngle + (tempMinAngle) / 12;
+                            imgVwSetTimeHourHand.setRotation((float) newHourAngle);
+                        }
                     }
                     break;
                 case MotionEvent.ACTION_UP:
                     if (!isTouchHourHand) {
                         newHourAngle = usingBinarySearch((int) clockAngle, hourArray);
                         imgVwSetTimeHourHand.setRotation((float) newHourAngle);
-                        System.out.println("***ACTION_UP hour Parent view***" + newHourAngle);
+//                        System.out.println("***ACTION_UP hour Parent view***" + newHourAngle);
                     } else if (!isTouchMinuteHand) {
                         newMinuteAngle = usingBinarySearch((int) clockAngle, minuteArray);
+                        if (newMinuteAngle == 0) {
+                            newMinuteAngle = 360;
+                        }
                         imgVwSetTimeMinuteHand.setRotation((float) newMinuteAngle);
+                        newHourAngle = nearest_small_value(newHourAngle);
 
                         newHourAngle = newHourAngle + (newMinuteAngle) / 12;
                         imgVwSetTimeHourHand.setRotation((float) newHourAngle);
-
+                        tempMinAngle = newMinuteAngle;
                         System.out.println("***ACTION_UP minute Parent view***" + newMinuteAngle);
 
                     }
@@ -322,6 +346,54 @@ public class SetTimeActivity extends AppCompatActivity {
             return true;
         }
     };
+    int nearest_small_value(int x)
+    {
+        int low = 0, high = hourArrayLength - 1, ans = x;
+
+        // Continue until low is less
+        // than or equals to high
+        while (low <= high)
+        {
+
+            // Find mid
+            int mid = (low + high) / 2;
+
+            // If element at mid is less than
+            // or equals to searching element
+            if (hourArray[mid] <= ans)
+            {
+
+                // If mid is equals
+                // to searching element
+                if (hourArray[mid] == ans)
+                {
+
+                    // Increment searching element
+                    // Make high as N - 1
+                    high = hourArrayLength - 1;
+                }
+
+                // Make low as mid + 1
+                low = mid + 1;
+            }
+
+            // Make high as mid - 1
+            else
+                high = mid - 1;
+        }
+
+        // Return the next greater element
+
+
+
+        if ((low - 1) >= 0 ) {
+            low = low - 1;
+        }
+
+        System.out.println("Value:"+x);
+        System.out.println("index value:"+hourArray[low]);
+        return hourArray[low];
+    }
 
     public void playSoundSetTime(String soundName) {
         System.out.println("playSound clicked ---------" + soundName);
