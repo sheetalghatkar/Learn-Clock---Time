@@ -2,6 +2,7 @@ package com.mobiapps360.LearnClockTime;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,6 +17,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import com.bumptech.glide.Glide;
 import com.daprlabs.cardstack.SwipeDeck;
@@ -42,9 +45,23 @@ public class SetTimeActivity extends AppCompatActivity {
     View viewLearnLoader;
     AdRequest adRequest;
     private InterstitialAd mInterstitialAd;
-//    public static ArrayList<GuessTimeItem> guessTimeDataArray;
 
+    boolean isTouchOnAnalogClock = false;
+    int[] hourArray;
+    double clockAngle;
+    boolean isTouchHourHand;
+    boolean isTouchMinuteHand;
+    double centreX = 0.0;
+    double centreY = 0.0;
+    List<Integer> minuteArrayList;
+    int[] minuteArray;
+
+    int newHourAngle;
+    int newMinuteAngle;
     //Declare variables
+    ImageView imgVwSetTimeHourHand;
+    ImageView imgVwSetTimeMinuteHand;
+    ImageView imgVwClockDial;
     MediaPlayer player;
     public static SharedPreferences sharedPreferences = null;
     public static final String myPreferences = "myPref";
@@ -59,6 +76,9 @@ public class SetTimeActivity extends AppCompatActivity {
         imgViewWallPaper = findViewById(R.id.setTimeWallImage);
         imgVwSetLoader = findViewById(R.id.imgVwSetTimeLoader);
         viewLearnLoader = findViewById(R.id.viewLoaderGuessTimeBg);
+        imgVwSetTimeHourHand = findViewById(R.id.imgVwSetTimeHourHand);
+        imgVwSetTimeMinuteHand = findViewById(R.id.imgVwSetTimeMinuteHand);
+        imgVwClockDial = findViewById(R.id.imgVwClockDial);
         Glide.with(this).load(R.drawable.loader).into(imgVwSetLoader);
         sharedPreferences = getSharedPreferences(myPreferences, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -74,13 +94,34 @@ public class SetTimeActivity extends AppCompatActivity {
             editor.commit();
             btnSoundSetTimeOnOff.setImageResource(R.mipmap.sound_on);
         }
+        isTouchHourHand = true;
+        isTouchMinuteHand = true;
 
         // on below line we are initializing our array list and swipe deck.
+        centreY = 481;     // imgVwClockDial.getHeight()/2;
+        centreX = 481;    //   imgVwClockDial.getWidth()/2;
+        imgVwClockDial.setOnTouchListener(handleTouch);
+        hourArray = new int[]{0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360};
+        minuteArrayList = new ArrayList<Integer>();
+        int iCount = 0;
+        do {
+            minuteArrayList.add(iCount);
+            iCount = iCount + 6;
+        } while (iCount < 366);
 
+
+//        minuteArray = minuteArrayList.toArray(new Integer[0]);
+
+        minuteArray = new int[minuteArrayList.size()];
+
+        for (int i = 0; i < minuteArray.length; i++) {
+            minuteArray[i] = minuteArrayList.get(i);
+            //     System.out.println("---minuteArray---" + minuteArray[i]);
+        }
 
         mAdView = findViewById(R.id.adViewBannerSetTimeActivity);
-        adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+//        adRequest = new AdRequest.Builder().build();
+//        mAdView.loadAd(adRequest);
 
         mAdView.setAdListener(new AdListener() {
             @Override
@@ -116,7 +157,42 @@ public class SetTimeActivity extends AppCompatActivity {
             }
         });
         //-----------------------------------------
-
+        imgVwSetTimeHourHand.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN: {
+                        System.out.println("Inside imgVwsetTimeClkHand ACTION_DOWN");
+                        // imgVwsetTimeClkHand.setImageResource(R.drawable.hour_hand_shadow);
+                        break;
+                    }
+                    case MotionEvent.ACTION_UP: {
+                        System.out.println("Inside imgVwsetTimeClkHand ACTION_UP");
+                        isTouchHourHand = false;
+                    }
+                }
+                return isTouchHourHand;
+            }
+        });
+        //-----------------------------------------
+        imgVwSetTimeMinuteHand.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN: {
+                        System.out.println("Inside imgVwSetTimeMinuteHand ACTION_DOWN");
+                        // imgVwsetTimeClkHand.setImageResource(R.drawable.hour_hand_shadow);
+                        break;
+                    }
+                    case MotionEvent.ACTION_UP: {
+                        System.out.println("Inside imgVwSetTimeMinuteHand ACTION_UP");
+                        isTouchMinuteHand = false;
+                    }
+                }
+                return isTouchMinuteHand;
+            }
+        });
+        //------------------------------------------
         btnSetTimeBack.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -166,11 +242,86 @@ public class SetTimeActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
 
+    public static int pxToDp(int px) {
+        return (int) (px / Resources.getSystem().getDisplayMetrics().density);
+    }
 
+    public static int dpToPx(int dp) {
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
+    }
+
+    public void screenTapped(View view) {
+        // Your code here
+    }
+
+    public static int usingBinarySearch(int value, int[] a) {
+        if (value <= a[0]) {
+            return a[0];
+        }
+        if (value >= a[a.length - 1]) {
+            return a[a.length - 1];
+        }
+
+        int result = Arrays.binarySearch(a, value);
+        if (result >= 0) {
+            return a[result];
+        }
+
+        int insertionPoint = -result - 1;
+        return (a[insertionPoint] - value) < (value - a[insertionPoint - 1]) ?
+                a[insertionPoint] : a[insertionPoint - 1];
     }
 
 
+    private View.OnTouchListener handleTouch = new View.OnTouchListener() {
+        public boolean onTouch(View v, MotionEvent event) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    System.out.println("***ACTION_DOWN Parent view***");
+                    break;
+
+                case MotionEvent.ACTION_MOVE:
+                    System.out.println("***ACTION_MOVE Parent view***");
+                    float tapLocationX = (float) event.getX();
+                    float tapLocationY = (float) event.getY();
+                    double theta = Math.atan2(tapLocationY - centreY, tapLocationX - centreX);
+                    theta += Math.PI / 2;
+                    clockAngle = Math.toDegrees(theta);
+                    if (clockAngle < 0) {
+                        clockAngle += 360;
+                    }
+                   // System.out.println("**handRadianAngle***" + clockAngle);
+                    if (!isTouchHourHand) {
+                        isTouchMinuteHand = false;
+                        imgVwSetTimeHourHand.setRotation((float) clockAngle);
+                    } else if (!isTouchMinuteHand) {
+                        imgVwSetTimeMinuteHand.setRotation((float) clockAngle);
+                    }
+                    break;
+                case MotionEvent.ACTION_UP:
+                    if (!isTouchHourHand) {
+                        newHourAngle = usingBinarySearch((int) clockAngle, hourArray);
+                        imgVwSetTimeHourHand.setRotation((float) newHourAngle);
+                        System.out.println("***ACTION_UP hour Parent view***" + newHourAngle);
+                    } else if (!isTouchMinuteHand) {
+                        newMinuteAngle = usingBinarySearch((int) clockAngle, minuteArray);
+                        imgVwSetTimeMinuteHand.setRotation((float) newMinuteAngle);
+
+                        newHourAngle = newHourAngle + (newMinuteAngle) / 12;
+                        imgVwSetTimeHourHand.setRotation((float) newHourAngle);
+
+                        System.out.println("***ACTION_UP minute Parent view***" + newMinuteAngle);
+
+                    }
+                    isTouchMinuteHand = true;
+                    isTouchHourHand = true;
+                    break;
+            }
+            return true;
+        }
+    };
 
     public void playSoundSetTime(String soundName) {
         System.out.println("playSound clicked ---------" + soundName);
