@@ -474,7 +474,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public ArrayList parseGuessTimeArray(String fileName) {
-        System.out.println("parseGuessTimeArray****");
+        //System.out.println("parseGuessTimeArray****");
 
         String strJson = null;
         ArrayList<GuessTimeItem> guessTimeDataArray;
@@ -490,7 +490,7 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject jsonRootObject = new JSONObject(strJson);
                 //Get the instance of JSONArray that contains JSONObjects
                 JSONArray jsonArray = jsonRootObject.optJSONArray(fileName);
-                System.out.println("jsonArray#####"+jsonArray);
+              //  System.out.println("jsonArray#####"+jsonArray);
 
                 //Iterate the jsonArray and print the info of JSONObjects
                 for(int i=0; i < jsonArray.length(); i++){
@@ -506,14 +506,14 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                             GuessTimeItem guessTimeItem = new GuessTimeItem(jsonObject.getInt("hour"), jsonObject.getInt("minute"), listOptions,jsonObject.getInt("answer"));
-                            System.out.println("guessTimeItem!!!!!"+guessTimeItem);
+                          //  System.out.println("guessTimeItem!!!!!"+guessTimeItem);
                             //  System.out.println("yyyyyyy"+quizItem.arrayCaption);
                             guessTimeDataArray.add(guessTimeItem);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
-                System.out.println("----guessTimeDataArray---"+guessTimeDataArray);
+             //   System.out.println("----guessTimeDataArray---"+guessTimeDataArray);
                 return guessTimeDataArray;
             } catch (JSONException e) {e.printStackTrace();}
         } catch (IOException e) {
