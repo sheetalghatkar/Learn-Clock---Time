@@ -1,40 +1,40 @@
 
 package com.mobiapps360.LearnClockTime;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.media.MediaPlayer;
-import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
-import android.util.Range;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.ImageButton;
-import android.widget.ImageView;
+        import android.content.Context;
+        import android.content.SharedPreferences;
+        import android.content.res.Resources;
+        import android.media.MediaPlayer;
+        import android.os.Bundle;
+        import android.os.Handler;
+        import android.util.Log;
+        import android.util.Range;
+        import android.view.MotionEvent;
+        import android.view.View;
+        import android.widget.ImageButton;
+        import android.widget.ImageView;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
+        import androidx.annotation.NonNull;
+        import androidx.appcompat.app.AppCompatActivity;
+        import androidx.cardview.widget.CardView;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+        import java.io.IOException;
+        import java.util.ArrayList;
+        import java.util.Arrays;
+        import java.util.List;
 
-import com.bumptech.glide.Glide;
-import com.daprlabs.cardstack.SwipeDeck;
-import com.google.android.gms.ads.AdError;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.FullScreenContentCallback;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.interstitial.InterstitialAd;
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+        import com.bumptech.glide.Glide;
+        import com.daprlabs.cardstack.SwipeDeck;
+        import com.google.android.gms.ads.AdError;
+        import com.google.android.gms.ads.AdListener;
+        import com.google.android.gms.ads.AdRequest;
+        import com.google.android.gms.ads.AdView;
+        import com.google.android.gms.ads.FullScreenContentCallback;
+        import com.google.android.gms.ads.LoadAdError;
+        import com.google.android.gms.ads.interstitial.InterstitialAd;
+        import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
-public class SetTimeActivity extends AppCompatActivity {
+public class PlayClockActivity extends AppCompatActivity {
     // on below line we are creating variable
     // for our array list and swipe deck.
     private ImageButton btnSoundSetTimeOnOff;
@@ -66,7 +66,7 @@ public class SetTimeActivity extends AppCompatActivity {
     List<Integer> minuteArrayList;
     int[] minuteArray;
     ImageView imgVwSetTimeHourHand;
-    ImageView imgVwSetTimeMinuteHand;
+    ImageView imgVwPlayClockMinuteHand;
     int newHourAngle;
     int newMinuteAngle;
     //Declare variables
@@ -79,17 +79,17 @@ public class SetTimeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_set_time);
-        btnSoundSetTimeOnOff = findViewById(R.id.btnSoundSetTimeOnOff);
-        card_hour_hand = findViewById(R.id.card_set_time_hour_hand);
-        card_minute_hand = findViewById(R.id.card_set_time_minute_hand);
-        btnSetTimeBack = findViewById(R.id.btnSetTimeBack);
-        imgViewWallPaper = findViewById(R.id.setTimeWallImage);
-        imgVwSetLoader = findViewById(R.id.imgVwSetTimeLoader);
-        viewLearnLoader = findViewById(R.id.viewLoaderSetTimeBg);
-        imgVwClockDial = findViewById(R.id.imgVwSetTimeClockDial);
-        imgVwSetTimeHourHand = findViewById(R.id.imgVwSetTimeHourHand);
-        imgVwSetTimeMinuteHand = findViewById(R.id.imgVwSetTimeMinuteHand);
+        setContentView(R.layout.activity_play_clock);
+        btnSoundSetTimeOnOff = findViewById(R.id.btnSoundPlayClockOnOff);
+        card_hour_hand = findViewById(R.id.card_play_clock_hour_hand);
+        card_minute_hand = findViewById(R.id.card_play_clock_minute_hand);
+        btnSetTimeBack = findViewById(R.id.btnPlayClockBack);
+        imgViewWallPaper = findViewById(R.id.playClockWallImage);
+        imgVwSetLoader = findViewById(R.id.imgVwPlayClockLoader);
+        viewLearnLoader = findViewById(R.id.viewLoaderPlayClockBg);
+        imgVwClockDial = findViewById(R.id.imgVwPlayClockClockDial);
+        imgVwSetTimeHourHand = findViewById(R.id.imgVwPlayClockHourHand);
+        imgVwPlayClockMinuteHand = findViewById(R.id.imgVwPlayClockMinuteHand);
         Glide.with(this).load(R.drawable.loader).into(imgVwSetLoader);
         sharedPreferences = getSharedPreferences(myPreferences, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -137,7 +137,7 @@ public class SetTimeActivity extends AppCompatActivity {
         newMinuteAngle = 60;
         card_hour_hand.setRotation((float) newHourAngle);
         card_minute_hand.setRotation((float) newMinuteAngle);
-        imgVwSetTimeMinuteHand.setAlpha(0.7f);
+        imgVwPlayClockMinuteHand.setAlpha(0.7f);
         imgVwSetTimeHourHand.setAlpha(0.7f);
 
         System.out.println("Hour array&&&&&:"+ nearest_small_value(60));
@@ -193,7 +193,7 @@ public class SetTimeActivity extends AppCompatActivity {
                         isTouchHourHand = false;
                         isTouchHourWhileMoving = false;
                         imgVwSetTimeHourHand.setAlpha(1.0f);
-                        imgVwSetTimeMinuteHand.setAlpha(0.7f);
+                        imgVwPlayClockMinuteHand.setAlpha(0.7f);
                         break;
                     }
                 }
@@ -202,10 +202,10 @@ public class SetTimeActivity extends AppCompatActivity {
         });
 
         //-----------------------------------------
-        imgVwSetTimeMinuteHand.setOnTouchListener(new View.OnTouchListener() {
+        imgVwPlayClockMinuteHand.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                System.out.println("imgVwSetTimeMinuteHand touch****");
+                System.out.println("imgVwPlayClockMinuteHand touch****");
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN: {
                         isTouchMinuteWhileMoving = true;
@@ -217,7 +217,7 @@ public class SetTimeActivity extends AppCompatActivity {
                         isTouchMinuteHand = false;
                         isTouchMinuteWhileMoving = false;
                         imgVwSetTimeHourHand.setAlpha(0.7f);
-                        imgVwSetTimeMinuteHand.setAlpha(1.0f);
+                        imgVwPlayClockMinuteHand.setAlpha(1.0f);
                         break;
                     }
                 }
@@ -238,7 +238,7 @@ public class SetTimeActivity extends AppCompatActivity {
                         if (player != null) {
                             player.release();
                         }
-                        SetTimeActivity.super.onBackPressed();
+                        PlayClockActivity.super.onBackPressed();
                     }
                 }
                 return true;
@@ -383,7 +383,7 @@ public class SetTimeActivity extends AppCompatActivity {
                     isTouchHourHand = true;
                     isTouchHourWhileMoving = false;
                     isTouchMinuteWhileMoving = false;
-                    imgVwSetTimeMinuteHand.setAlpha(0.7f);
+                    imgVwPlayClockMinuteHand.setAlpha(0.7f);
                     imgVwSetTimeHourHand.setAlpha(0.7f);
 
                     break;
@@ -500,7 +500,7 @@ public class SetTimeActivity extends AppCompatActivity {
                 // The mInterstitialAd reference will be null until
                 // an ad is loaded.
                 mInterstitialAd = interstitialAd;
-                mInterstitialAd.show(SetTimeActivity.this);
+                mInterstitialAd.show(PlayClockActivity.this);
 
                 // Log.i(TAG, "onAdLoaded");
                 mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
@@ -510,7 +510,7 @@ public class SetTimeActivity extends AppCompatActivity {
                         Log.i("TAG", "The ad was dismissed.");
                         if (fromHome) {
                             Log.i("playCrad", "The ad was dismissed---if");
-                            SetTimeActivity.super.onBackPressed();
+                            PlayClockActivity.super.onBackPressed();
                             showHideLoader(false);
                         } else {
                             Log.i("playCrad", "The ad was dismissed-----else.");

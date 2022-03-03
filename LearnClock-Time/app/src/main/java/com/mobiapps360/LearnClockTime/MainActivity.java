@@ -355,7 +355,8 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
     public void playWithClockClicked(View v) {
-       // System.out.println("@@@@@@@@@@@@@@@playWithClockClicked clicked@@@@@@@@@@@");
+        Intent intent = new Intent(this, PlayClockActivity.class);
+        startActivity(intent);
     }
     public void otherAppsTabClicked(View v) {
       //  System.out.println("@@@@@@@@@@@@@@@Our other apps clicked@@@@@@@@@@@");

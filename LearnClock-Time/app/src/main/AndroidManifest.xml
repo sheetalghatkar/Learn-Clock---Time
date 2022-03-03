@@ -15,6 +15,7 @@
         <activity android:name="com.mobiapps360.LearnClockTime.LearnClockActivity" />
         <activity android:name="com.mobiapps360.LearnClockTime.GuessTimeActivity" />
         <activity android:name="com.mobiapps360.LearnClockTime.SetTimeActivity" />
+        <activity android:name="com.mobiapps360.LearnClockTime.PlayClockActivity" />
 
         <activity
             android:name=".MainActivity"

@@ -2,14 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/setTimeActivityLayout"
+    android:id="@+id/playClockActivityLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/cardview_shadow_start_color"
-    tools:context=".SetTimeActivity">
+    tools:context=".PlayClockActivity">
 
     <ImageView
-        android:id="@+id/setTimeWallImage"
+        android:id="@+id/playClockWallImage"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:scaleType="fitXY"
@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/btnSetTimeBack"
+        android:id="@+id/btnPlayClockBack"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginStart="10dp"
@@ -31,7 +31,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/setTimeBgTitle"
+        android:id="@+id/playClockBgTitle"
         android:layout_width="250dp"
         android:layout_height="50dp"
         android:layout_marginLeft="15dp"
@@ -41,28 +41,28 @@
         android:src="@mipmap/blue_bg_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btnSoundSetTimeOnOff" />
+        app:layout_constraintTop_toTopOf="@+id/btnSoundPlayClockOnOff" />
 
     <TextView
-        android:id="@+id/txtViewSetTimeTitle"
+        android:id="@+id/txtViewPlayClockTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginBottom="4dp"
         android:fontFamily="@font/waltograph"
-        android:text="Set Time"
+        android:text="Play With Clock"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="25sp"
         android:textStyle="normal"
-        app:layout_constraintBottom_toBottomOf="@+id/btnSoundSetTimeOnOff"
+        app:layout_constraintBottom_toBottomOf="@+id/btnSoundPlayClockOnOff"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
 
     <ImageButton
-        android:id="@+id/btnSoundSetTimeOnOff"
+        android:id="@+id/btnSoundPlayClockOnOff"
         android:layout_width="37dp"
         android:layout_height="37dp"
         android:layout_marginTop="20dp"
@@ -75,28 +75,28 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imgVwSetTimeClockDial"
+        android:id="@+id/imgVwPlayClockClockDial"
         android:layout_width="350dp"
         android:layout_height="350dp"
         android:layout_marginTop="20dp"
         android:src="@drawable/clock_dial"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtViewSetTimeTitle"></ImageView>
+        app:layout_constraintTop_toBottomOf="@+id/txtViewPlayClockTitle"></ImageView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/card_set_time_hour_hand"
+        android:id="@+id/card_play_clock_hour_hand"
         android:layout_width="54dp"
         android:layout_height="220dp"
         android:layout_marginLeft="148dp"
         app:cardBackgroundColor="@android:color/transparent"
         app:cardElevation="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imgVwSetTimeClockDial"
-        app:layout_constraintStart_toStartOf="@+id/imgVwSetTimeClockDial"
-        app:layout_constraintTop_toTopOf="@+id/imgVwSetTimeClockDial">
+        app:layout_constraintBottom_toBottomOf="@+id/imgVwPlayClockClockDial"
+        app:layout_constraintStart_toStartOf="@+id/imgVwPlayClockClockDial"
+        app:layout_constraintTop_toTopOf="@+id/imgVwPlayClockClockDial">
 
         <ImageView
-            android:id="@+id/imgVwSetTimeHourHand"
+            android:id="@+id/imgVwPlayClockHourHand"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:scaleType="fitXY"
@@ -107,18 +107,18 @@
 
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/card_set_time_minute_hand"
+        android:id="@+id/card_play_clock_minute_hand"
         android:layout_width="54dp"
         android:layout_height="310dp"
         android:layout_marginLeft="148dp"
         app:cardBackgroundColor="@android:color/transparent"
         app:cardElevation="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imgVwSetTimeClockDial"
-        app:layout_constraintStart_toStartOf="@+id/imgVwSetTimeClockDial"
-        app:layout_constraintTop_toTopOf="@+id/imgVwSetTimeClockDial">
+        app:layout_constraintBottom_toBottomOf="@+id/imgVwPlayClockClockDial"
+        app:layout_constraintStart_toStartOf="@+id/imgVwPlayClockClockDial"
+        app:layout_constraintTop_toTopOf="@+id/imgVwPlayClockClockDial">
 
         <ImageView
-            android:id="@+id/imgVwSetTimeMinuteHand"
+            android:id="@+id/imgVwPlayClockMinuteHand"
             android:layout_width="40dp"
             android:layout_height="140dp"
             android:layout_gravity="center_horizontal"
@@ -130,18 +130,18 @@
 
 
     <ImageView
-        android:id="@+id/imgVwCentreSetTime"
+        android:id="@+id/imgVwCentrePlayClock"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:scaleType="fitXY"
         android:src="@drawable/clock_center"
-        app:layout_constraintBottom_toBottomOf="@+id/imgVwSetTimeClockDial"
-        app:layout_constraintEnd_toEndOf="@+id/imgVwSetTimeClockDial"
-        app:layout_constraintStart_toStartOf="@+id/imgVwSetTimeClockDial"
-        app:layout_constraintTop_toTopOf="@+id/imgVwSetTimeClockDial"></ImageView>
+        app:layout_constraintBottom_toBottomOf="@+id/imgVwPlayClockClockDial"
+        app:layout_constraintEnd_toEndOf="@+id/imgVwPlayClockClockDial"
+        app:layout_constraintStart_toStartOf="@+id/imgVwPlayClockClockDial"
+        app:layout_constraintTop_toTopOf="@+id/imgVwPlayClockClockDial"></ImageView>
 
     <View
-        android:id="@+id/viewLoaderSetTimeBg"
+        android:id="@+id/viewLoaderPlayClockBg"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="#99000000"
@@ -153,7 +153,7 @@
 
 
     <ImageView
-        android:id="@+id/imgVwSetTimeLoader"
+        android:id="@+id/imgVwPlayClockLoader"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:background="@drawable/loader"
@@ -165,7 +165,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.gms.ads.AdView
-        android:id="@+id/adViewBannerSetTimeActivity"
+        android:id="@+id/adViewBannerPlayClockActivity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
