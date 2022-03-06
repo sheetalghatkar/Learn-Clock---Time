@@ -1,22 +1,35 @@
 
 package com.mobiapps360.LearnClockTime;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Html;
 import android.util.Log;
 import android.util.Range;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,57 +52,58 @@ public class SetTimeActivity extends AppCompatActivity {
     // for our array list and swipe deck.
     private ImageButton btnSoundSetTimeOnOff;
     private ImageButton btnSetTimeBack;
+    private ImageButton btnForward;
+    private ImageButton btnBackward;
+    private ImageButton btnSetTimeSound;
     Boolean getSoundFlag = true;
     private ImageView imgViewWallPaper;
-    int clickCount = 1;
-    int adShowCount = 13;
+    TextView txtViewStrTimeSetTime;
     private AdView mAdView;
     ImageView imgVwSetLoader;
     View viewLearnLoader;
     AdRequest adRequest;
     private InterstitialAd mInterstitialAd;
-    int hourArrayLength = 0;
-    int tempMinAngle;
-    CardView card_hour_hand;
-    CardView card_minute_hand;
-    boolean isTouchOnAnalogClock = false;
-    int[] hourArray;
-    double clockAngle;
-    boolean isTouchHourHand; // to move only Hour hand
-    boolean isTouchMinuteHand; // to move only Minute hand
-
-    boolean isTouchHourWhileMoving = false; // to Check hour hand touch while moving
-    boolean isTouchMinuteWhileMoving = false; //  to Check minute hand touch while moving
-
-    double centreX = 0.0;
-    double centreY = 0.0;
-    List<Integer> minuteArrayList;
-    int[] minuteArray;
-    ImageView imgVwSetTimeHourHand;
-    ImageView imgVwSetTimeMinuteHand;
-    int newHourAngle;
-    int newMinuteAngle;
-    //Declare variables
-    ImageView imgVwClockDial;
     MediaPlayer player;
+    CardView cardViewDoneButton;
+    private RecyclerView recycleViewSetTime;
+    SetTimeAdapter setTimeAdapter;
+    ImageButton buttonSetTimeDone;
+    //Declare variables
+    int currentIndex = 0;
+    int clickCount = 1;
+    int adShowCount = 13;
+
+
+    int soundCountTwo = 0;
+    int soundCountThree = 0;
+
     public static SharedPreferences sharedPreferences = null;
     public static final String myPreferences = "myPref";
     public static final String soundLearnActivity = "soundLearnActivityKey";
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_time);
         btnSoundSetTimeOnOff = findViewById(R.id.btnSoundSetTimeOnOff);
-        card_hour_hand = findViewById(R.id.card_set_time_hour_hand);
-        card_minute_hand = findViewById(R.id.card_set_time_minute_hand);
         btnSetTimeBack = findViewById(R.id.btnSetTimeBack);
         imgViewWallPaper = findViewById(R.id.setTimeWallImage);
         imgVwSetLoader = findViewById(R.id.imgVwSetTimeLoader);
         viewLearnLoader = findViewById(R.id.viewLoaderSetTimeBg);
-        imgVwClockDial = findViewById(R.id.imgVwSetTimeClockDial);
-        imgVwSetTimeHourHand = findViewById(R.id.imgVwSetTimeHourHand);
-        imgVwSetTimeMinuteHand = findViewById(R.id.imgVwSetTimeMinuteHand);
+        recycleViewSetTime = findViewById(R.id.recycleViewSetTime);
+        btnForward = findViewById(R.id.btnSetTimeForward);
+        btnBackward = findViewById(R.id.btnSetTimeBackward);
+        btnSetTimeSound = findViewById(R.id.btnSetTimeSound);
+        txtViewStrTimeSetTime = findViewById(R.id.txtViewStrTimeSetTime);
+        buttonSetTimeDone = findViewById(R.id.buttonSetTimeDone);
+        cardViewDoneButton = findViewById(R.id.cardViewDoneButton);
+        cardViewDoneButton.setBackgroundResource(R.drawable.card_view_border);
+        GradientDrawable gradientDrawable = (GradientDrawable) cardViewDoneButton.getBackground();
+        gradientDrawable.setStroke(4, Color.parseColor("#1e90ff"));
+        gradientDrawable.setColor(getResources().getColor(R.color.offwhite_done));
+
+
         Glide.with(this).load(R.drawable.loader).into(imgVwSetLoader);
         sharedPreferences = getSharedPreferences(myPreferences, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -105,42 +119,10 @@ public class SetTimeActivity extends AppCompatActivity {
             editor.commit();
             btnSoundSetTimeOnOff.setImageResource(R.mipmap.sound_on);
         }
-        isTouchHourHand = true;
-        isTouchMinuteHand = true;
 
-        // on below line we are initializing our array list and swipe deck.
-        centreY = 481;     // imgVwClockDial.getHeight()/2;
-        centreX = 481;    //   imgVwClockDial.getWidth()/2;
-        imgVwClockDial.setOnTouchListener(handleTouch);
-        hourArray = new int[]{0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360};
-        minuteArrayList = new ArrayList<Integer>();
-        hourArrayLength = hourArray.length;
-        int iCount = 0;
-        do {
-            minuteArrayList.add(iCount);
-            iCount = iCount + 6;
-        } while (iCount < 366);
+        txtViewStrTimeSetTime.setText(Html.fromHtml(Constant.setTimeItemList[currentIndex].timeString));
+        playSoundSetTime(Constant.setTimeItemList[currentIndex].soundCount);
 
-
-//        minuteArray = minuteArrayList.toArray(new Integer[0]);
-
-        minuteArray = new int[minuteArrayList.size()];
-
-        for (int i = 0; i < minuteArray.length; i++) {
-            minuteArray[i] = minuteArrayList.get(i);
-            //     System.out.println("---minuteArray---" + minuteArray[i]);
-        }
-
-
-        tempMinAngle = 60;
-        newHourAngle = 300;
-        newMinuteAngle = 60;
-        card_hour_hand.setRotation((float) newHourAngle);
-        card_minute_hand.setRotation((float) newMinuteAngle);
-        imgVwSetTimeMinuteHand.setAlpha(0.7f);
-        imgVwSetTimeHourHand.setAlpha(0.7f);
-
-        System.out.println("Hour array&&&&&:"+ nearest_small_value(60));
        /* mAdView = findViewById(R.id.adViewBannerSetTimeActivity);
 //        adRequest = new AdRequest.Builder().build();
 //        mAdView.loadAd(adRequest);
@@ -178,52 +160,62 @@ public class SetTimeActivity extends AppCompatActivity {
                 // to the app after tapping on an ad.
             }
         });*/
-        //-----------------------------------------
-        imgVwSetTimeHourHand.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN: {
-                        System.out.println("Inside hour hand ACTION_DOWN");
-                        isTouchHourWhileMoving = true;
-                        break;
-                    }
-                    case MotionEvent.ACTION_UP: {
-                        System.out.println("Inside hour hand ACTION_UP");
-                        isTouchHourHand = false;
-                        isTouchHourWhileMoving = false;
-                        imgVwSetTimeHourHand.setAlpha(1.0f);
-                        imgVwSetTimeMinuteHand.setAlpha(0.7f);
-                        break;
-                    }
-                }
-                return isTouchHourHand;
-            }
-        });
 
-        //-----------------------------------------
-        imgVwSetTimeMinuteHand.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                System.out.println("imgVwSetTimeMinuteHand touch****");
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN: {
-                        isTouchMinuteWhileMoving = true;
-                        System.out.println("Inside minute hand ACTION_DOWN");
-                        break;
+
+        setTimeAdapter = new SetTimeAdapter(this);
+        setTimeAdapter.setListMenuItem(Constant.setTimeItemList);
+        recycleViewSetTime.setAdapter(setTimeAdapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        recycleViewSetTime.suppressLayout(true);
+
+        SnapHelper snapHelper = new PagerSnapHelper();
+        recycleViewSetTime.setLayoutManager(layoutManager);
+        snapHelper.attachToRecyclerView(recycleViewSetTime);
+        recycleViewSetTime
+                .addOnScrollListener(new RecyclerView.OnScrollListener() {
+                    @Override
+                    public void onScrolled(RecyclerView recyclerView,
+                                           int dx, int dy) {
+                        super.onScrolled(recyclerView, dx, dy);
+                        int offset = recycleViewSetTime.computeHorizontalScrollOffset();
+                        if (offset % recycleViewSetTime.getWidth() == 0) {
+                            int position = offset / recycleViewSetTime.getWidth();
+//                            int idSwipeImg = getApplicationContext().getResources().getIdentifier("com.mobiapps360.LearnClockTime:raw/swipe", null, null);
+                            currentIndex = position;
+
+                            if (currentIndex == Constant.setTimeItemList.length - 1) {
+                                btnForward.setImageResource(R.drawable.reload);
+                                btnBackward.setVisibility(View.VISIBLE);
+                            } else if (currentIndex == 0) {
+                                btnForward.setImageResource(R.drawable.next_question);
+                                btnBackward.setVisibility(View.INVISIBLE);
+                            } else {
+                                btnForward.setImageResource(R.drawable.next_question);
+                                btnBackward.setVisibility(View.VISIBLE);
+                            }
+                            txtViewStrTimeSetTime.setText(Html.fromHtml(Constant.setTimeItemList[currentIndex].timeString));
+
+//                            System.out.println("I m here" + clickCount);
+                            clickCount = clickCount + 1;
+//                            if (clickCount > adShowCount) {
+//                                clickCount = 0;
+//                                if (player != null) {
+//                                    player.release();
+//                                }
+//                                //  showInterstitialAds(false);
+//                            } else
+                            if (getSoundFlag == true) {
+                                if (player != null) {
+                                    player.release();
+                                }
+                                playSoundSetTime(Constant.setTimeItemList[currentIndex].soundCount);
+                            }
+                            GradientDrawable gradientDrawable = (GradientDrawable) cardViewDoneButton.getBackground();
+                            gradientDrawable.setStroke(4, Color.parseColor("#1e90ff"));
+                            gradientDrawable.setColor(getResources().getColor(R.color.offwhite_done));
+                        }
                     }
-                    case MotionEvent.ACTION_UP: {
-                        System.out.println("Inside minute hand ACTION_UP");
-                        isTouchMinuteHand = false;
-                        isTouchMinuteWhileMoving = false;
-                        imgVwSetTimeHourHand.setAlpha(0.7f);
-                        imgVwSetTimeMinuteHand.setAlpha(1.0f);
-                        break;
-                    }
-                }
-                return isTouchMinuteHand;
-            }
-        });
+                });
         //------------------------------------------
         btnSetTimeBack.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -274,6 +266,132 @@ public class SetTimeActivity extends AppCompatActivity {
                 return true;
             }
         });
+        btnForward.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN: {
+                        ((ImageButton) v).setAlpha((float) 0.5);
+                        break;
+                    }
+                    case MotionEvent.ACTION_UP: {
+                        ((ImageButton) v).setAlpha((float) 1.0);
+                        btnBackward.setVisibility(View.VISIBLE);
+                        if (currentIndex == Constant.setTimeItemList.length - 1) {
+                            btnForward.setImageResource(R.drawable.next_question);
+                            recycleViewSetTime.getLayoutManager().smoothScrollToPosition(recycleViewSetTime, new RecyclerView.State(), 0);
+                        } else {
+                            recycleViewSetTime.getLayoutManager().smoothScrollToPosition(recycleViewSetTime, new RecyclerView.State(), currentIndex + 1);
+                        }
+                    }
+                }
+                return true;
+            }
+        });
+        btnBackward.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN: {
+                        ((ImageButton) v).setAlpha((float) 0.5);
+                        break;
+                    }
+                    case MotionEvent.ACTION_UP: {
+                        ((ImageButton) v).setAlpha((float) 1.0);
+                        if (currentIndex == 0) {
+                            btnBackward.setVisibility(View.INVISIBLE);
+                        } else {
+                            btnBackward.setVisibility(View.VISIBLE);
+                            recycleViewSetTime.getLayoutManager().smoothScrollToPosition(recycleViewSetTime, new RecyclerView.State(), currentIndex - 1);
+                        }
+                    }
+                }
+                return true;
+            }
+        });
+        buttonSetTimeDone.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN: {
+                        ((ImageButton) v).setAlpha((float) 0.5);
+                        break;
+                    }
+                    case MotionEvent.ACTION_UP: {
+                        ((ImageButton) v).setAlpha((float) 1.0);
+                       // View getCurrentRecycleView = recycleViewSetTime.findViewHolderForItemId(setTimeAdapter.getItemId(currentIndex)).itemView;
+
+                        View getCurrentRecycleView = recycleViewSetTime.findViewHolderForAdapterPosition(currentIndex).itemView;
+                        //-------------------------------------------
+                        //Get hand angles set by user.
+                        TextView getUpdatedHour = getCurrentRecycleView.findViewById(R.id.txtHourHide);
+                        TextView getUpdatedMinute = getCurrentRecycleView.findViewById(R.id.txtMinuteHide);
+//                        SetTimeAdapter.ViewHolder holder = recycleViewSetTime.findViewHolderForAdapterPosition(currentIndex);
+                        int set_hour_angle = (Integer.parseInt(getUpdatedHour.getText().toString()));
+                        int set_minute_angle = Integer.parseInt(getUpdatedMinute.getText().toString());
+                        if (set_minute_angle == 360) {
+                            set_minute_angle = 0;
+                        }
+                        //-------------------------------------------
+                        int calculate_minute_angle = (Constant.setTimeItemList[currentIndex].getMinutes()) * 6;
+                        int calculat_hour_angle = (Constant.setTimeItemList[currentIndex].getHour()) * 30;
+                        calculat_hour_angle = calculat_hour_angle + (calculate_minute_angle) / 12;
+
+                        //-------------------------------------------
+                        System.out.println("set_hour_angle#####:"+set_hour_angle);
+                        System.out.println("set_minute_angle#####:"+set_minute_angle);
+                        System.out.println("calculat_hour_angle#####:"+calculat_hour_angle);
+                        System.out.println("calculate_minute_angle#####:"+calculate_minute_angle);
+                        //-------------------------------------------
+                        if ((set_hour_angle == calculat_hour_angle) && (set_minute_angle == calculate_minute_angle)) {
+                            GradientDrawable gradientDrawable = (GradientDrawable) cardViewDoneButton.getBackground();
+                            gradientDrawable.setStroke(4, Color.parseColor("#006400"));
+                            gradientDrawable.setColor(getResources().getColor(R.color.green_done));
+//                            ColorDrawable colorDrawable = (ColorDrawable) cardViewDoneButton.getBackground();
+//                            colorDrawable.setColor(Color.parseColor("#3DFF33"));
+
+                            // gradientDrawable.setStroke(4, Color.parseColor("#1e90ff"));
+                          //  gradientDrawable.setColor(Color.parseColor("#3DFF33"));
+
+                          //  cardViewDoneButton.setCardBackgroundColor(Color.parseColor("#3DFF33"));
+                        } else {
+                            GradientDrawable gradientDrawable = (GradientDrawable) cardViewDoneButton.getBackground();
+                            gradientDrawable.setStroke(4, Color.parseColor("#8B0000"));
+                            gradientDrawable.setColor(getResources().getColor(R.color.red_done));
+//                            gradientDrawable.setColor(Color.parseColor("#D2042D"));
+//                            ColorDrawable colorDrawable = (ColorDrawable) cardViewDoneButton.getBackground();
+//
+//                            colorDrawable.setColor(ContextCompat.getColor(getBaseContext(),R.id.));
+
+//                            ColorDrawable colorDrawable = (ColorDrawable) cardViewDoneButton.getBackground();
+//                            colorDrawable.setColor(Color.parseColor("#D2042D"));
+//                            gradientDrawable.setColor(Color.parseColor("#D2042D"));
+                           // gradientDrawable.setStroke(4, Color.parseColor("#1e90ff"));
+                          //  img.setCardBackgroundColor(Color.parseColor("#D2042D"));
+                        }
+                    }
+                }
+                return true;
+            }
+        });
+
+        btnSetTimeSound.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN: {
+                        ((ImageButton) v).setAlpha((float) 0.5);
+                        break;
+                    }
+                    case MotionEvent.ACTION_UP: {
+                        ((ImageButton) v).setAlpha((float) 1.0);
+                        playSoundSetTime(Constant.setTimeItemList[currentIndex].soundCount);
+                    }
+                }
+                return true;
+            }
+        });
+
     }
 
     public static int pxToDp(int px) {
@@ -288,196 +406,67 @@ public class SetTimeActivity extends AppCompatActivity {
         // Your code here
     }
 
-    public static int usingBinarySearch(int value, int[] a) {
-        if (value <= a[0]) {
-            return a[0];
-        }
-        if (value >= a[a.length - 1]) {
-            return a[a.length - 1];
-        }
-
-        int result = Arrays.binarySearch(a, value);
-        if (result >= 0) {
-            return a[result];
-        }
-
-        int insertionPoint = -result - 1;
-        return (a[insertionPoint] - value) < (value - a[insertionPoint - 1]) ?
-                a[insertionPoint] : a[insertionPoint - 1];
-    }
-
-
-    private View.OnTouchListener handleTouch = new View.OnTouchListener() {
-        public boolean onTouch(View v, MotionEvent event) {
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    System.out.println("***parent Down ***");
-                    break;
-
-                case MotionEvent.ACTION_MOVE:
-                    float tapLocationX = (float) event.getX();
-                    float tapLocationY = (float) event.getY();
-                    double theta = Math.atan2(tapLocationY - centreY, tapLocationX - centreX);
-                    theta += Math.PI / 2;
-                    clockAngle = Math.toDegrees(theta);
-                    if (clockAngle < 0) {
-                        clockAngle += 360;
-                    }
-                    if (!isTouchHourHand && isTouchHourWhileMoving) {
-                        isTouchMinuteHand = false;
-                        card_hour_hand.setRotation((float) clockAngle);
-                        System.out.println("***parent Move hour hand***"+clockAngle);
-                    } else if (!isTouchMinuteHand && isTouchMinuteWhileMoving) {
-                        if ((int)clockAngle == 0) {
-                            clockAngle = 360;
-                        }
-                        System.out.println("***parent Move minute hand tempAngle***"+tempMinAngle);
-                        System.out.println("***parent Move minute hand clockAngle***"+clockAngle);
-
-                        card_minute_hand.setRotation((float) clockAngle);
-                        if (!(tempMinAngle == (int) clockAngle)) {
-                            if ((((int) clockAngle > tempMinAngle) && (((int) clockAngle) - tempMinAngle) > 300)||((tempMinAngle == 360) && (tempMinAngle - ((int) clockAngle)) < 60)) {
-                                if (newHourAngle == 0) {
-                                    newHourAngle = 360;
-                                }
-                                newHourAngle = newHourAngle - 30;
-
-                                System.out.println("Fisrt If"+newHourAngle);
-                            } else if((tempMinAngle != 360)&&(tempMinAngle >(int) clockAngle) && (tempMinAngle - ((int) clockAngle)) > 300){
-                                if (newHourAngle == 360) {
-                                    newHourAngle = 0;
-                                }
-                                newHourAngle = newHourAngle + 30;
-                                System.out.println("second If"+newHourAngle);
-                            }
-                            tempMinAngle = (int) clockAngle;
-                            System.out.println("*** newHourAngle"+newHourAngle);
-                            newHourAngle = nearest_small_value(newHourAngle);
-                            if (newHourAngle == 360) {
-                                newHourAngle = 0;
-                            }
-                            newHourAngle = newHourAngle + (tempMinAngle) / 12;
-                            card_hour_hand.setRotation((float) newHourAngle);
-                        }
-                        System.out.println("***updated newHourAngle"+newHourAngle);
-                        System.out.println("***updated parent Move minute hand***"+tempMinAngle);
-                    }
-                    break;
-
-                case MotionEvent.ACTION_UP:
-                    System.out.println("***parent up ***");
-                    if (!isTouchHourHand && isTouchHourWhileMoving) {
-//                        newHourAngle = usingBinarySearch((int) clockAngle, hourArray);
-                        newHourAngle = nearest_small_value((int) clockAngle);
-                        if (newHourAngle == 360) {
-                            newHourAngle = 0;
-                        }
-                        if (tempMinAngle != 360) {
-                            newHourAngle = newHourAngle + (tempMinAngle) / 12;
-                        }
-
-                        card_hour_hand.setRotation((float) newHourAngle);
-                        System.out.println("***parent Up hour hand***"+newHourAngle);
-                    }
-                    isTouchMinuteHand = true;
-                    isTouchHourHand = true;
-                    isTouchHourWhileMoving = false;
-                    isTouchMinuteWhileMoving = false;
-                    imgVwSetTimeMinuteHand.setAlpha(0.7f);
-                    imgVwSetTimeHourHand.setAlpha(0.7f);
-
-                    break;
-            }
-            return true;
-        }
-    };
-
-    int nearest_small_value(int x) {
-        int low = 0, high = hourArrayLength - 1, ans = x;
-
-        // Continue until low is less
-        // than or equals to high
-        while (low <= high) {
-
-            // Find mid
-            int mid = (low + high) / 2;
-
-            // If element at mid is less than
-            // or equals to searching element
-            if (hourArray[mid] <= ans) {
-
-                // If mid is equals
-                // to searching element
-                if (hourArray[mid] == ans) {
-
-                    // Increment searching element
-                    // Make high as N - 1
-                    high = hourArrayLength - 1;
-                }
-
-                // Make low as mid + 1
-                low = mid + 1;
-            }
-
-            // Make high as mid - 1
-            else
-                high = mid - 1;
-        }
-
-        // Return the next greater element
-
-
-        if ((low - 1) >= 0) {
-            low = low - 1;
-        }
-
-        System.out.println("Value:" + x);
-        System.out.println("index value:" + hourArray[low]);
-        return hourArray[low];
-    }
-
-    public void playSoundSetTime(String soundName) {
-        System.out.println("playSound clicked ---------" + soundName);
+    public void playSoundSetTime(int soundCount) {
         if (MainActivity.sharedPreferences.getBoolean(soundLearnActivity, false)) {
-//            if (player != null) {
-//
-//                Log.i("bbbbbwer",  "pp"+player.getCurrentPosition());
-//                if (player.getCurrentPosition() != 0) {
-//                    if (player.isPlaying()) {
-//                        player.stop();
-//                    }
-//                } else {
-//                    player.release();
-//                }
-//
-//            }
-            int idSoundBg = getApplicationContext().getResources().getIdentifier("com.mobiapps360.LearnClockTime:raw/" + soundName, null, null);
-            //   player.setVolume(0.0f, 0.0f);
+            int idSoundBg = 0;
+            if ((soundCount == 1) || (soundCount == 2)) {
+                soundCountTwo = 1;
+                idSoundBg = getApplicationContext().getResources().getIdentifier("com.mobiapps360.LearnClockTime:raw/" + Constant.setTimeItemList[currentIndex].getSoundString(), null, null);
+            } else {
+                idSoundBg = getApplicationContext().getResources().getIdentifier("com.mobiapps360.LearnClockTime:raw/" + "digit_" + String.valueOf(Constant.setTimeItemList[currentIndex].getMinutesSound()), null, null);
+            }
             try {
                 player = MediaPlayer.create(getBaseContext(), idSoundBg);
-//                player.setVolume(1.0f, 1.0f);
-
-//                player.start();
             } catch (Exception e) {
+                System.out.println("Medi player exception:--" + e);
                 Log.e("Music Exception", "catch button click sound play");
             }
-
-            player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-
-                public void onPrepared(MediaPlayer mp) {
-                    player.start();
-                }
-            });
-
-            player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    player.release();
-                }
-            });
         }
+        player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
 
+            public void onPrepared(MediaPlayer mp) {
+                player.start();
+            }
+        });
+
+
+//        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+//
+//            @Override
+//            public void onCompletion(MediaPlayer mp) {
+//                player.release();
+//            }
+//        });
+        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                player.release();
+                if (soundCount == 2) {
+//                    if (soundCountTwo == 1) {
+//                        soundCountTwo = 0;
+                        int idSoundBg = getApplicationContext().getResources().getIdentifier("com.mobiapps360.LearnClockTime:raw/" + "digit_" + String.valueOf(Constant.setTimeItemList[currentIndex].getHourSound()), null, null);
+                        player = MediaPlayer.create(getBaseContext(), idSoundBg);
+                        player.start();
+                   // }
+                } else if (soundCount == 3) {
+                    int idSoundBg = getApplicationContext().getResources().getIdentifier("com.mobiapps360.LearnClockTime:raw/" + Constant.setTimeItemList[currentIndex].getSoundString(), null, null);
+                    player = MediaPlayer.create(getBaseContext(), idSoundBg);
+                    player.start();
+
+                    player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+                            player.release();
+                            int idSoundBg = getApplicationContext().getResources().getIdentifier("com.mobiapps360.LearnClockTime:raw/" + "digit_" + String.valueOf(Constant.setTimeItemList[currentIndex].getHourSound()), null, null);
+                            player = MediaPlayer.create(getBaseContext(), idSoundBg);
+                            player.start();
+                        }
+                    });
+                }
+            }
+        });
     }
 
     //Show interstitial Ads

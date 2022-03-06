@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="10dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginBottom="10dp">
+
+    <View
+        android:id="@+id/viewEmptySetTime"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@null"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"/>
+
+    <ImageView
+        android:id="@+id/imgVwSetTimeClockDial"
+        android:layout_width="320dp"
+        android:layout_height="320dp"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/clock_dial"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/viewEmptySetTime"></ImageView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_set_time_hour_hand"
+        android:layout_width="54dp"
+        android:layout_height="201dp"
+        android:layout_marginLeft="133dp"
+        app:cardBackgroundColor="@android:color/transparent"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imgVwSetTimeClockDial"
+        app:layout_constraintStart_toStartOf="@+id/imgVwSetTimeClockDial"
+        app:layout_constraintTop_toTopOf="@+id/imgVwSetTimeClockDial">
+
+        <ImageView
+            android:id="@+id/imgVwSetTimeHourHand"
+            android:layout_width="match_parent"
+            android:layout_height="84dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/hour_hand_shadow"
+            android:visibility="visible"></ImageView>
+
+    </androidx.cardview.widget.CardView>
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_set_time_minute_hand"
+        android:layout_width="54dp"
+        android:layout_height="283dp"
+        android:layout_marginLeft="133dp"
+        app:cardBackgroundColor="@android:color/transparent"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imgVwSetTimeClockDial"
+        app:layout_constraintStart_toStartOf="@+id/imgVwSetTimeClockDial"
+        app:layout_constraintTop_toTopOf="@+id/imgVwSetTimeClockDial">
+
+        <ImageView
+            android:id="@+id/imgVwSetTimeMinuteHand"
+            android:layout_width="40dp"
+            android:layout_height="128dp"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="fitXY"
+            android:src="@drawable/minute_hand"
+            android:visibility="visible"></ImageView>
+
+    </androidx.cardview.widget.CardView>
+
+
+    <ImageView
+        android:id="@+id/imgVwCentreSetTime"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/clock_center"
+        app:layout_constraintBottom_toBottomOf="@+id/imgVwSetTimeClockDial"
+        app:layout_constraintEnd_toEndOf="@+id/imgVwSetTimeClockDial"
+        app:layout_constraintStart_toStartOf="@+id/imgVwSetTimeClockDial"
+        app:layout_constraintTop_toTopOf="@+id/imgVwSetTimeClockDial"></ImageView>
+
+
+    <TextView
+        android:id="@+id/textViewSetTimeCardNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text = "1/13"
+        android:textColor="#ff0c94"
+        android:textSize="20sp"
+        android:textStyle= "normal"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/viewEmptySetTime"
+        app:layout_constraintTop_toTopOf="@+id/viewEmptySetTime"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="0dp" />
+
+
+    <TextView
+        android:id="@+id/txtHourHide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text = "1/13"
+        android:textColor="#ff0c94"
+        android:textSize="20sp"
+        android:textStyle= "normal"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="@+id/viewEmptySetTime"
+        app:layout_constraintTop_toTopOf="@+id/viewEmptySetTime"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="0dp" />
+
+    <TextView
+        android:id="@+id/txtMinuteHide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text = "1/13"
+        android:textColor="#ff0c94"
+        android:textSize="20sp"
+        android:textStyle= "normal"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="@+id/viewEmptySetTime"
+        app:layout_constraintTop_toTopOf="@+id/viewEmptySetTime"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="0dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

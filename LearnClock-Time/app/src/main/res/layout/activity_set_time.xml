@@ -74,71 +74,120 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/imgVwSetTimeClockDial"
-        android:layout_width="350dp"
-        android:layout_height="350dp"
-        android:layout_marginTop="20dp"
-        android:src="@drawable/clock_dial"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycleViewSetTime"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtViewSetTimeTitle"></ImageView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_set_time_hour_hand"
-        android:layout_width="54dp"
-        android:layout_height="220dp"
-        android:layout_marginLeft="148dp"
-        app:cardBackgroundColor="@android:color/transparent"
-        app:cardElevation="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imgVwSetTimeClockDial"
-        app:layout_constraintStart_toStartOf="@+id/imgVwSetTimeClockDial"
-        app:layout_constraintTop_toTopOf="@+id/imgVwSetTimeClockDial">
-
-        <ImageView
-            android:id="@+id/imgVwSetTimeHourHand"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/hour_hand_shadow"
-            android:visibility="visible"></ImageView>
-
-    </androidx.cardview.widget.CardView>
-
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_set_time_minute_hand"
-        android:layout_width="54dp"
-        android:layout_height="310dp"
-        android:layout_marginLeft="148dp"
-        app:cardBackgroundColor="@android:color/transparent"
-        app:cardElevation="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imgVwSetTimeClockDial"
-        app:layout_constraintStart_toStartOf="@+id/imgVwSetTimeClockDial"
-        app:layout_constraintTop_toTopOf="@+id/imgVwSetTimeClockDial">
-
-        <ImageView
-            android:id="@+id/imgVwSetTimeMinuteHand"
-            android:layout_width="40dp"
-            android:layout_height="140dp"
-            android:layout_gravity="center_horizontal"
-            android:scaleType="fitXY"
-            android:src="@drawable/minute_hand"
-            android:visibility="visible"></ImageView>
-
-    </androidx.cardview.widget.CardView>
+        app:layout_constraintTop_toTopOf="@+id/btnSetTimeBack" />
 
 
     <ImageView
-        android:id="@+id/imgVwCentreSetTime"
-        android:layout_width="50dp"
+        android:id="@+id/imgVwSetTimeTimeTitle"
+        android:layout_width="250dp"
         android:layout_height="50dp"
+        android:layout_marginTop="5dp"
         android:scaleType="fitXY"
-        android:src="@drawable/clock_center"
-        app:layout_constraintBottom_toBottomOf="@+id/imgVwSetTimeClockDial"
-        app:layout_constraintEnd_toEndOf="@+id/imgVwSetTimeClockDial"
-        app:layout_constraintStart_toStartOf="@+id/imgVwSetTimeClockDial"
-        app:layout_constraintTop_toTopOf="@+id/imgVwSetTimeClockDial"></ImageView>
+        android:src="@mipmap/pink_bg_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recycleViewSetTime" />
+
+    <TextView
+        android:id="@+id/txtViewStrTimeSetTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="TextView"
+        android:textColor="@color/white"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imgVwSetTimeTimeTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imgVwSetTimeTimeTitle" />
+
+
+    <ImageButton
+        android:id="@+id/btnSetTimeSound"
+        android:layout_width="37dp"
+        android:layout_height="37dp"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="@+id/imgVwSetTimeTimeTitle"
+        app:layout_constraintLeft_toRightOf="@+id/imgVwSetTimeTimeTitle"
+        app:layout_constraintTop_toTopOf="@+id/imgVwSetTimeTimeTitle"
+        app:srcCompat="@drawable/play_again_red" />
+
+
+    <ImageButton
+        android:id="@+id/btnSetTimeBackward"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginRight="30dp"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toStartOf="@+id/cardViewDoneButton"
+        app:layout_constraintTop_toTopOf="@+id/cardViewDoneButton"
+        app:layout_constraintBottom_toBottomOf="@+id/cardViewDoneButton"
+        app:srcCompat="@drawable/back_question" />
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewDoneButton"
+        android:layout_width="135dp"
+        android:layout_height="55dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="5dp"
+        app:cardBackgroundColor="@color/black"
+        app:layout_constraintStart_toStartOf="@+id/imgVwSetTimeTimeTitle"
+        app:layout_constraintEnd_toEndOf="@+id/imgVwSetTimeTimeTitle"
+        app:layout_constraintTop_toBottomOf="@+id/imgVwSetTimeTimeTitle">
+
+
+        <ImageButton
+            android:id="@+id/buttonSetTimeDone"
+            android:layout_width="132dp"
+            android:layout_height="51dp"
+            android:layout_gravity="center"
+            android:background="@drawable/round_corner_imge_button"></ImageButton>
+
+        <TextView
+            android:id="@+id/txtViewSetTimeDone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DONE"
+            android:layout_gravity="center"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.cardview.widget.CardView>
+
+    <ImageButton
+        android:id="@+id/btnSetTimeForward"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginLeft="30dp"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        app:layout_constraintStart_toEndOf="@+id/cardViewDoneButton"
+        app:layout_constraintTop_toTopOf="@+id/cardViewDoneButton"
+        app:layout_constraintBottom_toBottomOf="@+id/cardViewDoneButton"
+        app:srcCompat="@drawable/next_question" />
+
 
     <View
         android:id="@+id/viewLoaderSetTimeBg"
