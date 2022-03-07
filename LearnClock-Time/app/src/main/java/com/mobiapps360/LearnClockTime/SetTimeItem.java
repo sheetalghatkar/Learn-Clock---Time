@@ -26,7 +26,35 @@ public class SetTimeItem {
     String soundString;
     int soundCount;
 
-    public SetTimeItem(int hour, int minutes, int hourSound, int minutesSound, String timeString, String soundString, int soundCount) {
+    public int getSetHourHand() {
+        return setHourHand;
+    }
+
+    public void setSetHourHand(int setHourHand) {
+        this.setHourHand = setHourHand;
+    }
+
+    public int getSetMinuteHand() {
+        return setMinuteHand;
+    }
+
+    public void setSetMinuteHand(int setMinuteHand) {
+        this.setMinuteHand = setMinuteHand;
+    }
+
+    public int getResult() {
+        return result;
+    }
+
+    public void setResult(int result) {
+        this.result = result;
+    }
+
+    int setHourHand;
+    int setMinuteHand;
+    int result;  // 0 not set, 1 correct set, 2 incorrect set
+
+    public SetTimeItem(int hour, int minutes, int hourSound, int minutesSound, String timeString, String soundString, int soundCount, int setHourHand, int setMinuteHand, int result) {
         this.hour = hour;
         this.minutes = minutes;
         this.hourSound = hourSound;
@@ -34,6 +62,9 @@ public class SetTimeItem {
         this.timeString = timeString;
         this.soundString = soundString;
         this.soundCount = soundCount;
+        this.setHourHand = setHourHand;
+        this.setMinuteHand = setMinuteHand;
+        this.result = result;
     }
 
     public String getSoundString() {

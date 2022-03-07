@@ -20,7 +20,8 @@ public class SetTimeAdapter extends RecyclerView.Adapter<SetTimeAdapter.ViewHold
 
     private SetTimeItem[] listSetTimeItems;
     private Context context;
-
+    int tempMinAngle = 60;
+    int newHourAngle = 300;
 
 
 
@@ -52,7 +53,12 @@ public class SetTimeAdapter extends RecyclerView.Adapter<SetTimeAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.setIsRecyclable(false);
         final SetTimeItem SetTimeItemModel = listSetTimeItems[position];
+        System.out.println("onBindViewHolder---");
+        newHourAngle = SetTimeItemModel.setHourHand;
+        tempMinAngle = SetTimeItemModel.setMinuteHand;
         holder.textViewCardNumber.setText(Html.fromHtml("<b>" + String.valueOf(position+1) + "</b>"+"/"+String.valueOf(listSetTimeItems.length)));
+        holder.card_hour_hand.setRotation((float) newHourAngle);
+        holder.card_minute_hand.setRotation((float) tempMinAngle);
     }
 
     @Override
@@ -68,8 +74,7 @@ public class SetTimeAdapter extends RecyclerView.Adapter<SetTimeAdapter.ViewHold
         CardView card_hour_hand;
         CardView card_minute_hand;
         ImageView imgVwClockDial;
-        int tempMinAngle = 60;
-        int newHourAngle = 300;
+
         public double clockAngle;
         int[] minuteArray;
         double centreY = 481;     // imgVwClockDial.getHeight()/2;
@@ -98,8 +103,10 @@ public class SetTimeAdapter extends RecyclerView.Adapter<SetTimeAdapter.ViewHold
             this.txtHourHide = itemView.findViewById(R.id.txtHourHide);
             this.txtMinuteHide = itemView.findViewById(R.id.txtMinuteHide);
 
-            card_hour_hand.setRotation((float) newHourAngle);
-            card_minute_hand.setRotation((float) tempMinAngle);
+
+            System.out.println("ViewHolder---***"+itemView.getTag());
+
+
             imgVwSetTimeMinuteHand.setAlpha(0.7f);
             imgVwSetTimeHourHand.setAlpha(0.7f);
             //-----------------------------------------
