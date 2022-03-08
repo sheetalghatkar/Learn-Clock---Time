@@ -20,8 +20,8 @@ public class SetTimeAdapter extends RecyclerView.Adapter<SetTimeAdapter.ViewHold
 
     private SetTimeItem[] listSetTimeItems;
     private Context context;
-    int tempMinAngle = 60;
-    int newHourAngle = 300;
+    int tempMinAngle = 0;
+    int newHourAngle = 0;
 
 
 
@@ -59,6 +59,8 @@ public class SetTimeAdapter extends RecyclerView.Adapter<SetTimeAdapter.ViewHold
         holder.textViewCardNumber.setText(Html.fromHtml("<b>" + String.valueOf(position+1) + "</b>"+"/"+String.valueOf(listSetTimeItems.length)));
         holder.card_hour_hand.setRotation((float) newHourAngle);
         holder.card_minute_hand.setRotation((float) tempMinAngle);
+        holder.txtHourHide.setText(String.valueOf((int) newHourAngle));
+        holder.txtMinuteHide.setText(String.valueOf((int) tempMinAngle));
     }
 
     @Override
@@ -234,7 +236,14 @@ public class SetTimeAdapter extends RecyclerView.Adapter<SetTimeAdapter.ViewHold
                         System.out.println("***parent up ***");
                         if (!isTouchHourHand && isTouchHourWhileMoving) {
 //                        newHourAngle = usingBinarySearch((int) clockAngle, hourArray);
-                            newHourAngle = nearest_small_value((int) clockAngle);
+                            System.out.println("***parent up tempMinAngle***"+tempMinAngle);
+
+                            if (tempMinAngle != 360 && tempMinAngle != 0) {
+                                newHourAngle = nearest_small_value((int) clockAngle);
+                            } else {
+                                System.out.println("***parent up temp angle 360***");
+                                newHourAngle = usingBinarySearch((int) clockAngle,hourArray);
+                            }
                             if (newHourAngle == 360) {
                                 newHourAngle = 0;
                             }

@@ -26,6 +26,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.helper.widget.MotionEffect;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
@@ -33,6 +34,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
 import java.io.IOException;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -73,7 +75,7 @@ public class SetTimeActivity extends AppCompatActivity {
     int currentIndex = 0;
     int clickCount = 1;
     int adShowCount = 13;
-    SetTimeItem [] setTimeItemList;
+    SetTimeItem[] setTimeItemList;
     boolean sameCellDoneClicked = false;
     int soundCountTwo = 0;
     int soundCountThree = 0;
@@ -122,50 +124,52 @@ public class SetTimeActivity extends AppCompatActivity {
         }
         correctSoundStr = "well_done";
         setTimeItemList = new SetTimeItem[]{
-                new SetTimeItem(4,0, 4,0,"4 "+"<b>"+"o'clock"+"</b>","learndesc_clock_4", 1, 300,60,0),
-                new SetTimeItem(6,0,6,0,"6 "+"<b>"+"o'clock"+"</b>","learndesc_clock_6", 1,300,60,0),
-                new SetTimeItem(9,0,9,0,"9 "+"<b>"+"o'clock"+"</b>","learndesc_clock_9", 1,300,60,0),
-                new SetTimeItem(2,0,2,0,"2 "+"<b>"+"o'clock"+"</b>","learndesc_clock_2", 1,300,60,0),
-                new SetTimeItem(5,0,5,0,"5 "+"<b>"+"o'clock"+"</b>","learndesc_clock_5", 1,300,60,0),
-                new SetTimeItem(11,0,11,0,"11 "+"<b>"+"o'clock"+"</b>","learndesc_clock_11", 1,300,60,0),
-                new SetTimeItem(1,0,1,0,"1 "+"<b>"+"o'clock"+"</b>","learndesc_clock_1", 1,300,60,0),
-                new SetTimeItem(8,0,8,0,"8 "+"<b>"+"o'clock"+"</b>","learndesc_clock_8", 1,300,60,0),
-                new SetTimeItem(5,0,5,0,"5 "+"<b>"+"o'clock"+"</b>","learndesc_clock_5", 1,300,60,0),
-                new SetTimeItem(3,0,3,0,"3 "+"<b>"+"o'clock"+"</b>","learndesc_clock_3", 1,300,60,0),
-                new SetTimeItem(12,0,12,0,"12 "+"<b>"+"o'clock"+"</b>","learndesc_clock_12", 1,300,60,0),
-                new SetTimeItem(4,15,4,15,"<b>"+"quarter past"+"</b>"+" 4","quarter_past", 2,300,60,0),
-                new SetTimeItem(5,45,6,15,"<b>"+"quarter to"+"</b>"+" 6","quarter_to", 2,300,60,0),
-                new SetTimeItem(9,30,9,30,"<b>"+"half past"+"</b>"+" 9","half_past", 2,300,60,0),
-                new SetTimeItem(11,45,12,15,"<b>"+"quarter to"+"</b>"+" 12","quarter_to", 2,300,60,0),
-                new SetTimeItem(6,30,6,30,"<b>"+"half past"+"</b>"+" 6","half_past", 2,300,60,0),
-                new SetTimeItem(8,15,8,15,"<b>"+"quarter past"+"</b>"+" 8","quarter_past", 2,300,60,0),
-                new SetTimeItem(1,45,2,15,"<b>"+"quarter to"+"</b>"+" 2","quarter_to", 2,300,60,0),
-                new SetTimeItem(12,30,12,30,"<b>"+"half past"+"</b>"+" 12","half_past", 2,300,60,0),
-                new SetTimeItem(12,45,1,15,"<b>"+"quarter to"+"</b>"+" 1","quarter_to", 2,300,60,0),
-                new SetTimeItem(9,15,9,15,"<b>"+"quarter past"+"</b>"+" 9","quarter_past", 2,300,60,0),
-                new SetTimeItem(5,30,5,30,"<b>"+"half past"+"</b>"+" 5","half_past", 2,300,60,0),
-                new SetTimeItem(3,45,4,15,"<b>"+"quarter to"+"</b>"+" 4","quarter_to", 2,300,60,0),
-                new SetTimeItem(10,15,10,15,"<b>"+"quarter past"+"</b>"+" 10","quarter_past", 2,300,60,0),
-                new SetTimeItem(2,30,2,30,"<b>"+"half past"+"</b>"+" 2","half_past", 2,300,60,0),
-                new SetTimeItem(11,30,11,30,"<b>"+"half past"+"</b>"+" 11","half_past", 2,300,60,0),
-                new SetTimeItem(4,20,4,20,"20 minutes "+"<b>"+"past"+"</b>"+" 4","minutes_past", 3,300,60,0),
-                new SetTimeItem(12,10,12,10,"10 minutes "+"<b>"+"past"+"</b>"+" 12","minutes_past", 3,300,60,0),
-                new SetTimeItem(9,25,9,25,"25 minutes "+"<b>"+"past"+"</b>"+" 9","minutes_past", 3,300,60,0),
-                new SetTimeItem(10,40,11,20,"20 "+"minutes "+"<b>"+"to"+"</b>"+" 11","minutes_to", 3,300,60,0),
-                new SetTimeItem(2,50,3,10,"10 minutes "+"<b>"+"to"+"</b>"+" 3","minutes_to", 3,300,60,0),
-                new SetTimeItem(6,35,7,25,"25 minutes "+"<b>"+"to"+"</b>"+" 7","minutes_to", 3,300,60,0),
-                new SetTimeItem(5,5,5,5,"5 minutes "+"<b>"+"past"+"</b>"+" 5","minutes_past", 3,300,60,0),
-                new SetTimeItem(7,10,7,10,"10 minutes "+"<b>"+"past"+"</b>"+" 7","minutes_past", 3,300,60,0),
-                new SetTimeItem(2,35,3,25,"25 minutes "+"<b>"+"to"+"</b>"+" 3","minutes_to", 3,300,60,0),
-                new SetTimeItem(8,55,9,5,"5 minutes "+"<b>"+"to"+"</b>"+" 9","minutes_to", 3,300,60,0),
-                new SetTimeItem(5,10,5,10,"10 minutes "+"<b>"+"past"+"</b>"+" 5","minutes_past", 3,300,60,0),
-                new SetTimeItem(10,35,11,25,"25 minutes "+"<b>"+"to"+"</b>"+" 11","minutes_to", 3,300,60,0),
-                new SetTimeItem(11,5,11,5,"5 minutes "+"<b>"+"past"+"</b>"+" 11","minutes_past", 3,300,60,0),
-                new SetTimeItem(1,40,2,20,"20 minutes "+"<b>"+"to"+"</b>"+" 2","minutes_to", 3,300,60,0),
-                new SetTimeItem(4,25,4,25,"25 minutes "+"<b>"+"past"+"</b>"+" 4","minutes_past", 3,300,60,0),
+                new SetTimeItem(4, 0, 4, 0, "4 " + "<b>" + "o'clock" + "</b>", "learndesc_clock_4", 1, 300, 60, 0),
+                new SetTimeItem(6, 0, 6, 0, "6 " + "<b>" + "o'clock" + "</b>", "learndesc_clock_6", 1, 300, 60, 0),
+                new SetTimeItem(9, 0, 9, 0, "9 " + "<b>" + "o'clock" + "</b>", "learndesc_clock_9", 1, 300, 60, 0),
+                new SetTimeItem(2, 0, 2, 0, "2 " + "<b>" + "o'clock" + "</b>", "learndesc_clock_2", 1, 300, 60, 0),
+                new SetTimeItem(5, 0, 5, 0, "5 " + "<b>" + "o'clock" + "</b>", "learndesc_clock_5", 1, 300, 60, 0),
+                new SetTimeItem(11, 0, 11, 0, "11 " + "<b>" + "o'clock" + "</b>", "learndesc_clock_11", 1, 300, 60, 0),
+                new SetTimeItem(1, 0, 1, 0, "1 " + "<b>" + "o'clock" + "</b>", "learndesc_clock_1", 1, 300, 60, 0),
+                new SetTimeItem(8, 0, 8, 0, "8 " + "<b>" + "o'clock" + "</b>", "learndesc_clock_8", 1, 300, 60, 0),
+                new SetTimeItem(5, 0, 5, 0, "5 " + "<b>" + "o'clock" + "</b>", "learndesc_clock_5", 1, 300, 60, 0),
+                new SetTimeItem(3, 0, 3, 0, "3 " + "<b>" + "o'clock" + "</b>", "learndesc_clock_3", 1, 300, 60, 0),
+                new SetTimeItem(12, 0, 12, 0, "12 " + "<b>" + "o'clock" + "</b>", "learndesc_clock_12", 1, 300, 60, 0),
+                new SetTimeItem(4, 15, 4, 15, "<b>" + "quarter past" + "</b>" + " 4", "quarter_past", 2, 300, 60, 0),
+                new SetTimeItem(5, 45, 6, 15, "<b>" + "quarter to" + "</b>" + " 6", "quarter_to", 2, 300, 60, 0),
+                new SetTimeItem(9, 30, 9, 30, "<b>" + "half past" + "</b>" + " 9", "half_past", 2, 300, 60, 0),
+                new SetTimeItem(11, 45, 12, 15, "<b>" + "quarter to" + "</b>" + " 12", "quarter_to", 2, 300, 60, 0),
+                new SetTimeItem(6, 30, 6, 30, "<b>" + "half past" + "</b>" + " 6", "half_past", 2, 300, 60, 0),
+                new SetTimeItem(8, 15, 8, 15, "<b>" + "quarter past" + "</b>" + " 8", "quarter_past", 2, 300, 60, 0),
+                new SetTimeItem(1, 45, 2, 15, "<b>" + "quarter to" + "</b>" + " 2", "quarter_to", 2, 300, 60, 0),
+                new SetTimeItem(12, 30, 12, 30, "<b>" + "half past" + "</b>" + " 12", "half_past", 2, 300, 60, 0),
+                new SetTimeItem(12, 45, 1, 15, "<b>" + "quarter to" + "</b>" + " 1", "quarter_to", 2, 300, 60, 0),
+                new SetTimeItem(9, 15, 9, 15, "<b>" + "quarter past" + "</b>" + " 9", "quarter_past", 2, 300, 60, 0),
+                new SetTimeItem(5, 30, 5, 30, "<b>" + "half past" + "</b>" + " 5", "half_past", 2, 300, 60, 0),
+                new SetTimeItem(3, 45, 4, 15, "<b>" + "quarter to" + "</b>" + " 4", "quarter_to", 2, 300, 60, 0),
+                new SetTimeItem(10, 15, 10, 15, "<b>" + "quarter past" + "</b>" + " 10", "quarter_past", 2, 300, 60, 0),
+                new SetTimeItem(2, 30, 2, 30, "<b>" + "half past" + "</b>" + " 2", "half_past", 2, 300, 60, 0),
+                new SetTimeItem(11, 30, 11, 30, "<b>" + "half past" + "</b>" + " 11", "half_past", 2, 300, 60, 0),
+                new SetTimeItem(4, 20, 4, 20, "20 minutes " + "<b>" + "past" + "</b>" + " 4", "minutes_past", 3, 300, 60, 0),
+                new SetTimeItem(12, 10, 12, 10, "10 minutes " + "<b>" + "past" + "</b>" + " 12", "minutes_past", 3, 300, 60, 0),
+                new SetTimeItem(9, 25, 9, 25, "25 minutes " + "<b>" + "past" + "</b>" + " 9", "minutes_past", 3, 300, 60, 0),
+                new SetTimeItem(10, 40, 11, 20, "20 " + "minutes " + "<b>" + "to" + "</b>" + " 11", "minutes_to", 3, 300, 60, 0),
+                new SetTimeItem(2, 50, 3, 10, "10 minutes " + "<b>" + "to" + "</b>" + " 3", "minutes_to", 3, 300, 60, 0),
+                new SetTimeItem(6, 35, 7, 25, "25 minutes " + "<b>" + "to" + "</b>" + " 7", "minutes_to", 3, 300, 60, 0),
+                new SetTimeItem(5, 5, 5, 5, "5 minutes " + "<b>" + "past" + "</b>" + " 5", "minutes_past", 3, 300, 60, 0),
+                new SetTimeItem(7, 10, 7, 10, "10 minutes " + "<b>" + "past" + "</b>" + " 7", "minutes_past", 3, 300, 60, 0),
+                new SetTimeItem(2, 35, 3, 25, "25 minutes " + "<b>" + "to" + "</b>" + " 3", "minutes_to", 3, 300, 60, 0),
+                new SetTimeItem(8, 55, 9, 5, "5 minutes " + "<b>" + "to" + "</b>" + " 9", "minutes_to", 3, 300, 60, 0),
+                new SetTimeItem(5, 10, 5, 10, "10 minutes " + "<b>" + "past" + "</b>" + " 5", "minutes_past", 3, 300, 60, 0),
+                new SetTimeItem(10, 35, 11, 25, "25 minutes " + "<b>" + "to" + "</b>" + " 11", "minutes_to", 3, 300, 60, 0),
+                new SetTimeItem(11, 5, 11, 5, "5 minutes " + "<b>" + "past" + "</b>" + " 11", "minutes_past", 3, 300, 60, 0),
+                new SetTimeItem(1, 40, 2, 20, "20 minutes " + "<b>" + "to" + "</b>" + " 2", "minutes_to", 3, 300, 60, 0),
+                new SetTimeItem(4, 25, 4, 25, "25 minutes " + "<b>" + "past" + "</b>" + " 4", "minutes_past", 3, 300, 60, 0),
         };
         txtViewStrTimeSetTime.setText(Html.fromHtml(setTimeItemList[currentIndex].timeString));
-        playSoundSetTime(setTimeItemList[currentIndex].soundCount);
+        if (getSoundFlag == true) {
+            playSoundSetTime(setTimeItemList[currentIndex].soundCount);
+        }
        /* mAdView = findViewById(R.id.adViewBannerSetTimeActivity);
 //        adRequest = new AdRequest.Builder().build();
 //        mAdView.loadAd(adRequest);
@@ -237,8 +241,6 @@ public class SetTimeActivity extends AppCompatActivity {
                                 btnBackward.setVisibility(View.VISIBLE);
                             }
                             txtViewStrTimeSetTime.setText(Html.fromHtml(setTimeItemList[currentIndex].timeString));
-
-//                            System.out.println("I m here" + clickCount);
                             clickCount = clickCount + 1;
 //                            if (clickCount > adShowCount) {
 //                                clickCount = 0;
@@ -257,7 +259,7 @@ public class SetTimeActivity extends AppCompatActivity {
                             if (setTimeItemList[currentIndex].result == 0) {
                                 gradientDrawable.setStroke(4, Color.parseColor("#1e90ff"));
                                 gradientDrawable.setColor(getResources().getColor(R.color.offwhite_done));
-                            } else  if (setTimeItemList[currentIndex].result == 1) {
+                            } else if (setTimeItemList[currentIndex].result == 1) {
                                 gradientDrawable.setStroke(4, Color.parseColor("#006400"));
                                 gradientDrawable.setColor(getResources().getColor(R.color.green_done));
                             } else {
@@ -299,7 +301,6 @@ public class SetTimeActivity extends AppCompatActivity {
                     }
                     case MotionEvent.ACTION_UP: {
                         ((ImageButton) v).setAlpha((float) 1.0);
-
                         btnSetTimeBack.setVisibility(View.VISIBLE);
                         if (sharedPreferences.contains(soundLearnActivity)) {
                             getSoundFlag = sharedPreferences.getBoolean(soundLearnActivity, false);
@@ -329,8 +330,12 @@ public class SetTimeActivity extends AppCompatActivity {
                     case MotionEvent.ACTION_UP: {
                         ((ImageButton) v).setAlpha((float) 1.0);
                         btnBackward.setVisibility(View.VISIBLE);
+                        setTimeAdapter.notifyDataSetChanged();
                         if (currentIndex == setTimeItemList.length - 1) {
                             btnForward.setImageResource(R.drawable.next_question);
+                            if (player != null) {
+                                player.release();
+                            }
                             recycleViewSetTime.getLayoutManager().smoothScrollToPosition(recycleViewSetTime, new RecyclerView.State(), 0);
                         } else {
                             recycleViewSetTime.getLayoutManager().smoothScrollToPosition(recycleViewSetTime, new RecyclerView.State(), currentIndex + 1);
@@ -350,6 +355,7 @@ public class SetTimeActivity extends AppCompatActivity {
                     }
                     case MotionEvent.ACTION_UP: {
                         ((ImageButton) v).setAlpha((float) 1.0);
+                        setTimeAdapter.notifyDataSetChanged();
                         if (currentIndex == 0) {
                             btnBackward.setVisibility(View.INVISIBLE);
                         } else {
@@ -371,7 +377,7 @@ public class SetTimeActivity extends AppCompatActivity {
                     }
                     case MotionEvent.ACTION_UP: {
                         ((ImageButton) v).setAlpha((float) 1.0);
-                       // View getCurrentRecycleView = recycleViewSetTime.findViewHolderForItemId(setTimeAdapter.getItemId(currentIndex)).itemView;
+                        // View getCurrentRecycleView = recycleViewSetTime.findViewHolderForItemId(setTimeAdapter.getItemId(currentIndex)).itemView;
 
                         View getCurrentRecycleView = recycleViewSetTime.findViewHolderForAdapterPosition(currentIndex).itemView;
                         //-------------------------------------------
@@ -379,27 +385,33 @@ public class SetTimeActivity extends AppCompatActivity {
                         TextView getUpdatedHour = getCurrentRecycleView.findViewById(R.id.txtHourHide);
                         TextView getUpdatedMinute = getCurrentRecycleView.findViewById(R.id.txtMinuteHide);
 
-                        System.out.println("getUpdatedHour#####:"+getUpdatedHour.getText());
-                        System.out.println("getUpdatedMinute#####:"+getUpdatedMinute.getText());
+                        System.out.println("getUpdatedHour#####:" + getUpdatedHour.getText());
+                        System.out.println("getUpdatedMinute#####:" + getUpdatedMinute.getText());
 //                        SetTimeAdapter.ViewHolder holder = recycleViewSetTime.findViewHolderForAdapterPosition(currentIndex);
                         int set_hour_angle = (Integer.parseInt(getUpdatedHour.getText().toString()));
                         int set_minute_angle = (Integer.parseInt(getUpdatedMinute.getText().toString()));
+                        if (set_hour_angle == 360) {
+                            set_hour_angle = 0;
+                        }
                         if (set_minute_angle == 360) {
                             set_minute_angle = 0;
                         }
                         //-------------------------------------------
                         int calculate_minute_angle = (setTimeItemList[currentIndex].getMinutes()) * 6;
                         int calculat_hour_angle = (setTimeItemList[currentIndex].getHour()) * 30;
+                        if (calculat_hour_angle == 360) {
+                            calculat_hour_angle = 0;
+                        }
                         calculat_hour_angle = calculat_hour_angle + (calculate_minute_angle) / 12;
 
                         //-------------------------------------------
-                        System.out.println("set_hour_angle#####:"+set_hour_angle);
-                        System.out.println("set_minute_angle#####:"+set_minute_angle);
-                        System.out.println("calculat_hour_angle#####:"+calculat_hour_angle);
-                        System.out.println("calculate_minute_angle#####:"+calculate_minute_angle);
+                        System.out.println("set_hour_angle#####:" + set_hour_angle);
+                        System.out.println("set_minute_angle#####:" + set_minute_angle);
+                        System.out.println("calculat_hour_angle#####:" + calculat_hour_angle);
+                        System.out.println("calculate_minute_angle#####:" + calculate_minute_angle);
                         //-------------------------------------------
                         List<SetTimeItem> tempArraylist = Arrays.asList(setTimeItemList);
-                        SetTimeItem tempSetTimeItem = tempArraylist.get(currentIndex);
+                        SetTimeItem tempSetTimeItem = tempArraylist.get(currentIndex);//Get current object from original list
                         tempSetTimeItem.setHourHand = (Integer.parseInt(getUpdatedHour.getText().toString()));
                         tempSetTimeItem.setMinuteHand = Integer.parseInt(getUpdatedMinute.getText().toString());
                         //-------------------------------------------
@@ -428,8 +440,10 @@ public class SetTimeActivity extends AppCompatActivity {
                             playResultSound("wrong_beep");
                         }
                         //-------------------------------------------
-                        tempArraylist.set(currentIndex,tempSetTimeItem);
+                        tempArraylist.set(currentIndex, tempSetTimeItem);
                         setTimeItemList = tempArraylist.toArray(setTimeItemList);
+                        System.out.println("---Current list object hour***"+setTimeItemList[currentIndex].setHourHand);
+                        System.out.println("---Current list object minute***"+setTimeItemList[currentIndex].setMinuteHand);
                         sameCellDoneClicked = true;
                     }
                 }
@@ -446,8 +460,11 @@ public class SetTimeActivity extends AppCompatActivity {
                         break;
                     }
                     case MotionEvent.ACTION_UP: {
-                        ((ImageButton) v).setAlpha((float) 1.0);
-                        playSoundSetTime(setTimeItemList[currentIndex].soundCount);
+                        if (getSoundFlag) {
+                            playSoundSetTime(setTimeItemList[currentIndex].soundCount);
+                        } else {
+                            ((ImageButton) v).setAlpha((float) 1.0);
+                        }
                     }
                 }
                 return true;
@@ -469,62 +486,81 @@ public class SetTimeActivity extends AppCompatActivity {
     }
 
     public void playSoundSetTime(int soundCount) {
-        if (MainActivity.sharedPreferences.getBoolean(soundLearnActivity, false)) {
-            int idSoundBg = 0;
-            if ((soundCount == 1) || (soundCount == 2)) {
-                soundCountTwo = 1;
-                idSoundBg = getApplicationContext().getResources().getIdentifier("com.mobiapps360.LearnClockTime:raw/" + setTimeItemList[currentIndex].getSoundString(), null, null);
-            } else {
-                idSoundBg = getApplicationContext().getResources().getIdentifier("com.mobiapps360.LearnClockTime:raw/" + "digit_" + String.valueOf(setTimeItemList[currentIndex].getMinutesSound()), null, null);
-            }
-            try {
-                player = MediaPlayer.create(getBaseContext(), idSoundBg);
-            } catch (Exception e) {
-                System.out.println("Medi player exception:--" + e);
-                Log.e("Music Exception", "catch button click sound play");
-            }
+        int setSound = 0;
+        btnSetTimeSound.setClickable(false);
+        btnSetTimeSound.setAlpha((float) 0.5);
+        if (setTimeItemList[currentIndex].getMinutes() == 0) {
+            setSound = getApplicationContext().getResources().getIdentifier("com.mobiapps360.LearnClockTime:raw/" + "set_1", null, null);
+        } else {
+            setSound = getApplicationContext().getResources().getIdentifier("com.mobiapps360.LearnClockTime:raw/" + "set", null, null);
         }
-        player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-
-            public void onPrepared(MediaPlayer mp) {
-                player.start();
-            }
-        });
+        player = MediaPlayer.create(getBaseContext(), setSound);
+        player.start();
         player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-
             @Override
             public void onCompletion(MediaPlayer mp) {
                 player.release();
-                if (soundCount == 2) {
-                        int idSoundBg = getApplicationContext().getResources().getIdentifier("com.mobiapps360.LearnClockTime:raw/" + "digit_" + String.valueOf(setTimeItemList[currentIndex].getHourSound()), null, null);
+                if (MainActivity.sharedPreferences.getBoolean(soundLearnActivity, false)) {
+                    int idSoundBg = 0;
+                    if ((soundCount == 1) || (soundCount == 2)) {
+                        soundCountTwo = 1;
+                        idSoundBg = getApplicationContext().getResources().getIdentifier("com.mobiapps360.LearnClockTime:raw/" + setTimeItemList[currentIndex].getSoundString(), null, null);
+                    } else {
+                        idSoundBg = getApplicationContext().getResources().getIdentifier("com.mobiapps360.LearnClockTime:raw/" + "digit_" + String.valueOf(setTimeItemList[currentIndex].getMinutesSound()), null, null);
+                    }
+                    try {
                         player = MediaPlayer.create(getBaseContext(), idSoundBg);
+                    } catch (Exception e) {
+                        System.out.println("Medi player exception:--" + e);
+                        Log.e("Music Exception", "catch button click sound play");
+                    }
+                }
+                player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+
+                    public void onPrepared(MediaPlayer mp) {
                         player.start();
-                } else if (soundCount == 3) {
-                    int idSoundBg = getApplicationContext().getResources().getIdentifier("com.mobiapps360.LearnClockTime:raw/" + setTimeItemList[currentIndex].getSoundString(), null, null);
-                    player = MediaPlayer.create(getBaseContext(), idSoundBg);
-                    player.start();
+                    }
+                });
+                player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 
-                    player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-
-                        @Override
-                        public void onCompletion(MediaPlayer mp) {
-                            player.release();
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        player.release();
+                        btnSetTimeSound.setAlpha((float) 1.0);
+                        btnSetTimeSound.setClickable(true);
+                        if (soundCount == 2) {
                             int idSoundBg = getApplicationContext().getResources().getIdentifier("com.mobiapps360.LearnClockTime:raw/" + "digit_" + String.valueOf(setTimeItemList[currentIndex].getHourSound()), null, null);
                             player = MediaPlayer.create(getBaseContext(), idSoundBg);
                             player.start();
+                        } else if (soundCount == 3) {
+                            int idSoundBg = getApplicationContext().getResources().getIdentifier("com.mobiapps360.LearnClockTime:raw/" + setTimeItemList[currentIndex].getSoundString(), null, null);
+                            player = MediaPlayer.create(getBaseContext(), idSoundBg);
+                            player.start();
+
+                            player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+
+                                @Override
+                                public void onCompletion(MediaPlayer mp) {
+                                    player.release();
+                                    int idSoundBg = getApplicationContext().getResources().getIdentifier("com.mobiapps360.LearnClockTime:raw/" + "digit_" + String.valueOf(setTimeItemList[currentIndex].getHourSound()), null, null);
+                                    player = MediaPlayer.create(getBaseContext(), idSoundBg);
+                                    player.start();
+                                }
+                            });
                         }
-                    });
-                }
+                    }
+                });
             }
         });
     }
+
     public void playResultSound(String soundResultStr) {
         if (MainActivity.sharedPreferences.getBoolean(soundLearnActivity, false)) {
-            int idSoundBg = getApplicationContext().getResources().getIdentifier("com.mobiapps360.LearnClockTime:raw/" +soundResultStr, null, null);
+            int idSoundBg = getApplicationContext().getResources().getIdentifier("com.mobiapps360.LearnClockTime:raw/" + soundResultStr, null, null);
             try {
                 player = MediaPlayer.create(getBaseContext(), idSoundBg);
             } catch (Exception e) {
-               // System.out.println("Medi player exception:--" + e);
+                // System.out.println("Medi player exception:--" + e);
                 Log.e("Music Exception", "catch button click sound play");
             }
         }
@@ -540,6 +576,7 @@ public class SetTimeActivity extends AppCompatActivity {
             }
         });
     }
+
     //Show interstitial Ads
     public void showHideLoader(boolean adFlag) {
         if (adFlag) {
