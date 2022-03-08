@@ -1,5 +1,6 @@
 package com.mobiapps360.LearnClockTime;
 import android.content.Context;
+import android.content.res.Resources;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -79,8 +80,8 @@ public class SetTimeAdapter extends RecyclerView.Adapter<SetTimeAdapter.ViewHold
 
         public double clockAngle;
         int[] minuteArray;
-        double centreY = 481;     // imgVwClockDial.getHeight()/2;
-        double centreX = 481;    //   imgVwClockDial.getWidth()/2;
+        double centreY =  Resources.getSystem().getDisplayMetrics().widthPixels/2;     // imgVwClockDial.getHeight()/2;
+        double centreX =  Resources.getSystem().getDisplayMetrics().widthPixels/2;    //   imgVwClockDial.getWidth()/2;
         int[] hourArray = new int[]{0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360};
         List<Integer>  minuteArrayList = new ArrayList<Integer>();
         int hourArrayLength = hourArray.length;

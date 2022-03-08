@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.Uri;
@@ -24,6 +25,7 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import com.mobiapps360.LearnClockTime.databinding.ActivityMainBinding;
 
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -353,6 +355,15 @@ public class MainActivity extends AppCompatActivity {
        // System.out.println("@@@@@@@@@@@@@@@setTimeClicked clicked@@@@@@@@@@@");
         Intent intent = new Intent(this, SetTimeActivity.class);
         startActivity(intent);
+//        DisplayMetrics displayMetrics = new DisplayMetrics();
+//        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+//        int height = displayMetrics.heightPixels;
+//        int width = displayMetrics.widthPixels;
+       //  System.out.println("width"+Resources.getSystem().getDisplayMetrics().widthPixels);
+       // System.out.println("width*****"+dpToPx(width/2));
+
+//         System.out.println("@@@@@@@@@@@@@@@setTimeClicked clicked@@@@@@@@@@@");
+
     }
     public void playWithClockClicked(View v) {
         Intent intent = new Intent(this, PlayClockActivity.class);
@@ -361,7 +372,13 @@ public class MainActivity extends AppCompatActivity {
     public void otherAppsTabClicked(View v) {
       //  System.out.println("@@@@@@@@@@@@@@@Our other apps clicked@@@@@@@@@@@");
     }
+    public static int pxToDp(int px) {
+        return (int) (px / Resources.getSystem().getDisplayMetrics().density);
+    }
 
+    public static int dpToPx(int dp) {
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
+    }
     public void closeFab(){
         if (isAllFabsVisible) {
             fab_img_rateUs.hide();

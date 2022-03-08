@@ -170,9 +170,9 @@ public class SetTimeActivity extends AppCompatActivity {
         if (getSoundFlag == true) {
             playSoundSetTime(setTimeItemList[currentIndex].soundCount);
         }
-       /* mAdView = findViewById(R.id.adViewBannerSetTimeActivity);
-//        adRequest = new AdRequest.Builder().build();
-//        mAdView.loadAd(adRequest);
+        mAdView = findViewById(R.id.adViewBannerSetTimeActivity);
+        adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         mAdView.setAdListener(new AdListener() {
             @Override
@@ -206,7 +206,7 @@ public class SetTimeActivity extends AppCompatActivity {
                 // Code to be executed when the user is about to return
                 // to the app after tapping on an ad.
             }
-        });*/
+        });
 
 
         setTimeAdapter = new SetTimeAdapter(this);
@@ -241,32 +241,6 @@ public class SetTimeActivity extends AppCompatActivity {
                                 btnBackward.setVisibility(View.VISIBLE);
                             }
                             txtViewStrTimeSetTime.setText(Html.fromHtml(setTimeItemList[currentIndex].timeString));
-                            clickCount = clickCount + 1;
-//                            if (clickCount > adShowCount) {
-//                                clickCount = 0;
-//                                if (player != null) {
-//                                    player.release();
-//                                }
-//                                //  showInterstitialAds(false);
-//                            } else
-                            if (getSoundFlag == true) {
-                                if (player != null) {
-                                    player.release();
-                                }
-                                playSoundSetTime(setTimeItemList[currentIndex].soundCount);
-                            }
-                            GradientDrawable gradientDrawable = (GradientDrawable) cardViewDoneButton.getBackground();
-                            if (setTimeItemList[currentIndex].result == 0) {
-                                gradientDrawable.setStroke(4, Color.parseColor("#1e90ff"));
-                                gradientDrawable.setColor(getResources().getColor(R.color.offwhite_done));
-                            } else if (setTimeItemList[currentIndex].result == 1) {
-                                gradientDrawable.setStroke(4, Color.parseColor("#006400"));
-                                gradientDrawable.setColor(getResources().getColor(R.color.green_done));
-                            } else {
-                                gradientDrawable.setStroke(4, Color.parseColor("#8B0000"));
-                                gradientDrawable.setColor(getResources().getColor(R.color.red_done));
-                            }
-                            sameCellDoneClicked = false;
                         }
                     }
                 });
@@ -339,6 +313,7 @@ public class SetTimeActivity extends AppCompatActivity {
                             recycleViewSetTime.getLayoutManager().smoothScrollToPosition(recycleViewSetTime, new RecyclerView.State(), 0);
                         } else {
                             recycleViewSetTime.getLayoutManager().smoothScrollToPosition(recycleViewSetTime, new RecyclerView.State(), currentIndex + 1);
+                            increaseCount_playSound();
                         }
                     }
                 }
@@ -362,6 +337,7 @@ public class SetTimeActivity extends AppCompatActivity {
                             btnBackward.setVisibility(View.VISIBLE);
                             recycleViewSetTime.getLayoutManager().smoothScrollToPosition(recycleViewSetTime, new RecyclerView.State(), currentIndex - 1);
                         }
+                        increaseCount_playSound();
                     }
                 }
                 return true;
@@ -385,8 +361,8 @@ public class SetTimeActivity extends AppCompatActivity {
                         TextView getUpdatedHour = getCurrentRecycleView.findViewById(R.id.txtHourHide);
                         TextView getUpdatedMinute = getCurrentRecycleView.findViewById(R.id.txtMinuteHide);
 
-                        System.out.println("getUpdatedHour#####:" + getUpdatedHour.getText());
-                        System.out.println("getUpdatedMinute#####:" + getUpdatedMinute.getText());
+//                        System.out.println("getUpdatedHour#####:" + getUpdatedHour.getText());
+//                        System.out.println("getUpdatedMinute#####:" + getUpdatedMinute.getText());
 //                        SetTimeAdapter.ViewHolder holder = recycleViewSetTime.findViewHolderForAdapterPosition(currentIndex);
                         int set_hour_angle = (Integer.parseInt(getUpdatedHour.getText().toString()));
                         int set_minute_angle = (Integer.parseInt(getUpdatedMinute.getText().toString()));
@@ -405,10 +381,10 @@ public class SetTimeActivity extends AppCompatActivity {
                         calculat_hour_angle = calculat_hour_angle + (calculate_minute_angle) / 12;
 
                         //-------------------------------------------
-                        System.out.println("set_hour_angle#####:" + set_hour_angle);
-                        System.out.println("set_minute_angle#####:" + set_minute_angle);
-                        System.out.println("calculat_hour_angle#####:" + calculat_hour_angle);
-                        System.out.println("calculate_minute_angle#####:" + calculate_minute_angle);
+//                        System.out.println("set_hour_angle#####:" + set_hour_angle);
+//                        System.out.println("set_minute_angle#####:" + set_minute_angle);
+//                        System.out.println("calculat_hour_angle#####:" + calculat_hour_angle);
+//                        System.out.println("calculate_minute_angle#####:" + calculate_minute_angle);
                         //-------------------------------------------
                         List<SetTimeItem> tempArraylist = Arrays.asList(setTimeItemList);
                         SetTimeItem tempSetTimeItem = tempArraylist.get(currentIndex);//Get current object from original list
@@ -442,8 +418,8 @@ public class SetTimeActivity extends AppCompatActivity {
                         //-------------------------------------------
                         tempArraylist.set(currentIndex, tempSetTimeItem);
                         setTimeItemList = tempArraylist.toArray(setTimeItemList);
-                        System.out.println("---Current list object hour***"+setTimeItemList[currentIndex].setHourHand);
-                        System.out.println("---Current list object minute***"+setTimeItemList[currentIndex].setMinuteHand);
+//                        System.out.println("---Current list object hour***" + setTimeItemList[currentIndex].setHourHand);
+//                        System.out.println("---Current list object minute***" + setTimeItemList[currentIndex].setMinuteHand);
                         sameCellDoneClicked = true;
                     }
                 }
@@ -473,17 +449,47 @@ public class SetTimeActivity extends AppCompatActivity {
 
     }
 
-    public static int pxToDp(int px) {
-        return (int) (px / Resources.getSystem().getDisplayMetrics().density);
+    public void increaseCount_playSound(){
+        clickCount = clickCount + 1;
+
+        System.out.println("---clickCount****"+clickCount);
+        if (clickCount > adShowCount) {
+            clickCount = 0;
+            if (player != null) {
+                player.release();
+            }
+            showInterstitialAds(false);
+        } else if (getSoundFlag == true) {
+            if (player != null) {
+                player.release();
+            }
+            playSoundSetTime(setTimeItemList[currentIndex].soundCount);
+        }
+        GradientDrawable gradientDrawable = (GradientDrawable) cardViewDoneButton.getBackground();
+        if (setTimeItemList[currentIndex].result == 0) {
+            gradientDrawable.setStroke(4, Color.parseColor("#1e90ff"));
+            gradientDrawable.setColor(getResources().getColor(R.color.offwhite_done));
+        } else if (setTimeItemList[currentIndex].result == 1) {
+            gradientDrawable.setStroke(4, Color.parseColor("#006400"));
+            gradientDrawable.setColor(getResources().getColor(R.color.green_done));
+        } else {
+            gradientDrawable.setStroke(4, Color.parseColor("#8B0000"));
+            gradientDrawable.setColor(getResources().getColor(R.color.red_done));
+        }
+        sameCellDoneClicked = false;
     }
 
-    public static int dpToPx(int dp) {
-        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
-    }
-
-    public void screenTapped(View view) {
-        // Your code here
-    }
+//    public static int pxToDp(int px) {
+//        return (int) (px / Resources.getSystem().getDisplayMetrics().density);
+//    }
+//
+//    public static int dpToPx(int dp) {
+//        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
+//    }
+//
+//    public void screenTapped(View view) {
+//        // Your code here
+//    }
 
     public void playSoundSetTime(int soundCount) {
         int setSound = 0;
@@ -511,7 +517,7 @@ public class SetTimeActivity extends AppCompatActivity {
                     try {
                         player = MediaPlayer.create(getBaseContext(), idSoundBg);
                     } catch (Exception e) {
-                        System.out.println("Medi player exception:--" + e);
+                      //  System.out.println("Medi player exception:--" + e);
                         Log.e("Music Exception", "catch button click sound play");
                     }
                 }
@@ -605,14 +611,20 @@ public class SetTimeActivity extends AppCompatActivity {
                     public void onAdDismissedFullScreenContent() {
                         // Called when fullscreen content is dismissed.
                         Log.i("TAG", "The ad was dismissed.");
-                        if (fromHome) {
-                            Log.i("playCrad", "The ad was dismissed---if");
-                            SetTimeActivity.super.onBackPressed();
-                            showHideLoader(false);
-                        } else {
-                            Log.i("playCrad", "The ad was dismissed-----else.");
-                            showHideLoader(false);
+//                        if (fromHome) {
+//                            Log.i("playCrad", "The ad was dismissed---if");
+//                            SetTimeActivity.super.onBackPressed();
+//                            showHideLoader(false);
+//                        } else {
+                        Log.i("playCrad", "The ad was dismissed-----else.");
+                        showHideLoader(false);
+                        if (getSoundFlag == true) {
+                            if (player != null) {
+                                player.release();
+                            }
+                            playSoundSetTime(setTimeItemList[currentIndex].soundCount);
                         }
+                        //   }
                     }
 
                     @Override
