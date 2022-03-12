@@ -10,4 +10,9 @@
     <color name="red_done">#D2042D</color>
     <color name="green_done">#3DFF33</color>
     <color name="offwhite_done">#EEEEEE</color>
+    <color name="transperent_color">#00FFFFFF</color>
+    <color name="blue_color">#448cf7</color>
+    <color name="text_shadow">#000000</color>
+    <color name="text_shadow_white">#FFFFFF</color>
+    <color name="light_font">#FBFBFB</color>
 </resources>

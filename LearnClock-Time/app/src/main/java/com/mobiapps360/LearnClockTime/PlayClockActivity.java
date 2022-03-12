@@ -1,40 +1,43 @@
 
 package com.mobiapps360.LearnClockTime;
 
-        import android.content.Context;
-        import android.content.SharedPreferences;
-        import android.content.res.Resources;
-        import android.media.MediaPlayer;
-        import android.os.Bundle;
-        import android.os.Handler;
-        import android.util.Log;
-        import android.util.Range;
-        import android.view.MotionEvent;
-        import android.view.View;
-        import android.widget.ImageButton;
-        import android.widget.ImageView;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.media.MediaPlayer;
+import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import android.util.Range;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.NumberPicker;
+import android.widget.TextView;
+import android.widget.Toast;
 
-        import androidx.annotation.NonNull;
-        import androidx.appcompat.app.AppCompatActivity;
-        import androidx.cardview.widget.CardView;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
-        import java.io.IOException;
-        import java.util.ArrayList;
-        import java.util.Arrays;
-        import java.util.List;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-        import com.bumptech.glide.Glide;
-        import com.daprlabs.cardstack.SwipeDeck;
-        import com.google.android.gms.ads.AdError;
-        import com.google.android.gms.ads.AdListener;
-        import com.google.android.gms.ads.AdRequest;
-        import com.google.android.gms.ads.AdView;
-        import com.google.android.gms.ads.FullScreenContentCallback;
-        import com.google.android.gms.ads.LoadAdError;
-        import com.google.android.gms.ads.interstitial.InterstitialAd;
-        import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.bumptech.glide.Glide;
+import com.daprlabs.cardstack.SwipeDeck;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
-public class PlayClockActivity extends AppCompatActivity {
+public class PlayClockActivity extends AppCompatActivity implements NumberPicker.OnScrollListener, NumberPicker.OnValueChangeListener {
     // on below line we are creating variable
     // for our array list and swipe deck.
     private ImageButton btnSoundSetTimeOnOff;
@@ -43,6 +46,11 @@ public class PlayClockActivity extends AppCompatActivity {
     private ImageView imgViewWallPaper;
     int clickCount = 1;
     int adShowCount = 13;
+    int digitalHour;
+    int digitalMinute;
+    int digitalHourSelected;
+    int digitalMinuteSelected;
+    int prevDigMinuteSelected;
     private AdView mAdView;
     ImageView imgVwSetLoader;
     View viewLearnLoader;
@@ -57,21 +65,26 @@ public class PlayClockActivity extends AppCompatActivity {
     double clockAngle;
     boolean isTouchHourHand; // to move only Hour hand
     boolean isTouchMinuteHand; // to move only Minute hand
-
+    boolean hourScrollIdle = false;
+    boolean minuteScrollIdle = false;
     boolean isTouchHourWhileMoving = false; // to Check hour hand touch while moving
     boolean isTouchMinuteWhileMoving = false; //  to Check minute hand touch while moving
-
+    String[] minuteDigitArray;
+    TextView playClockTimeText;
     double centreX = 0.0;
     double centreY = 0.0;
     List<Integer> minuteArrayList;
     int[] minuteArray;
+    String[] hourDigitArray;
     ImageView imgVwSetTimeHourHand;
-    ImageView imgVwPlayClockMinuteHand;
+    ImageView imgVwSetTimeMinuteHand;
     int newHourAngle;
     int newMinuteAngle;
     //Declare variables
     ImageView imgVwClockDial;
     MediaPlayer player;
+    NumberPicker hourPicker;
+    NumberPicker minutePicker;
     public static SharedPreferences sharedPreferences = null;
     public static final String myPreferences = "myPref";
     public static final String soundLearnActivity = "soundLearnActivityKey";
@@ -89,7 +102,8 @@ public class PlayClockActivity extends AppCompatActivity {
         viewLearnLoader = findViewById(R.id.viewLoaderPlayClockBg);
         imgVwClockDial = findViewById(R.id.imgVwPlayClockClockDial);
         imgVwSetTimeHourHand = findViewById(R.id.imgVwPlayClockHourHand);
-        imgVwPlayClockMinuteHand = findViewById(R.id.imgVwPlayClockMinuteHand);
+        imgVwSetTimeMinuteHand = findViewById(R.id.imgVwPlayClockMinuteHand);
+        playClockTimeText = findViewById(R.id.playClockTimeText);
         Glide.with(this).load(R.drawable.loader).into(imgVwSetLoader);
         sharedPreferences = getSharedPreferences(myPreferences, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -113,6 +127,7 @@ public class PlayClockActivity extends AppCompatActivity {
         centreX = 481;    //   imgVwClockDial.getWidth()/2;
         imgVwClockDial.setOnTouchListener(handleTouch);
         hourArray = new int[]{0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360};
+
         minuteArrayList = new ArrayList<Integer>();
         hourArrayLength = hourArray.length;
         int iCount = 0;
@@ -120,6 +135,8 @@ public class PlayClockActivity extends AppCompatActivity {
             minuteArrayList.add(iCount);
             iCount = iCount + 6;
         } while (iCount < 366);
+        hourDigitArray = new String[]{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
+        minuteDigitArray = new String[]{"00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59"};
 
 
 //        minuteArray = minuteArrayList.toArray(new Integer[0]);
@@ -137,10 +154,10 @@ public class PlayClockActivity extends AppCompatActivity {
         newMinuteAngle = 60;
         card_hour_hand.setRotation((float) newHourAngle);
         card_minute_hand.setRotation((float) newMinuteAngle);
-        imgVwPlayClockMinuteHand.setAlpha(0.7f);
+        imgVwSetTimeMinuteHand.setAlpha(0.7f);
         imgVwSetTimeHourHand.setAlpha(0.7f);
 
-        System.out.println("Hour array&&&&&:"+ nearest_small_value(60));
+//        System.out.println("Hour array&&&&&:"+ nearest_small_value(60));
        /* mAdView = findViewById(R.id.adViewBannerSetTimeActivity);
 //        adRequest = new AdRequest.Builder().build();
 //        mAdView.loadAd(adRequest);
@@ -179,6 +196,40 @@ public class PlayClockActivity extends AppCompatActivity {
             }
         });*/
         //-----------------------------------------
+
+        hourPicker = findViewById(R.id.hourPicker);
+        hourPicker.setMaxValue(hourDigitArray.length - 1);
+        hourPicker.setMinValue(0);
+        hourPicker.setWrapSelectorWheel(true);
+        hourPicker.setFocusable(false);
+        hourPicker.setFocusableInTouchMode(false);
+        hourPicker.setOnValueChangedListener(this);
+        hourPicker.setOnScrollListener(this);
+        hourPicker.setDisplayedValues(hourDigitArray);
+        hourPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+
+        //-----------------------------------------
+
+        minutePicker = findViewById(R.id.minutePicker);
+        minutePicker.setMaxValue(minuteDigitArray.length - 1);
+        minutePicker.setOnScrollListener(this);
+        minutePicker.setMinValue(0);
+        minutePicker.setFocusable(false);
+        minutePicker.setFocusableInTouchMode(false);
+        minutePicker.setWrapSelectorWheel(true);
+        minutePicker.setDisplayedValues(minuteDigitArray);
+        minutePicker.setOnValueChangedListener(this);
+        minutePicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+
+        //-----------------------------------------
+        digitalHourSelected = Integer.parseInt(hourDigitArray[9]);
+        digitalMinuteSelected = Integer.parseInt(minuteDigitArray[10]);
+        prevDigMinuteSelected = digitalMinuteSelected;
+        hourPicker.setValue(9);
+        minutePicker.setValue(10);
+        setTimeText();
+        //-----------------------------------------
+
         imgVwSetTimeHourHand.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -193,7 +244,7 @@ public class PlayClockActivity extends AppCompatActivity {
                         isTouchHourHand = false;
                         isTouchHourWhileMoving = false;
                         imgVwSetTimeHourHand.setAlpha(1.0f);
-                        imgVwPlayClockMinuteHand.setAlpha(0.7f);
+                        imgVwSetTimeMinuteHand.setAlpha(0.7f);
                         break;
                     }
                 }
@@ -202,10 +253,10 @@ public class PlayClockActivity extends AppCompatActivity {
         });
 
         //-----------------------------------------
-        imgVwPlayClockMinuteHand.setOnTouchListener(new View.OnTouchListener() {
+        imgVwSetTimeMinuteHand.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                System.out.println("imgVwPlayClockMinuteHand touch****");
+                System.out.println("imgVwSetTimeMinuteHand touch****");
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN: {
                         isTouchMinuteWhileMoving = true;
@@ -217,7 +268,7 @@ public class PlayClockActivity extends AppCompatActivity {
                         isTouchMinuteHand = false;
                         isTouchMinuteWhileMoving = false;
                         imgVwSetTimeHourHand.setAlpha(0.7f);
-                        imgVwPlayClockMinuteHand.setAlpha(1.0f);
+                        imgVwSetTimeMinuteHand.setAlpha(1.0f);
                         break;
                     }
                 }
@@ -276,6 +327,240 @@ public class PlayClockActivity extends AppCompatActivity {
         });
     }
 
+    public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+        System.out.println("oldVal---------" + oldVal);
+        System.out.println("newVal---------" + newVal);
+        if (picker == hourPicker) {
+//            if (hourScrollIdle) {
+//                hourScrollIdle = false;
+//                if (Integer.parseInt(hourDigitArray[newVal]) != digitalHourSelected) {
+//                    digitalHourSelected = Integer.parseInt(hourDigitArray[newVal]);
+//                    setTimeText();
+//                }
+//            }
+//            System.out.println("digitalHourSelected" + digitalHourSelected);
+//            System.out.println("**HourPicker onValueChange**" + hourDigitArray[newVal]);
+        } else {
+            // System.out.println("val---");
+//            if (minuteScrollIdle) {
+//              //  System.out.println("**MinutePicker onValueChange**" + minuteDigitArray[newVal]);
+//                minutePicker.setValue(newVal);
+//                minuteScrollIdle = false;
+//                digitalMinuteSelected = Integer.parseInt(minuteDigitArray[newVal]);
+//              //  if (Integer.parseInt(minuteDigitArray[newVal]) != digitalMinuteSelected) {
+////                    digitalMinuteSelected = Integer.parseInt(minuteDigitArray[newVal]);
+//                    if (digitalMinuteSelected == 0) {
+//                        System.out.println("digitalMinuteSelected***"+digitalMinuteSelected);
+//                        tempMinAngle = 360;
+//                        if (prevDigMinuteSelected>30) {
+//                            System.out.println("oldVal greater than new" + newVal);
+//                            if (digitalHourSelected == 12) {
+//                                digitalHourSelected = 1;
+//                                hourPicker.setValue(0);
+//                            } else {
+//                              //  System.out.println("else------&&&&" + digitalHourSelected);
+//                                digitalHourSelected = Integer.parseInt(hourDigitArray[digitalHourSelected]);
+//                              //  System.out.println("else--then----&&&&" + digitalHourSelected);
+//                                hourPicker.setValue(digitalHourSelected);
+//                            }
+//                        }
+//                    } else {
+//                        if ((digitalMinuteSelected < prevDigMinuteSelected) && (prevDigMinuteSelected - digitalMinuteSelected)> 30) {
+//                            System.out.println("1st else if***"+digitalMinuteSelected);
+//                            if (digitalHourSelected == 12) {
+//                                digitalHourSelected = 1;
+//                                hourPicker.setValue(0);
+//                            } else {
+//                                //  System.out.println("else------&&&&" + digitalHourSelected);
+//                                digitalHourSelected = Integer.parseInt(hourDigitArray[digitalHourSelected]);
+//                                //  System.out.println("else--then----&&&&" + digitalHourSelected);
+//                                hourPicker.setValue(digitalHourSelected);
+//                            }
+//                        } else  if ((prevDigMinuteSelected < digitalMinuteSelected) && (digitalMinuteSelected - prevDigMinuteSelected)> 30) {
+//                            System.out.println("2nnd else if***"+digitalMinuteSelected);
+//                            if (digitalHourSelected == 1) {
+//                                digitalHourSelected = 12;
+//                                hourPicker.setValue(11);
+//                            } else {
+//                                //  System.out.println("else------&&&&" + digitalHourSelected);
+//                                digitalHourSelected = digitalHourSelected - 2;
+//                                digitalHourSelected = Integer.parseInt(hourDigitArray[digitalHourSelected]);
+//                                //  System.out.println("else--then----&&&&" + digitalHourSelected);
+//                                hourPicker.setValue(digitalHourSelected);
+//                            }
+//                        }
+//                        tempMinAngle = digitalMinuteSelected * 6;
+//                    }
+//                    card_minute_hand.setRotation((float) tempMinAngle);
+//              //  }
+//                setTimeText();
+//            }
+        }
+
+//        if (scrollState==0){
+//            update();
+//        }
+    }
+
+    public void onScrollStateChange(NumberPicker view, int scrollState) {
+        if (view == hourPicker) {
+            switch (scrollState) {
+                case NumberPicker.OnScrollListener.SCROLL_STATE_FLING:
+                    break;
+                case NumberPicker.OnScrollListener.SCROLL_STATE_IDLE:
+//                    digitalHourSelected = view.getValue();
+                    hourScrollIdle = true;
+                    System.out.println("--idle---");
+                    //     System.out.println("**HourPicker idle**" + hourDigitArray[view.getValue()]);
+
+                    view.postDelayed(new Runnable() {
+                        public void run() {
+                            int newVal = view.getValue();
+                            hourPicker.setValue(newVal);
+                            digitalHourSelected = Integer.parseInt(hourDigitArray[newVal]);
+                            if (digitalMinuteSelected == 0) {
+                                if (digitalHourSelected == 12) {
+                                    newHourAngle = 0;
+                                } else {
+                                    newHourAngle = (digitalHourSelected * 30);
+                                }
+                            } else {
+                                if (digitalHourSelected == 12) {
+                                    newHourAngle = (digitalMinuteSelected * 6) / 12;
+                                } else {
+                                    newHourAngle = (digitalHourSelected * 30) + (digitalMinuteSelected * 6) / 12;
+                                }
+                            }
+                            card_hour_hand.setRotation((float) newHourAngle);
+                            setTimeText();
+                        }
+                    }, 500);
+                   break;
+            case NumberPicker.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
+                break;
+        }
+    } else
+
+    {
+        switch (scrollState) {
+            case NumberPicker.OnScrollListener.SCROLL_STATE_FLING:
+                break;
+            case NumberPicker.OnScrollListener.SCROLL_STATE_IDLE:
+                view.postDelayed(new Runnable() {
+                    public void run() {
+                        int newVal = view.getValue();
+                        minuteScrollIdle = true;
+                        System.out.println("--idle---");
+                        //    System.out.println("**MinutePicker idle**" + minuteDigitArray[view.getValue()]);
+                        // {
+                        //  System.out.println("**MinutePicker onValueChange**" + minuteDigitArray[newVal]);
+                        minutePicker.setValue(newVal);
+                        minuteScrollIdle = false;
+                        digitalMinuteSelected = Integer.parseInt(minuteDigitArray[newVal]);
+                        //  if (Integer.parseInt(minuteDigitArray[newVal]) != digitalMinuteSelected) {
+//                    digitalMinuteSelected = Integer.parseInt(minuteDigitArray[newVal]);
+                        if (digitalMinuteSelected == 0) {
+                            System.out.println("digitalMinuteSelected***" + digitalMinuteSelected);
+                            tempMinAngle = 360;
+                            if (prevDigMinuteSelected > 30) {
+                                System.out.println("oldVal greater than new" + newVal);
+                                if (digitalHourSelected == 12) {
+                                    digitalHourSelected = 1;
+                                    hourPicker.setValue(0);
+                                } else {
+                                    //  System.out.println("else------&&&&" + digitalHourSelected);
+                                    digitalHourSelected = Integer.parseInt(hourDigitArray[digitalHourSelected]);
+                                    //  System.out.println("else--then----&&&&" + digitalHourSelected);
+                                    hourPicker.setValue(digitalHourSelected);
+                                }
+                            }
+                        } else {
+                            if ((digitalMinuteSelected < prevDigMinuteSelected) && (prevDigMinuteSelected - digitalMinuteSelected) > 30) {
+                                System.out.println("1st else if***" + digitalMinuteSelected);
+                                if (digitalHourSelected == 12) {
+                                    digitalHourSelected = 1;
+                                    hourPicker.setValue(0);
+                                } else {
+                                    //  System.out.println("else------&&&&" + digitalHourSelected);
+                                    digitalHourSelected = Integer.parseInt(hourDigitArray[digitalHourSelected]);
+                                    //  System.out.println("else--then----&&&&" + digitalHourSelected);
+                                    hourPicker.setValue(digitalHourSelected);
+                                }
+                            } else if ((prevDigMinuteSelected < digitalMinuteSelected) && (digitalMinuteSelected - prevDigMinuteSelected) > 30) {
+                                System.out.println("2nnd else if***" + digitalMinuteSelected);
+                                if (digitalHourSelected == 1) {
+                                    digitalHourSelected = 12;
+                                    hourPicker.setValue(11);
+                                } else {
+                                    //  System.out.println("else------&&&&" + digitalHourSelected);
+                                    digitalHourSelected = digitalHourSelected - 2;
+                                    System.out.println("2nnd else if else***" + digitalHourSelected);
+
+                                    digitalHourSelected = Integer.parseInt(hourDigitArray[digitalHourSelected]);
+                                    //  System.out.println("else--then----&&&&" + digitalHourSelected);
+                                    hourPicker.setValue(digitalHourSelected);
+                                }
+                            }
+                            tempMinAngle = digitalMinuteSelected * 6;
+                        }
+                        card_minute_hand.setRotation((float) tempMinAngle);
+                        //  }
+                        setTimeText();
+                        // }
+//                      }
+                    }
+                }, 500);
+                break;
+            case NumberPicker.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
+                break;
+        }
+    }
+
+}
+
+
+    void setTimeText() {
+//        System.out.println("digitalHourSelected" + digitalHourSelected);
+//        System.out.println("digitalMinuteSelected" + digitalMinuteSelected);
+
+        String regex = "^0+(?!$)";
+        if (digitalMinuteSelected == 00) {
+            playClockTimeText.setText(String.valueOf(digitalHourSelected).replaceAll(regex, "") + " " + " o'clock");
+        } else if (digitalMinuteSelected == 15) {
+            playClockTimeText.setText("quarter past " + String.valueOf(digitalHourSelected).replaceAll(regex, ""));
+        } else if (digitalMinuteSelected == 30) {
+            playClockTimeText.setText("half past " + String.valueOf(digitalHourSelected).replaceAll(regex, ""));
+        } else if (digitalMinuteSelected == 45) {
+            if (digitalHourSelected == 12) {
+                playClockTimeText.setText("quarter to " + String.valueOf(1).replaceAll(regex, ""));
+            } else {
+                playClockTimeText.setText("quarter to " + String.valueOf(digitalHourSelected + 1).replaceAll(regex, ""));
+            }
+        } else {
+            if (digitalMinuteSelected < 30) {
+                String minuteStr = " minutes past ";
+                if (digitalMinuteSelected == 1) {
+                    minuteStr = " minute past ";
+                }
+                playClockTimeText.setText(String.valueOf(digitalMinuteSelected).replaceAll(regex, "") + minuteStr + String.valueOf(digitalHourSelected).replaceAll(regex, ""));
+            } else {
+                int getHour = digitalHourSelected;
+                if (getHour == 12) {
+                    getHour = 1;
+                } else {
+                    getHour = getHour + 1;
+                }
+                int getMinute = 60 - digitalMinuteSelected;
+                String minuteStr = " minutes to ";
+                if (getMinute == 1) {
+                    minuteStr = " minute to ";
+                }
+                playClockTimeText.setText(String.valueOf(getMinute).replaceAll(regex, "") + minuteStr + String.valueOf(getHour).replaceAll(regex, ""));
+            }
+        }
+        prevDigMinuteSelected = digitalMinuteSelected;
+    }
+
     public static int pxToDp(int px) {
         return (int) (px / Resources.getSystem().getDisplayMetrics().density);
     }
@@ -326,41 +611,72 @@ public class PlayClockActivity extends AppCompatActivity {
                     if (!isTouchHourHand && isTouchHourWhileMoving) {
                         isTouchMinuteHand = false;
                         card_hour_hand.setRotation((float) clockAngle);
-                        System.out.println("***parent Move hour hand***"+clockAngle);
+                        System.out.println("***parent Move hour hand***" + clockAngle);
                     } else if (!isTouchMinuteHand && isTouchMinuteWhileMoving) {
-                        if ((int)clockAngle == 0) {
+                        if ((int) clockAngle == 0) {
                             clockAngle = 360;
                         }
-                        System.out.println("***parent Move minute hand tempAngle***"+tempMinAngle);
-                        System.out.println("***parent Move minute hand clockAngle***"+clockAngle);
-
+                        System.out.println("***parent Move minute hand tempAngle***" + tempMinAngle);
+                        System.out.println("***parent Move minute hand clockAngle***" + clockAngle);
+                        clockAngle = usingBinarySearch((int) clockAngle, minuteArray);
                         card_minute_hand.setRotation((float) clockAngle);
                         if (!(tempMinAngle == (int) clockAngle)) {
-                            if ((((int) clockAngle > tempMinAngle) && (((int) clockAngle) - tempMinAngle) > 300)||((tempMinAngle == 360) && (tempMinAngle - ((int) clockAngle)) < 60)) {
+                            if ((((int) clockAngle > tempMinAngle) && (((int) clockAngle) - tempMinAngle) > 300) || ((tempMinAngle == 360) && (tempMinAngle - ((int) clockAngle)) < 60)) {
                                 if (newHourAngle == 0) {
                                     newHourAngle = 360;
                                 }
                                 newHourAngle = newHourAngle - 30;
 
-                                System.out.println("Fisrt If"+newHourAngle);
-                            } else if((tempMinAngle != 360)&&(tempMinAngle >(int) clockAngle) && (tempMinAngle - ((int) clockAngle)) > 300){
+                                System.out.println("Fisrt If" + newHourAngle);
+                            } else if ((tempMinAngle != 360) && (tempMinAngle > (int) clockAngle) && (tempMinAngle - ((int) clockAngle)) > 300) {
                                 if (newHourAngle == 360) {
                                     newHourAngle = 0;
                                 }
                                 newHourAngle = newHourAngle + 30;
-                                System.out.println("second If"+newHourAngle);
+                                System.out.println("second If" + newHourAngle);
                             }
                             tempMinAngle = (int) clockAngle;
-                            System.out.println("*** newHourAngle"+newHourAngle);
+                            System.out.println("*** newHourAngle" + newHourAngle);
                             newHourAngle = nearest_small_value(newHourAngle);
                             if (newHourAngle == 360) {
                                 newHourAngle = 0;
                             }
+                            //--------------------------------
+                            //to set digital clock hour
+                            if (newHourAngle == 0) {
+                                if ((int) tempMinAngle == 360) {
+                                    digitalHourSelected = Integer.parseInt(hourDigitArray[0]);
+                                    hourPicker.setValue(0);
+                                } else {
+                                    digitalHourSelected = Integer.parseInt(hourDigitArray[11]);
+                                    hourPicker.setValue(11);
+                                }
+                            } else {
+                                if ((int) tempMinAngle == 360) {
+                                    digitalHourSelected = Integer.parseInt(hourDigitArray[(newHourAngle) / 30]);
+                                    hourPicker.setValue((newHourAngle) / 30);
+                                } else {
+                                    digitalHourSelected = Integer.parseInt(hourDigitArray[(newHourAngle - 30) / 30]);
+                                    hourPicker.setValue((newHourAngle - 30) / 30);
+                                }
+                            }
+                            setTimeText();
+                            //--------------------------------
                             newHourAngle = newHourAngle + (tempMinAngle) / 12;
                             card_hour_hand.setRotation((float) newHourAngle);
                         }
-                        System.out.println("***updated newHourAngle"+newHourAngle);
-                        System.out.println("***updated parent Move minute hand***"+tempMinAngle);
+                        //--------------------------------
+                        //to set digital clock minute
+                        if ((int) tempMinAngle == 360) {
+                            digitalMinuteSelected = Integer.parseInt(minuteDigitArray[0]);
+                        } else {
+                            digitalMinuteSelected = Integer.parseInt(minuteDigitArray[((int) tempMinAngle) / 6]);
+                        }
+                        minutePicker.setValue(digitalMinuteSelected);
+                        setTimeText();
+                        //--------------------------------
+                        System.out.println("***updated newHourAngle" + newHourAngle);
+                        System.out.println("***updated parent Move minute hand***" + tempMinAngle);
                     }
                     break;
 
@@ -368,22 +684,43 @@ public class PlayClockActivity extends AppCompatActivity {
                     System.out.println("***parent up ***");
                     if (!isTouchHourHand && isTouchHourWhileMoving) {
 //                        newHourAngle = usingBinarySearch((int) clockAngle, hourArray);
-                        newHourAngle = nearest_small_value((int) clockAngle);
+                        System.out.println("***parent up tempMinAngle***" + tempMinAngle);
+
+                        if (tempMinAngle != 360 && tempMinAngle != 0) {
+                            newHourAngle = nearest_small_value((int) clockAngle);
+                        } else {
+                            System.out.println("***parent up temp angle 360***");
+                            newHourAngle = usingBinarySearch((int) clockAngle, hourArray);
+                        }
                         if (newHourAngle == 360) {
                             newHourAngle = 0;
                         }
+                        //--------------------------------
+                        //to set digital clock hour
+                        if (newHourAngle == 0) {
+                            digitalHourSelected = Integer.parseInt(hourDigitArray[11]);
+                            hourPicker.setValue(11);
+                        } else {
+                            System.out.println("digitalHourSelected----hou hand" + newHourAngle);
+                            System.out.println("digitalHourSelected----new" + (newHourAngle - 30) / 30);
+
+                            digitalHourSelected = Integer.parseInt(hourDigitArray[(newHourAngle - 30) / 30]);
+                            hourPicker.setValue((newHourAngle - 30) / 30);
+                            System.out.println("digitalHourSelected----actual" + digitalHourSelected);
+                        }
+                        setTimeText();
+                        //--------------------------------
                         if (tempMinAngle != 360) {
                             newHourAngle = newHourAngle + (tempMinAngle) / 12;
                         }
-
                         card_hour_hand.setRotation((float) newHourAngle);
-                        System.out.println("***parent Up hour hand***"+newHourAngle);
+                        System.out.println("***parent Up hour hand***" + newHourAngle);
                     }
                     isTouchMinuteHand = true;
                     isTouchHourHand = true;
                     isTouchHourWhileMoving = false;
                     isTouchMinuteWhileMoving = false;
-                    imgVwPlayClockMinuteHand.setAlpha(0.7f);
+                    imgVwSetTimeMinuteHand.setAlpha(0.7f);
                     imgVwSetTimeHourHand.setAlpha(0.7f);
 
                     break;
