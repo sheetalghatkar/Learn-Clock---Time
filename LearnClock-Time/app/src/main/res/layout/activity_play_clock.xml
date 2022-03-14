@@ -93,23 +93,24 @@
         android:layout_width="220dp"
         android:layout_height="120dp"
         android:clickable="false"
+        android:layout_marginTop="40dp"
         android:background="@android:color/transparent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/playClockBgTitle"  />
+        app:layout_constraintTop_toTopOf="@+id/playClockBgTitle"  />
 
     <TextView android:id="@+id/txt_digital_instruct"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:textSize="15sp"
         android:textStyle="bold"
         android:text="# Tap digits to change time"
         android:textColor="@color/white"
         android:shadowColor="@color/text_shadow"
         android:shadowDx="5"
         android:shadowDy="5"
-        android:shadowRadius="20"
-        android:layout_marginTop="40dp"
+        android:shadowRadius="15"
+        android:layout_marginTop="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/minutePicker"/>
@@ -130,7 +131,7 @@
         android:id="@+id/playClockTimeText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="25dp"
+        android:layout_marginLeft="32dp"
         android:fontFamily="@font/calistoga"
         android:text="Play With Clock"
         android:textAlignment="center"
@@ -161,20 +162,18 @@
     <TextView android:id="@+id/txt_analog_instruct"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:textSize="15sp"
         android:textStyle="bold"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:text="# Tap clock hands to move"
         android:textColor="@color/white"
         android:shadowColor="@color/text_shadow"
         android:shadowDx="5"
         android:shadowDy="5"
-        android:shadowRadius="20"
+        android:shadowRadius="15"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgVwPlayClockClockDial"/>
-
-
 
     <View
         android:id="@+id/vDividerPlayClock"
@@ -236,11 +235,10 @@
         android:layout_width="320dp"
         android:layout_height="320dp"
         android:src="@drawable/clock_dial"
-        android:layout_marginTop="280dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></ImageView>
+        app:layout_constraintTop_toBottomOf="@+id/playClockTimeTextBg"></ImageView>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_play_clock_hour_hand"
