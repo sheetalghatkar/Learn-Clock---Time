@@ -147,7 +147,7 @@
 
 
     <ImageButton
-        android:id="@+id/btnPlayTimeFile"
+        android:id="@+id/btnPlayTimeSound"
         android:layout_width="37dp"
         android:layout_height="37dp"
         android:layout_marginRight="15dp"
