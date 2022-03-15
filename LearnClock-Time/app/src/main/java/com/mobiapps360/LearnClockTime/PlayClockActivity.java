@@ -652,9 +652,20 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
                     break;
             }
         }
-
     }
-
+    protected void onRestart() {
+        super.onRestart();
+        //System.out.println("--onRestart--");
+        callInterstitialAd();
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (player != null) {
+            player.stop();
+        }
+        handler.removeCallbacksAndMessages(null);
+    }
     @Override
     public void onBackPressed() {
       //  System.out.println("--onBackPressed--");
