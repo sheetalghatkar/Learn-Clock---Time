@@ -657,7 +657,7 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
 
     @Override
     public void onBackPressed() {
-        System.out.println("--onBackPressed--");
+      //  System.out.println("--onBackPressed--");
         if (player != null) {
             player.release();
         }

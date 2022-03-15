@@ -382,7 +382,7 @@ public class LearnClockActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
-        System.out.println("--onBackPressed--");
+       // System.out.println("--onBackPressed--");
         if (player != null) {
             player.release();
         }
