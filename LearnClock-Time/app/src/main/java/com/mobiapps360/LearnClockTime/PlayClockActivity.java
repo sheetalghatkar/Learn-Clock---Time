@@ -92,6 +92,7 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
     public static SharedPreferences sharedPreferences = null;
     public static final String myPreferences = "myPref";
     public static final String soundLearnActivity = "soundLearnActivityKey";
+    Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,18 +113,22 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
         mAdView = findViewById(R.id.adViewBannerPlayClockActivity);
         Glide.with(this).load(R.drawable.loader).into(imgVwSetLoader);
         sharedPreferences = getSharedPreferences(myPreferences, Context.MODE_PRIVATE);
+        handler = new Handler();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         if (sharedPreferences.contains(soundLearnActivity)) {
             getSoundFlag = sharedPreferences.getBoolean(soundLearnActivity, false);
             if (getSoundFlag == true) {
                 btnSoundSetTimeOnOff.setImageResource(R.mipmap.sound_on);
+                btnPlayTimeSound.setImageResource(R.drawable.play_again_blue);
             } else {
                 btnSoundSetTimeOnOff.setImageResource(R.mipmap.sound_off);
+                btnPlayTimeSound.setImageResource(R.drawable.play_again_blue_cross);
             }
         } else {
             editor.putBoolean(soundLearnActivity, true);
             editor.commit();
             btnSoundSetTimeOnOff.setImageResource(R.mipmap.sound_on);
+            btnPlayTimeSound.setImageResource(R.drawable.play_again_blue);
         }
         isTouchHourHand = true;
         isTouchMinuteHand = true;
@@ -297,6 +302,7 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
                         if (player != null) {
                             player.release();
                         }
+                        handler.removeCallbacksAndMessages(null);
                         PlayClockActivity.super.onBackPressed();
                     }
                 }
@@ -317,6 +323,8 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
                         if (player != null) {
                             player.release();
                         }
+                        btnPlayTimeSound.setAlpha((float) 1.0);
+                        btnPlayTimeSound.setClickable(true);
                         btnSetTimeBack.setVisibility(View.VISIBLE);
                         if (sharedPreferences.contains(soundLearnActivity)) {
                             getSoundFlag = sharedPreferences.getBoolean(soundLearnActivity, false);
@@ -326,8 +334,10 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
                             editor.commit();
                             if (getSoundFlag == true) {
                                 btnSoundSetTimeOnOff.setImageResource(R.mipmap.sound_on);
+                                btnPlayTimeSound.setImageResource(R.drawable.play_again_blue);
                             } else {
                                 btnSoundSetTimeOnOff.setImageResource(R.mipmap.sound_off);
+                                btnPlayTimeSound.setImageResource(R.drawable.play_again_blue_cross);
                             }
                         }
                     }
@@ -348,6 +358,14 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
                         ((ImageButton) v).setAlpha((float) 1.0);
                         if (player != null) {
                             player.release();
+                        }
+                        if (getSoundFlag == false) {
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            getSoundFlag = !getSoundFlag;
+                            editor.putBoolean(soundLearnActivity, getSoundFlag);
+                            editor.commit();
+                            btnSoundSetTimeOnOff.setImageResource(R.mipmap.sound_on);
+                            btnPlayTimeSound.setImageResource(R.drawable.play_again_blue);
                         }
                         if (getSoundFlag) {
                             if (digitalMinuteSelected == 0) {
@@ -472,7 +490,7 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
                 case NumberPicker.OnScrollListener.SCROLL_STATE_IDLE:
 //                    digitalHourSelected = view.getValue();
                     hourScrollIdle = true;
-                    System.out.println("--idle---");
+                    // System.out.println("--idle---");
                     //     System.out.println("**HourPicker idle**" + hourDigitArray[view.getValue()]);
 
                     view.postDelayed(new Runnable() {
@@ -510,7 +528,7 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
                         public void run() {
                             int newVal = view.getValue();
                             minuteScrollIdle = true;
-                            System.out.println("--idle---");
+                            //   System.out.println("--idle---");
                             //    System.out.println("**MinutePicker idle**" + minuteDigitArray[view.getValue()]);
                             // {
                             //  System.out.println("**MinutePicker onValueChange**" + minuteDigitArray[newVal]);
@@ -519,13 +537,13 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
                             digitalMinuteSelected = Integer.parseInt(minuteDigitArray[newVal]);
                             //  if (Integer.parseInt(minuteDigitArray[newVal]) != digitalMinuteSelected) {
 //                    digitalMinuteSelected = Integer.parseInt(minuteDigitArray[newVal]);
-                            System.out.println("SCROLL_STATE_IDLE*" + digitalMinuteSelected);
+                            //  System.out.println("SCROLL_STATE_IDLE*" + digitalMinuteSelected);
 
                             if (digitalMinuteSelected == 0) {
-                                System.out.println("digitalMinuteSelected***" + digitalMinuteSelected);
+                                //  System.out.println("digitalMinuteSelected***" + digitalMinuteSelected);
                                 tempMinAngle = 360;
                                 if (prevDigMinuteSelected > 30) {
-                                    System.out.println("oldVal greater than new" + digitalHourSelected);
+                                    // System.out.println("oldVal greater than new" + digitalHourSelected);
                                     if (digitalHourSelected == 12) {
                                         digitalHourSelected = 1;
                                         hourPicker.setValue(0);
@@ -538,26 +556,26 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
                                 }
                             } else {
                                 if (prevDigMinuteSelected == 0) {
-                                    System.out.println("prevDigMinuteSelected***" + prevDigMinuteSelected);
+                                    // System.out.println("prevDigMinuteSelected***" + prevDigMinuteSelected);
                                     //Reverse scroll
                                     if (digitalMinuteSelected > 30) {
-                                      //  if (!isForwardScroll) {
-                                            isReverseScroll = false;
-                                            System.out.println("greater@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-                                            if (digitalHourSelected == 1) {
-                                                digitalHourSelected = 12;
-                                                hourPicker.setValue(11);
-                                            } else {
-                                                //  System.out.println("else------&&&&" + digitalHourSelected);
-                                                digitalHourSelected = digitalHourSelected - 2;
-                                                System.out.println("2nnd else if else***" + digitalHourSelected);
-                                                hourPicker.setValue(digitalHourSelected);
-                                                digitalHourSelected = Integer.parseInt(hourDigitArray[digitalHourSelected]);
-                                                System.out.println("else--then----&&&&" + digitalHourSelected);
-                                            }
-                                      //  }
+                                        //  if (!isForwardScroll) {
+                                        isReverseScroll = false;
+                                        // System.out.println("greater@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+                                        if (digitalHourSelected == 1) {
+                                            digitalHourSelected = 12;
+                                            hourPicker.setValue(11);
+                                        } else {
+                                            //  System.out.println("else------&&&&" + digitalHourSelected);
+                                            digitalHourSelected = digitalHourSelected - 2;
+                                            System.out.println("2nnd else if else***" + digitalHourSelected);
+                                            hourPicker.setValue(digitalHourSelected);
+                                            digitalHourSelected = Integer.parseInt(hourDigitArray[digitalHourSelected]);
+                                            // System.out.println("else--then----&&&&" + digitalHourSelected);
+                                        }
+                                        //  }
                                     } else {
-                                        System.out.println("smaller@@@@@@@@@@@@@@@@@@@@@@@@@@@" + digitalHourSelected);
+                                        // System.out.println("smaller@@@@@@@@@@@@@@@@@@@@@@@@@@@" + digitalHourSelected);
                                         //Forward scroll
 //                                        if (!isForwardScroll) {
 //                                            isForwardScroll = false;
@@ -576,7 +594,7 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
                                     //forward scroll
                                     isForwardScroll = true;
                                     isReverseScroll = false;
-                                    System.out.println("1st else if***" + digitalMinuteSelected);
+                                    //  System.out.println("1st else if***" + digitalMinuteSelected);
                                     digitalMinuteSelected = digitalMinuteSelected;
                                     minutePicker.setValue(digitalMinuteSelected);
                                     if (digitalHourSelected == 12) {
@@ -586,13 +604,13 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
                                         //  System.out.println("else------&&&&" + digitalHourSelected);
                                         hourPicker.setValue(digitalHourSelected);
                                         digitalHourSelected = Integer.parseInt(hourDigitArray[digitalHourSelected]);
-                                        System.out.println("else--then----&&&&" + digitalHourSelected);
+                                        //  System.out.println("else--then----&&&&" + digitalHourSelected);
                                     }
                                 } else if ((prevDigMinuteSelected < digitalMinuteSelected) && (digitalMinuteSelected - prevDigMinuteSelected) > 30) {
                                     //Reverse scroll
                                     isForwardScroll = false;
                                     isReverseScroll = true;
-                                    System.out.println("2nnd else if***" + digitalMinuteSelected);
+                                    // System.out.println("2nnd else if***" + digitalMinuteSelected);
                                     digitalMinuteSelected = digitalMinuteSelected;
                                     minutePicker.setValue(digitalMinuteSelected);
                                     if (digitalMinuteSelected != 0) {
@@ -602,10 +620,10 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
                                         } else {
                                             //  System.out.println("else------&&&&" + digitalHourSelected);
                                             digitalHourSelected = digitalHourSelected - 2;
-                                            System.out.println("2nnd else if else***" + digitalHourSelected);
+                                            // System.out.println("2nnd else if else***" + digitalHourSelected);
                                             hourPicker.setValue(digitalHourSelected);
                                             digitalHourSelected = Integer.parseInt(hourDigitArray[digitalHourSelected]);
-                                            System.out.println("else--then----&&&&" + digitalHourSelected);
+                                            //System.out.println("else--then----&&&&" + digitalHourSelected);
                                         }
                                     }
                                 }
@@ -635,6 +653,16 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
             }
         }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        System.out.println("--onBackPressed--");
+        if (player != null) {
+            player.release();
+        }
+        handler.removeCallbacksAndMessages(null);
+        super.onBackPressed();
     }
 
     public void playSoundSetTime(int soundCount, String soundString, int firstDigit, int secondDigit) {
@@ -1023,15 +1051,15 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
             viewLearnLoader.setVisibility(View.INVISIBLE);
         }
     }
+
     public void callInterstitialAd() {
         if (player != null) {
             player.release();
         }
-        final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
                 System.out.println("myHandler: here!"); // Do your work here
-              //  handler.postDelayed(this, Constant.adTimeDelayPlayClock);
+                //  handler.postDelayed(this, Constant.adTimeDelayPlayClock);
                 showInterstitialAds(false);
             }
         }, Constant.adTimeDelayPlayClock);

@@ -449,10 +449,19 @@ public class SetTimeActivity extends AppCompatActivity {
 
     }
 
-    public void increaseCount_playSound(){
+    @Override
+    public void onBackPressed() {
+        System.out.println("--onBackPressed--");
+        if (player != null) {
+            player.release();
+        }
+        super.onBackPressed();
+    }
+
+    public void increaseCount_playSound() {
         clickCount = clickCount + 1;
 
-        System.out.println("---clickCount****"+clickCount);
+        System.out.println("---clickCount****" + clickCount);
         if (clickCount > adShowCount) {
             clickCount = 0;
             if (player != null) {
@@ -517,7 +526,7 @@ public class SetTimeActivity extends AppCompatActivity {
                     try {
                         player = MediaPlayer.create(getBaseContext(), idSoundBg);
                     } catch (Exception e) {
-                      //  System.out.println("Medi player exception:--" + e);
+                        //  System.out.println("Medi player exception:--" + e);
                         Log.e("Music Exception", "catch button click sound play");
                     }
                 }

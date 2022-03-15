@@ -271,6 +271,7 @@ public class LearnClockActivity extends AppCompatActivity {
             }
         });
 
+
         btnLearnClockBack.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -378,6 +379,14 @@ public class LearnClockActivity extends AppCompatActivity {
         if (player != null) {
             player.stop();
         }
+    }
+    @Override
+    public void onBackPressed() {
+        System.out.println("--onBackPressed--");
+        if (player != null) {
+            player.release();
+        }
+        super.onBackPressed();
     }
 
     //Show interstitial Ads

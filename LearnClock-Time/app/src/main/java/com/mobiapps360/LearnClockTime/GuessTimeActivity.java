@@ -310,6 +310,14 @@ public class GuessTimeActivity extends AppCompatActivity {
         }
 
     }
+    @Override
+    public void onBackPressed() {
+        System.out.println("--onBackPressed--");
+        if (player != null) {
+            player.release();
+        }
+        super.onBackPressed();
+    }
     //Show interstitial Ads
     public void showHideLoader(boolean adFlag) {
         if (adFlag) {
