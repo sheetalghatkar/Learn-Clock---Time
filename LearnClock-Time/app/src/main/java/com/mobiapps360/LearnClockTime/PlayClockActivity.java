@@ -82,6 +82,8 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
     int newHourAngle;
     int newMinuteAngle;
     int soundCountTwo = 0;
+    boolean isReverseScroll = false;
+    boolean isForwardScroll = false;
     //Declare variables
     ImageView imgVwClockDial;
     MediaPlayer player;
@@ -107,6 +109,7 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
         imgVwSetTimeMinuteHand = findViewById(R.id.imgVwPlayClockMinuteHand);
         playClockTimeText = findViewById(R.id.playClockTimeText);
         btnPlayTimeSound = findViewById(R.id.btnPlayTimeSound);
+        mAdView = findViewById(R.id.adViewBannerPlayClockActivity);
         Glide.with(this).load(R.drawable.loader).into(imgVwSetLoader);
         sharedPreferences = getSharedPreferences(myPreferences, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -161,9 +164,8 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
         imgVwSetTimeHourHand.setAlpha(0.7f);
 
 //        System.out.println("Hour array&&&&&:"+ nearest_small_value(60));
-       /* mAdView = findViewById(R.id.adViewBannerSetTimeActivity);
-//        adRequest = new AdRequest.Builder().build();
-//        mAdView.loadAd(adRequest);
+        adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         mAdView.setAdListener(new AdListener() {
             @Override
@@ -197,7 +199,7 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
                 // Code to be executed when the user is about to return
                 // to the app after tapping on an ad.
             }
-        });*/
+        });
         //-----------------------------------------
 
         hourPicker = findViewById(R.id.hourPicker);
@@ -383,8 +385,8 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
     }
 
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-        System.out.println("oldVal---------" + oldVal);
-        System.out.println("newVal---------" + newVal);
+//        System.out.println("oldVal---------" + oldVal);
+//        System.out.println("newVal---------" + newVal);
         if (picker == hourPicker) {
 //            if (hourScrollIdle) {
 //                hourScrollIdle = false;
@@ -512,55 +514,101 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
                             digitalMinuteSelected = Integer.parseInt(minuteDigitArray[newVal]);
                             //  if (Integer.parseInt(minuteDigitArray[newVal]) != digitalMinuteSelected) {
 //                    digitalMinuteSelected = Integer.parseInt(minuteDigitArray[newVal]);
+                            System.out.println("SCROLL_STATE_IDLE*" + digitalMinuteSelected);
+
                             if (digitalMinuteSelected == 0) {
                                 System.out.println("digitalMinuteSelected***" + digitalMinuteSelected);
                                 tempMinAngle = 360;
                                 if (prevDigMinuteSelected > 30) {
-                                    System.out.println("oldVal greater than new" + newVal);
+                                    System.out.println("oldVal greater than new" + digitalHourSelected);
                                     if (digitalHourSelected == 12) {
                                         digitalHourSelected = 1;
                                         hourPicker.setValue(0);
                                     } else {
                                         //  System.out.println("else------&&&&" + digitalHourSelected);
+                                        hourPicker.setValue(digitalHourSelected);
                                         digitalHourSelected = Integer.parseInt(hourDigitArray[digitalHourSelected]);
                                         //  System.out.println("else--then----&&&&" + digitalHourSelected);
-                                        hourPicker.setValue(digitalHourSelected);
                                     }
                                 }
                             } else {
-                                if ((digitalMinuteSelected < prevDigMinuteSelected) && (prevDigMinuteSelected - digitalMinuteSelected) > 30) {
+                                if (prevDigMinuteSelected == 0) {
+                                    System.out.println("prevDigMinuteSelected***" + prevDigMinuteSelected);
+                                    //Reverse scroll
+                                    if (digitalMinuteSelected > 30) {
+                                      //  if (!isForwardScroll) {
+                                            isReverseScroll = false;
+                                            System.out.println("greater@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+                                            if (digitalHourSelected == 1) {
+                                                digitalHourSelected = 12;
+                                                hourPicker.setValue(11);
+                                            } else {
+                                                //  System.out.println("else------&&&&" + digitalHourSelected);
+                                                digitalHourSelected = digitalHourSelected - 2;
+                                                System.out.println("2nnd else if else***" + digitalHourSelected);
+                                                hourPicker.setValue(digitalHourSelected);
+                                                digitalHourSelected = Integer.parseInt(hourDigitArray[digitalHourSelected]);
+                                                System.out.println("else--then----&&&&" + digitalHourSelected);
+                                            }
+                                      //  }
+                                    } else {
+                                        System.out.println("smaller@@@@@@@@@@@@@@@@@@@@@@@@@@@" + digitalHourSelected);
+                                        //Forward scroll
+//                                        if (!isForwardScroll) {
+//                                            isForwardScroll = false;
+//                                            if (digitalHourSelected == 12) {
+//                                                digitalHourSelected = 1;
+//                                                hourPicker.setValue(0);
+//                                            } else {
+//                                                //  System.out.println("else------&&&&" + digitalHourSelected);
+//                                                hourPicker.setValue(digitalHourSelected);
+//                                                digitalHourSelected = Integer.parseInt(hourDigitArray[digitalHourSelected]);
+//                                                System.out.println("else--then----&&&&" + digitalHourSelected);
+//                                            }
+//                                        }
+                                    }
+                                } else if ((digitalMinuteSelected < prevDigMinuteSelected) && (prevDigMinuteSelected - digitalMinuteSelected) > 30) {
+                                    //forward scroll
+                                    isForwardScroll = true;
+                                    isReverseScroll = false;
                                     System.out.println("1st else if***" + digitalMinuteSelected);
+                                    digitalMinuteSelected = 0;
+                                    minutePicker.setValue(0);
                                     if (digitalHourSelected == 12) {
                                         digitalHourSelected = 1;
                                         hourPicker.setValue(0);
                                     } else {
                                         //  System.out.println("else------&&&&" + digitalHourSelected);
-                                        digitalHourSelected = Integer.parseInt(hourDigitArray[digitalHourSelected]);
-                                        //  System.out.println("else--then----&&&&" + digitalHourSelected);
                                         hourPicker.setValue(digitalHourSelected);
+                                        digitalHourSelected = Integer.parseInt(hourDigitArray[digitalHourSelected]);
+                                        System.out.println("else--then----&&&&" + digitalHourSelected);
                                     }
                                 } else if ((prevDigMinuteSelected < digitalMinuteSelected) && (digitalMinuteSelected - prevDigMinuteSelected) > 30) {
+                                    //Reverse scroll
+                                    isForwardScroll = false;
+                                    isReverseScroll = true;
                                     System.out.println("2nnd else if***" + digitalMinuteSelected);
-                                    if (digitalHourSelected == 1) {
-                                        digitalHourSelected = 12;
-                                        hourPicker.setValue(11);
-                                    } else {
-                                        //  System.out.println("else------&&&&" + digitalHourSelected);
-                                        digitalHourSelected = digitalHourSelected - 2;
-                                        System.out.println("2nnd else if else***" + digitalHourSelected);
-
-                                        digitalHourSelected = Integer.parseInt(hourDigitArray[digitalHourSelected]);
-                                        //  System.out.println("else--then----&&&&" + digitalHourSelected);
-                                        hourPicker.setValue(digitalHourSelected);
-                                    }
+                                    digitalMinuteSelected = 0;
+                                    minutePicker.setValue(0);
                                 }
                                 tempMinAngle = digitalMinuteSelected * 6;
                             }
                             card_minute_hand.setRotation((float) tempMinAngle);
-                            //  }
+                            if (digitalMinuteSelected == 0) {
+                                if (digitalHourSelected == 12) {
+                                    newHourAngle = 0;
+                                } else {
+                                    newHourAngle = (digitalHourSelected * 30);
+                                }
+                            } else {
+                                if (digitalHourSelected == 12) {
+                                    newHourAngle = (digitalMinuteSelected * 6) / 12;
+                                } else {
+                                    newHourAngle = (digitalHourSelected * 30) + (digitalMinuteSelected * 6) / 12;
+                                }
+                            }
+                            card_hour_hand.setRotation((float) newHourAngle);
                             setTimeText();
-                            // }
-//                      }
                         }
                     }, 500);
                     break;
@@ -650,8 +698,8 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
     }
 
     void setTimeText() {
-//        System.out.println("digitalHourSelected" + digitalHourSelected);
-//        System.out.println("digitalMinuteSelected" + digitalMinuteSelected);
+        System.out.println("___digitalHourSelected" + digitalHourSelected);
+        System.out.println("___digitalMinuteSelected" + digitalMinuteSelected);
 
         String regex = "^0+(?!$)";
         if (digitalMinuteSelected == 00) {
