@@ -142,7 +142,7 @@ public class LearnClockActivity extends AppCompatActivity {
         });
         mAdView = findViewById(R.id.adViewBannerLearnActivity);
         adRequest = new AdRequest.Builder().build();
-      //  mAdView.loadAd(adRequest);
+        mAdView.loadAd(adRequest);
 
         mAdView.setAdListener(new AdListener() {
             @Override
