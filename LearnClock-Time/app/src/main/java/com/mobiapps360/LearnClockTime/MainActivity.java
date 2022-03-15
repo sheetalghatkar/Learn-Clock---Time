@@ -109,8 +109,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         mAdView = findViewById(R.id.adViewBannerMainActivity);
-//        adRequest = new AdRequest.Builder().build();
-//        mAdView.loadAd(adRequest);
+        adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         mAdView.setAdListener(new AdListener() {
             @Override
