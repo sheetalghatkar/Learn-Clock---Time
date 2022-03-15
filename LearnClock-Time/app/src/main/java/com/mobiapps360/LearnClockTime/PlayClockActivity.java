@@ -162,6 +162,7 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
         card_minute_hand.setRotation((float) newMinuteAngle);
         imgVwSetTimeMinuteHand.setAlpha(0.7f);
         imgVwSetTimeHourHand.setAlpha(0.7f);
+        //
 
 //        System.out.println("Hour array&&&&&:"+ nearest_small_value(60));
         adRequest = new AdRequest.Builder().build();
@@ -200,6 +201,8 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
                 // to the app after tapping on an ad.
             }
         });
+        //-----------------------------------------
+        callInterstitialAd();
         //-----------------------------------------
 
         hourPicker = findViewById(R.id.hourPicker);
@@ -311,7 +314,9 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
                     }
                     case MotionEvent.ACTION_UP: {
                         ((ImageButton) v).setAlpha((float) 1.0);
-
+                        if (player != null) {
+                            player.release();
+                        }
                         btnSetTimeBack.setVisibility(View.VISIBLE);
                         if (sharedPreferences.contains(soundLearnActivity)) {
                             getSoundFlag = sharedPreferences.getBoolean(soundLearnActivity, false);
@@ -572,8 +577,8 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
                                     isForwardScroll = true;
                                     isReverseScroll = false;
                                     System.out.println("1st else if***" + digitalMinuteSelected);
-                                    digitalMinuteSelected = 0;
-                                    minutePicker.setValue(0);
+                                    digitalMinuteSelected = digitalMinuteSelected;
+                                    minutePicker.setValue(digitalMinuteSelected);
                                     if (digitalHourSelected == 12) {
                                         digitalHourSelected = 1;
                                         hourPicker.setValue(0);
@@ -588,8 +593,21 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
                                     isForwardScroll = false;
                                     isReverseScroll = true;
                                     System.out.println("2nnd else if***" + digitalMinuteSelected);
-                                    digitalMinuteSelected = 0;
-                                    minutePicker.setValue(0);
+                                    digitalMinuteSelected = digitalMinuteSelected;
+                                    minutePicker.setValue(digitalMinuteSelected);
+                                    if (digitalMinuteSelected != 0) {
+                                        if (digitalHourSelected == 1) {
+                                            digitalHourSelected = 12;
+                                            hourPicker.setValue(11);
+                                        } else {
+                                            //  System.out.println("else------&&&&" + digitalHourSelected);
+                                            digitalHourSelected = digitalHourSelected - 2;
+                                            System.out.println("2nnd else if else***" + digitalHourSelected);
+                                            hourPicker.setValue(digitalHourSelected);
+                                            digitalHourSelected = Integer.parseInt(hourDigitArray[digitalHourSelected]);
+                                            System.out.println("else--then----&&&&" + digitalHourSelected);
+                                        }
+                                    }
                                 }
                                 tempMinAngle = digitalMinuteSelected * 6;
                             }
@@ -1005,6 +1023,19 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
             viewLearnLoader.setVisibility(View.INVISIBLE);
         }
     }
+    public void callInterstitialAd() {
+        if (player != null) {
+            player.release();
+        }
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                System.out.println("myHandler: here!"); // Do your work here
+              //  handler.postDelayed(this, Constant.adTimeDelayPlayClock);
+                showInterstitialAds(false);
+            }
+        }, Constant.adTimeDelayPlayClock);
+    }
 
     public void showInterstitialAds(Boolean fromHome) {
         System.out.println("Inside showInterstitialAds---");
@@ -1030,6 +1061,7 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
                         } else {
                             Log.i("playCrad", "The ad was dismissed-----else.");
                             showHideLoader(false);
+                            callInterstitialAd();
                         }
                     }
 
@@ -1038,6 +1070,7 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
                         // Called when fullscreen content failed to show.
                         showHideLoader(false);
                         Log.d("TAG", "The ad failed to show.");
+                        callInterstitialAd();
                     }
 
                     @Override
