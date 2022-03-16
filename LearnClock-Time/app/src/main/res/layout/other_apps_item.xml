@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="130dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginBottom="10dp">
+
+    <View
+        android:id="@+id/viewEmptyOtherApps"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/other_app_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view_other_apps"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        app:cardBackgroundColor="@android:color/transparent"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:layout_marginStart="10dp"
+                android:elevation="10dp"
+                app:cardCornerRadius="8dp">
+
+                <ImageView
+                    android:id="@+id/imgVwAppIcon"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:layout_gravity="center_vertical"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/gk_quiz"
+                    android:visibility="visible"></ImageView>
+            </androidx.cardview.widget.CardView>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textViewAppTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="0dp"
+                    android:text="Gk Quiz"
+                    android:textColor="#ff0c94"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:visibility="visible"
+                    app:layout_constraintStart_toEndOf="@+id/imgVwAppIcon"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnGetNow"
+                    android:layout_width="115dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/get_now_button_bg"
+                    android:scaleType="fitCenter"
+                    android:text="Download"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/pink_color"
+                    app:layout_constraintStart_toStartOf="@+id/textViewAppTitle"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewAppTitle" />
+
+                <TextView
+                    android:id="@+id/txt_applink"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:text="# Tap digits to change time"
+                    android:textColor="@color/white"
+                    android:textSize="1sp"
+                    android:textStyle="normal"
+                    android:visibility="invisible"
+                    app:layout_constraintStart_toStartOf="@+id/textViewAppTitle"
+                    app:layout_constraintTop_toTopOf="@+id/textViewAppTitle" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

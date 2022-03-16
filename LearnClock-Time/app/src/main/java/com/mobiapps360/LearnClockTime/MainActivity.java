@@ -371,6 +371,8 @@ public class MainActivity extends AppCompatActivity {
     }
     public void otherAppsTabClicked(View v) {
       //  System.out.println("@@@@@@@@@@@@@@@Our other apps clicked@@@@@@@@@@@");
+        Intent intent = new Intent(this, OtherAppsActivity.class);
+        startActivity(intent);
     }
     public static int pxToDp(int px) {
         return (int) (px / Resources.getSystem().getDisplayMetrics().density);
