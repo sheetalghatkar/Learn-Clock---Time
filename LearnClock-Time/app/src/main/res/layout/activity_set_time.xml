@@ -19,11 +19,11 @@
 
     <ImageButton
         android:id="@+id/btnSetTimeBack"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="7dp"
         android:background="@null"
         android:scaleType="fitCenter"
         android:src="@mipmap/home_icon"

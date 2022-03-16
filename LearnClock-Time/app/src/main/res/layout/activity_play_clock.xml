@@ -212,7 +212,7 @@
         android:layout_height="55dp"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="7dp"
         android:background="@null"
         android:scaleType="fitXY"
         android:src="@mipmap/home_icon"

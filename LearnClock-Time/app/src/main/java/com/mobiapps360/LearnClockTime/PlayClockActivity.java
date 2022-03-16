@@ -662,7 +662,7 @@ public class PlayClockActivity extends AppCompatActivity implements NumberPicker
     protected void onStop() {
         super.onStop();
         if (player != null) {
-            player.stop();
+            player.release();
         }
         handler.removeCallbacksAndMessages(null);
     }

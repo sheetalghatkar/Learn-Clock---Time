@@ -10,7 +10,6 @@ import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
-
 import com.bumptech.glide.Glide;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -20,41 +19,22 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
 import androidx.appcompat.app.AppCompatActivity;
 import com.mobiapps360.LearnClockTime.databinding.ActivityMainBinding;
 
-import android.util.DisplayMetrics;
+import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-
-
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.view.View;
-
 import androidx.core.view.ViewCompat;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
-
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -165,8 +145,18 @@ public class MainActivity extends AppCompatActivity {
         }
         guessTimeDataArray = parseGuessTimeArray("guess_time");
 
+
+
+        imgViewsettingBg.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                System.out.println("inside imgViewSettingBg$$$$$$$$$$$$$$$$$$$$$$");
+
+            }
+        });
+
         viewSettingBg.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                System.out.println("inside viewSettingBg######## ");
                 if (isAllFabsVisible) {
                     fab_img_rateUs.hide();
                     fab_img_shareApp.hide();
@@ -229,6 +219,11 @@ public class MainActivity extends AppCompatActivity {
                     {
                         ((FloatingActionButton)v).setAlpha((float) 1.0);
                         if (!isAllFabsVisible) {
+                            fab_txt_rateUs.setTextColor(getResources().getColor(R.color.white));
+                            fab_txt_shareApp.setTextColor(getResources().getColor(R.color.white));
+                            fab_txt_otherApps.setTextColor(getResources().getColor(R.color.white));
+                            fab_txt_privacyPolicy.setTextColor(getResources().getColor(R.color.white));
+
                             fab_img_rateUs.show();
                             fab_img_shareApp.show();
                             fab_img_otherApps.show();
@@ -302,22 +297,31 @@ public class MainActivity extends AppCompatActivity {
                 cm.getActiveNetworkInfo().isConnectedOrConnecting();
     }
     public void shareAppClicked(View v) {
-        closeFab();
-        try {
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-            shareIntent.setType("text/plain");
-            shareIntent.putExtra(Intent.EXTRA_SUBJECT, Constant.APP_PNAME);
-            String shareMessage= "Best app for kids to learn clock.\n\n";
-            shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + Constant.BUNDLE_ID;
-            shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
-            startActivity(Intent.createChooser(shareIntent, "choose one"));
-        } catch(Exception e) {
-            //e.toString();
-        }
+        fab_txt_shareApp.setTextColor(getResources().getColor(R.color.red_done));
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                closeFab();
+                try {
+                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.setType("text/plain");
+                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, Constant.APP_PNAME);
+                    String shareMessage= "Best app for kids to learn clock.\n\n";
+                    shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + Constant.BUNDLE_ID;
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+                    startActivity(Intent.createChooser(shareIntent, "choose one"));
+                } catch(Exception e) {
+                    //e.toString();
+                }
+            }
+        }, 500);
+
     }
     public void rateAppTabClicked(View v) {
         System.out.println("-------rateAppTabClicked---------------"+getPackageName());
         try {
+            fab_txt_rateUs.setTextColor(getResources().getColor(R.color.red_done));
             Uri uri = Uri.parse("market://details?id="+getPackageName()+"");
             Intent goMarket = new Intent(Intent.ACTION_VIEW, uri);
             startActivity(goMarket);
@@ -329,6 +333,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void privacyTabClicked(View v) {
+        fab_txt_privacyPolicy.setTextColor(getResources().getColor(R.color.red_done));
         System.out.println("@@@@@@@@@@@@@@@privacyTabClicked clicked@@@@@@@@@@@");
         Log.d("MyApp","I am here");
 
@@ -370,7 +375,8 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
     public void otherAppsTabClicked(View v) {
-      //  System.out.println("@@@@@@@@@@@@@@@Our other apps clicked@@@@@@@@@@@");
+        fab_txt_otherApps.setTextColor(getResources().getColor(R.color.red_done));
+        //  System.out.println("@@@@@@@@@@@@@@@Our other apps clicked@@@@@@@@@@@");
         Intent intent = new Intent(this, OtherAppsActivity.class);
         startActivity(intent);
     }
@@ -382,7 +388,9 @@ public class MainActivity extends AppCompatActivity {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
     public void closeFab(){
+        System.out.println("closeFab");
         if (isAllFabsVisible) {
+            System.out.println("isAllFabsVisible");
             fab_img_rateUs.hide();
             fab_img_shareApp.hide();
             fab_img_otherApps.hide();
