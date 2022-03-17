@@ -114,8 +114,10 @@ public class SetTimeActivity extends AppCompatActivity {
             getSoundFlag = sharedPreferences.getBoolean(soundLearnActivity, false);
             if (getSoundFlag == true) {
                 btnSoundSetTimeOnOff.setImageResource(R.mipmap.sound_on);
+                btnSetTimeSound.setImageResource(R.drawable.play_again_red);
             } else {
                 btnSoundSetTimeOnOff.setImageResource(R.mipmap.sound_off);
+                btnSetTimeSound.setImageResource(R.drawable.play_again_pink_cross);
             }
         } else {
             editor.putBoolean(soundLearnActivity, true);
@@ -287,8 +289,10 @@ public class SetTimeActivity extends AppCompatActivity {
                             editor.commit();
                             if (getSoundFlag == true) {
                                 btnSoundSetTimeOnOff.setImageResource(R.mipmap.sound_on);
+                                btnSetTimeSound.setImageResource(R.drawable.play_again_red);
                             } else {
                                 btnSoundSetTimeOnOff.setImageResource(R.mipmap.sound_off);
+                                btnSetTimeSound.setImageResource(R.drawable.play_again_pink_cross);
                             }
                         }
                     }
@@ -468,7 +472,16 @@ public class SetTimeActivity extends AppCompatActivity {
                         if (getSoundFlag) {
                             playSoundSetTime(setTimeItemList[currentIndex].soundCount);
                         } else {
-                            ((ImageButton) v).setAlpha((float) 1.0);
+//                            ((ImageButton) v).setAlpha((float) 1.0);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            getSoundFlag = !getSoundFlag;
+                            editor.putBoolean(soundLearnActivity, getSoundFlag);
+                            editor.commit();
+                            if (getSoundFlag == true) {
+                                btnSoundSetTimeOnOff.setImageResource(R.mipmap.sound_on);
+                                btnSetTimeSound.setImageResource(R.drawable.play_again_red);
+                                playSoundSetTime(setTimeItemList[currentIndex].soundCount);
+                            }
                         }
                     }
                 }
