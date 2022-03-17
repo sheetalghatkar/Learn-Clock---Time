@@ -55,13 +55,16 @@ public class SetTimeAdapter extends RecyclerView.Adapter<SetTimeAdapter.ViewHold
         holder.setIsRecyclable(false);
         final SetTimeItem SetTimeItemModel = listSetTimeItems[position];
         System.out.println("onBindViewHolder---");
-        newHourAngle = SetTimeItemModel.setHourHand;
-        tempMinAngle = SetTimeItemModel.setMinuteHand;
+        newHourAngle = (int)Integer.parseInt(Constant.setTimeStaticHourHand);// SetTimeItemModel.setHourHand;
+        tempMinAngle = (int)Integer.parseInt(Constant.setTimeStaticMinuteHand); //SetTimeItemModel.setMinuteHand;
         holder.textViewCardNumber.setText(Html.fromHtml("<b>" + String.valueOf(position+1) + "</b>"+"/"+String.valueOf(listSetTimeItems.length)));
         holder.card_hour_hand.setRotation((float) newHourAngle);
         holder.card_minute_hand.setRotation((float) tempMinAngle);
-        holder.txtHourHide.setText(String.valueOf((int) newHourAngle));
-        holder.txtMinuteHide.setText(String.valueOf((int) tempMinAngle));
+        System.out.println("---xyzz----"+SetTimeItemModel.setHourHand);
+//        holder.txtHourHide.setText(String.valueOf((int) newHourAngle));
+//        holder.txtMinuteHide.setText(String.valueOf((int) tempMinAngle));
+//        Constant.setTimeStaticHourHand = String.valueOf((int) newHourAngle);
+//        Constant.setTimeStaticMinuteHand = String.valueOf((int) tempMinAngle);
     }
 
     @Override
@@ -122,8 +125,10 @@ public class SetTimeAdapter extends RecyclerView.Adapter<SetTimeAdapter.ViewHold
                 minuteArray[i] = minuteArrayList.get(i);
             }
             //-----------------------------------------
-            txtMinuteHide.setText(String.valueOf((int) tempMinAngle));
-            txtHourHide.setText(String.valueOf((int) newHourAngle));
+//            txtMinuteHide.setText(String.valueOf((int) tempMinAngle));
+//            txtHourHide.setText(String.valueOf((int) newHourAngle));
+//            Constant.setTimeStaticHourHand = String.valueOf((int) newHourAngle);
+//            Constant.setTimeStaticMinuteHand = String.valueOf((int) tempMinAngle);
             imgVwClockDial.setOnTouchListener(handleTouch);
             //-----------------------------------------
 
@@ -224,10 +229,12 @@ public class SetTimeAdapter extends RecyclerView.Adapter<SetTimeAdapter.ViewHold
                                     newHourAngle = 0;
                                 }
                                 newHourAngle = newHourAngle + (tempMinAngle) / 12;
-                                txtHourHide.setText(String.valueOf((int) newHourAngle));
+                               // txtHourHide.setText(String.valueOf((int) newHourAngle));
+                                Constant.setTimeStaticHourHand = String.valueOf((int) newHourAngle);
                                 card_hour_hand.setRotation((float) newHourAngle);
                             }
-                            txtMinuteHide.setText(String.valueOf((int) tempMinAngle));
+                           // txtMinuteHide.setText(String.valueOf((int) tempMinAngle));
+                            Constant.setTimeStaticMinuteHand = String.valueOf((int) tempMinAngle);
                             System.out.println("***updated newHourAngle" + newHourAngle);
                             System.out.println("***updated parent Move minute hand***" + tempMinAngle);
                         }
@@ -251,7 +258,8 @@ public class SetTimeAdapter extends RecyclerView.Adapter<SetTimeAdapter.ViewHold
                             if (tempMinAngle != 360) {
                                 newHourAngle = newHourAngle + (tempMinAngle) / 12;
                             }
-                            txtHourHide.setText(String.valueOf((int) newHourAngle));
+                          //  txtHourHide.setText(String.valueOf((int) newHourAngle));
+                            Constant.setTimeStaticHourHand = String.valueOf((int) newHourAngle);
                             card_hour_hand.setRotation((float) newHourAngle);
                             System.out.println("***parent Up hour hand***" + newHourAngle);
                         }

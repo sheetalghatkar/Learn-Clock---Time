@@ -166,6 +166,8 @@ public class SetTimeActivity extends AppCompatActivity {
                 new SetTimeItem(1, 40, 2, 20, "20 minutes " + "<b>" + "to" + "</b>" + " 2", "minutes_to", 3, 300, 60, 0),
                 new SetTimeItem(4, 25, 4, 25, "25 minutes " + "<b>" + "past" + "</b>" + " 4", "minutes_past", 3, 300, 60, 0),
         };
+        Constant.setTimeStaticHourHand = String.valueOf((int) setTimeItemList[0].getSetHourHand());
+        Constant.setTimeStaticMinuteHand = String.valueOf((int) setTimeItemList[0].getSetMinuteHand());
         txtViewStrTimeSetTime.setText(Html.fromHtml(setTimeItemList[currentIndex].timeString));
         if (getSoundFlag == true) {
             playSoundSetTime(setTimeItemList[currentIndex].soundCount);
@@ -224,11 +226,12 @@ public class SetTimeActivity extends AppCompatActivity {
                     public void onScrolled(RecyclerView recyclerView,
                                            int dx, int dy) {
                         super.onScrolled(recyclerView, dx, dy);
-                        int offset = recycleViewSetTime.computeHorizontalScrollOffset();
+                       /* int offset = recycleViewSetTime.computeHorizontalScrollOffset();
                         if (offset % recycleViewSetTime.getWidth() == 0) {
                             int position = offset / recycleViewSetTime.getWidth();
 //                            int idSwipeImg = getApplicationContext().getResources().getIdentifier("com.mobiapps360.LearnClockTime:raw/swipe", null, null);
                             currentIndex = position;
+                            System.out.println("Inside addOnScrollListener---"+currentIndex);
 
                             if (currentIndex == setTimeItemList.length - 1) {
                                 btnForward.setImageResource(R.drawable.reload);
@@ -241,7 +244,7 @@ public class SetTimeActivity extends AppCompatActivity {
                                 btnBackward.setVisibility(View.VISIBLE);
                             }
                             txtViewStrTimeSetTime.setText(Html.fromHtml(setTimeItemList[currentIndex].timeString));
-                        }
+                        }*/
                     }
                 });
         //------------------------------------------
@@ -304,17 +307,28 @@ public class SetTimeActivity extends AppCompatActivity {
                     case MotionEvent.ACTION_UP: {
                         ((ImageButton) v).setAlpha((float) 1.0);
                         btnBackward.setVisibility(View.VISIBLE);
+                        currentIndex = currentIndex + 1;
                         setTimeAdapter.notifyDataSetChanged();
                         if (currentIndex == setTimeItemList.length - 1) {
-                            btnForward.setImageResource(R.drawable.next_question);
+                            btnForward.setImageResource(R.drawable.reload);
+                            btnBackward.setVisibility(View.VISIBLE);
+                        } else if (currentIndex == setTimeItemList.length) {
                             if (player != null) {
                                 player.release();
                             }
+                            currentIndex = 0;
+                            btnForward.setImageResource(R.drawable.next_question);
+                            btnBackward.setVisibility(View.INVISIBLE);
                             recycleViewSetTime.getLayoutManager().smoothScrollToPosition(recycleViewSetTime, new RecyclerView.State(), 0);
                         } else {
+                            btnForward.setImageResource(R.drawable.next_question);
+                            btnBackward.setVisibility(View.VISIBLE);
                             recycleViewSetTime.getLayoutManager().smoothScrollToPosition(recycleViewSetTime, new RecyclerView.State(), currentIndex + 1);
                             increaseCount_playSound();
                         }
+                        Constant.setTimeStaticHourHand = String.valueOf((int) setTimeItemList[currentIndex].getSetHourHand());
+                        Constant.setTimeStaticMinuteHand = String.valueOf((int) setTimeItemList[currentIndex].getSetMinuteHand());
+                        txtViewStrTimeSetTime.setText(Html.fromHtml(setTimeItemList[currentIndex].timeString));
                     }
                 }
                 return true;
@@ -331,12 +345,20 @@ public class SetTimeActivity extends AppCompatActivity {
                     case MotionEvent.ACTION_UP: {
                         ((ImageButton) v).setAlpha((float) 1.0);
                         setTimeAdapter.notifyDataSetChanged();
+                        currentIndex = currentIndex - 1;
+                        if (currentIndex == -1) {
+                            currentIndex = 0;
+                        }
                         if (currentIndex == 0) {
                             btnBackward.setVisibility(View.INVISIBLE);
+                            btnForward.setImageResource(R.drawable.next_question);
                         } else {
                             btnBackward.setVisibility(View.VISIBLE);
                             recycleViewSetTime.getLayoutManager().smoothScrollToPosition(recycleViewSetTime, new RecyclerView.State(), currentIndex - 1);
                         }
+                        Constant.setTimeStaticHourHand = String.valueOf((int) setTimeItemList[currentIndex].getSetHourHand());
+                        Constant.setTimeStaticMinuteHand = String.valueOf((int) setTimeItemList[currentIndex].getSetMinuteHand());
+                        txtViewStrTimeSetTime.setText(Html.fromHtml(setTimeItemList[currentIndex].timeString));
                         increaseCount_playSound();
                     }
                 }
@@ -354,18 +376,20 @@ public class SetTimeActivity extends AppCompatActivity {
                     case MotionEvent.ACTION_UP: {
                         ((ImageButton) v).setAlpha((float) 1.0);
                         // View getCurrentRecycleView = recycleViewSetTime.findViewHolderForItemId(setTimeAdapter.getItemId(currentIndex)).itemView;
+                        System.out.println("Inside buttonSetTimeDone*****"+currentIndex);
 
-                        View getCurrentRecycleView = recycleViewSetTime.findViewHolderForAdapterPosition(currentIndex).itemView;
+                       // View getCurrentRecycleView = recycleViewSetTime.findViewHolderForAdapterPosition(currentIndex).itemView;
                         //-------------------------------------------
+
                         //Get hand angles set by user.
-                        TextView getUpdatedHour = getCurrentRecycleView.findViewById(R.id.txtHourHide);
-                        TextView getUpdatedMinute = getCurrentRecycleView.findViewById(R.id.txtMinuteHide);
+//                        TextView getUpdatedHour = getCurrentRecycleView.findViewById(R.id.txtHourHide);
+//                        TextView getUpdatedMinute = getCurrentRecycleView.findViewById(R.id.txtMinuteHide);
 
 //                        System.out.println("getUpdatedHour#####:" + getUpdatedHour.getText());
 //                        System.out.println("getUpdatedMinute#####:" + getUpdatedMinute.getText());
 //                        SetTimeAdapter.ViewHolder holder = recycleViewSetTime.findViewHolderForAdapterPosition(currentIndex);
-                        int set_hour_angle = (Integer.parseInt(getUpdatedHour.getText().toString()));
-                        int set_minute_angle = (Integer.parseInt(getUpdatedMinute.getText().toString()));
+                        int set_hour_angle = (Integer.parseInt(Constant.setTimeStaticHourHand));
+                        int set_minute_angle = (Integer.parseInt(Constant.setTimeStaticMinuteHand));
                         if (set_hour_angle == 360) {
                             set_hour_angle = 0;
                         }
@@ -388,8 +412,8 @@ public class SetTimeActivity extends AppCompatActivity {
                         //-------------------------------------------
                         List<SetTimeItem> tempArraylist = Arrays.asList(setTimeItemList);
                         SetTimeItem tempSetTimeItem = tempArraylist.get(currentIndex);//Get current object from original list
-                        tempSetTimeItem.setHourHand = (Integer.parseInt(getUpdatedHour.getText().toString()));
-                        tempSetTimeItem.setMinuteHand = Integer.parseInt(getUpdatedMinute.getText().toString());
+                        tempSetTimeItem.setHourHand = (Integer.parseInt(Constant.setTimeStaticHourHand));
+                        tempSetTimeItem.setMinuteHand = Integer.parseInt(Constant.setTimeStaticMinuteHand);
                         //-------------------------------------------
                         if ((set_hour_angle == calculat_hour_angle) && (set_minute_angle == calculate_minute_angle)) {
                             GradientDrawable gradientDrawable = (GradientDrawable) cardViewDoneButton.getBackground();
@@ -418,6 +442,11 @@ public class SetTimeActivity extends AppCompatActivity {
                         //-------------------------------------------
                         tempArraylist.set(currentIndex, tempSetTimeItem);
                         setTimeItemList = tempArraylist.toArray(setTimeItemList);
+                        System.out.println("-------------------------------------------");
+                        System.out.println("setTimeItemList currentindex"+currentIndex);
+                        System.out.println("setTimeItemList SetHourHAnd"+setTimeItemList[currentIndex].getSetHourHand());
+                        System.out.println("setTimeItemList setminutehand"+setTimeItemList[currentIndex].getSetMinuteHand());
+
 //                        System.out.println("---Current list object hour***" + setTimeItemList[currentIndex].setHourHand);
 //                        System.out.println("---Current list object minute***" + setTimeItemList[currentIndex].setMinuteHand);
                         sameCellDoneClicked = true;
@@ -460,8 +489,8 @@ public class SetTimeActivity extends AppCompatActivity {
 
     public void increaseCount_playSound() {
         clickCount = clickCount + 1;
-
-        System.out.println("---clickCount****" + clickCount);
+        System.out.println("---clickCount****" + currentIndex);
+        System.out.println("---inside increase count***" + setTimeItemList[currentIndex].result);
         if (clickCount > adShowCount) {
             clickCount = 0;
             if (player != null) {
@@ -501,6 +530,9 @@ public class SetTimeActivity extends AppCompatActivity {
 //    }
 
     public void playSoundSetTime(int soundCount) {
+        if (player != null) {
+            player.release();
+        }
         int setSound = 0;
         btnSetTimeSound.setClickable(false);
         btnSetTimeSound.setAlpha((float) 0.5);
