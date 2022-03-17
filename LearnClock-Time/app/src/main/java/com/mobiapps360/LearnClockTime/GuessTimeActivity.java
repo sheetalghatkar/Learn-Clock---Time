@@ -3,6 +3,7 @@ package com.mobiapps360.LearnClockTime;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -51,6 +52,7 @@ public class GuessTimeActivity extends AppCompatActivity {
     AdRequest adRequest;
     private InterstitialAd mInterstitialAd;
     public static ArrayList<GuessTimeItem> guessTimeDataArray;
+    Handler handlerNoConnection;
 
     //Declare variables
     MediaPlayer player;
@@ -96,6 +98,7 @@ public class GuessTimeActivity extends AppCompatActivity {
         Glide.with(this).load(R.drawable.starting).into(imageViewStartGif);
         Glide.with(this).load(R.drawable.again).into(imageViewAgainGif);
         Glide.with(this).load(R.drawable.preloader).into(imageViewLoaderGif);
+        handlerNoConnection = new Handler();
 
         mAdView = findViewById(R.id.adViewBannerGuessTimeActivity);
         adRequest = new AdRequest.Builder().build();
@@ -113,7 +116,7 @@ public class GuessTimeActivity extends AppCompatActivity {
             public void onAdFailedToLoad(LoadAdError adError) {
                 // Code to be executed when an ad request fails.
                 super.onAdFailedToLoad(adError);
-                System.out.println("Show error####"+adError);
+                System.out.println("Show error####" + adError);
                 mAdView.loadAd(adRequest);
             }
 
@@ -137,8 +140,6 @@ public class GuessTimeActivity extends AppCompatActivity {
         //-----------------------------------------
 
 
-
-
         // on below line we are creating a variable for our adapter class and passing array list to it.
         adapter = new DeckAdapter(MainActivity.guessTimeFinalArray, this);
         /// cardStack.layoutManager = CardStackLayoutManager();
@@ -149,7 +150,7 @@ public class GuessTimeActivity extends AppCompatActivity {
             @Override
             public void cardSwipedLeft(int position) {
                 // on card swipe left we are displaying a toast message.
-                 //  Toast.makeText(GuessTimeActivity.this, "", Toast.LENGTH_SHORT).show();
+                //  Toast.makeText(GuessTimeActivity.this, "", Toast.LENGTH_SHORT).show();
                 clickCount = clickCount + 1;
                 if (clickCount > adShowCount) {
                     clickCount = 0;
@@ -219,6 +220,7 @@ public class GuessTimeActivity extends AppCompatActivity {
                     }
                     case MotionEvent.ACTION_UP: {
                         ((ImageButton) v).setAlpha((float) 1.0);
+                        handlerNoConnection.removeCallbacksAndMessages(null);
                         if (player != null) {
                             player.release();
                         }
@@ -310,14 +312,25 @@ public class GuessTimeActivity extends AppCompatActivity {
         }
 
     }
+
     @Override
     public void onBackPressed() {
         //System.out.println("--onBackPressed--");
         if (player != null) {
             player.release();
         }
+        handlerNoConnection.removeCallbacksAndMessages(null);
         super.onBackPressed();
     }
+
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null &&
+                cm.getActiveNetworkInfo().isConnectedOrConnecting();
+    }
+
     //Show interstitial Ads
     public void showHideLoader(boolean adFlag) {
         if (adFlag) {
@@ -332,56 +345,64 @@ public class GuessTimeActivity extends AppCompatActivity {
     public void showInterstitialAds(Boolean fromHome) {
         System.out.println("Inside showInterstitialAds---");
         showHideLoader(true);
-        InterstitialAd.load(this, Constant.INTERSTITIAL_ID, adRequest, new InterstitialAdLoadCallback() {
-            @Override
-            public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-                // The mInterstitialAd reference will be null until
-                // an ad is loaded.
-                mInterstitialAd = interstitialAd;
-                mInterstitialAd.show(GuessTimeActivity.this);
+        if (isOnline()) {
+            InterstitialAd.load(this, Constant.INTERSTITIAL_ID, adRequest, new InterstitialAdLoadCallback() {
+                @Override
+                public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                    // The mInterstitialAd reference will be null until
+                    // an ad is loaded.
+                    mInterstitialAd = interstitialAd;
+                    mInterstitialAd.show(GuessTimeActivity.this);
 
-                // Log.i(TAG, "onAdLoaded");
-                mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-                    @Override
-                    public void onAdDismissedFullScreenContent() {
-                        // Called when fullscreen content is dismissed.
-                        Log.i("TAG", "The ad was dismissed.");
-                        if (fromHome) {
-                            Log.i("playCrad", "The ad was dismissed---if");
-                            GuessTimeActivity.super.onBackPressed();
-                            showHideLoader(false);
-                        } else {
-                            Log.i("playCrad", "The ad was dismissed-----else.");
-                            showHideLoader(false);
+                    // Log.i(TAG, "onAdLoaded");
+                    mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                        @Override
+                        public void onAdDismissedFullScreenContent() {
+                            // Called when fullscreen content is dismissed.
+                            Log.i("TAG", "The ad was dismissed.");
+                            if (fromHome) {
+                                Log.i("playCrad", "The ad was dismissed---if");
+                                GuessTimeActivity.super.onBackPressed();
+                                showHideLoader(false);
+                            } else {
+                                Log.i("playCrad", "The ad was dismissed-----else.");
+                                showHideLoader(false);
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onAdFailedToShowFullScreenContent(AdError adError) {
-                        // Called when fullscreen content failed to show.
-                        showHideLoader(false);
-                        Log.d("TAG", "The ad failed to show.");
-                    }
+                        @Override
+                        public void onAdFailedToShowFullScreenContent(AdError adError) {
+                            // Called when fullscreen content failed to show.
+                            showHideLoader(false);
+                            Log.d("TAG", "The ad failed to show.");
+                        }
 
-                    @Override
-                    public void onAdShowedFullScreenContent() {
-                        //showHideLoader(false);
-                        // Called when fullscreen content is shown.
-                        // Make sure to set your reference to null so you don't
-                        // show it a second time.
-                        mInterstitialAd = null;
-                        // Log.d("TAG", "The ad was shown.");
-                    }
-                });
+                        @Override
+                        public void onAdShowedFullScreenContent() {
+                            //showHideLoader(false);
+                            // Called when fullscreen content is shown.
+                            // Make sure to set your reference to null so you don't
+                            // show it a second time.
+                            mInterstitialAd = null;
+                            // Log.d("TAG", "The ad was shown.");
+                        }
+                    });
 
-            }
+                }
 
-            @Override
-            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                // Handle the error
-                showHideLoader(false);
-                mInterstitialAd = null;
-            }
-        });
+                @Override
+                public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                    // Handle the error
+                    showHideLoader(false);
+                    mInterstitialAd = null;
+                }
+            });
+        } else {
+            handlerNoConnection.postDelayed(new Runnable() {
+                public void run() {
+                    showHideLoader(false);
+                }
+            }, Constant.loaderWhenNoInternet);
+        }
     }
 }

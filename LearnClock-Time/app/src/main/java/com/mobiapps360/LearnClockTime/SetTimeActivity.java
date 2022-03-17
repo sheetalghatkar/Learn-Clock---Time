@@ -11,6 +11,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.sax.Element;
@@ -83,6 +84,7 @@ public class SetTimeActivity extends AppCompatActivity {
     public static SharedPreferences sharedPreferences = null;
     public static final String myPreferences = "myPref";
     public static final String soundLearnActivity = "soundLearnActivityKey";
+    Handler handlerNoConnection;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -105,7 +107,7 @@ public class SetTimeActivity extends AppCompatActivity {
         GradientDrawable gradientDrawable = (GradientDrawable) cardViewDoneButton.getBackground();
         gradientDrawable.setStroke(4, Color.parseColor("#1e90ff"));
         gradientDrawable.setColor(getResources().getColor(R.color.offwhite_done));
-
+        handlerNoConnection = new Handler();
 
         Glide.with(this).load(R.drawable.loader).into(imgVwSetLoader);
         sharedPreferences = getSharedPreferences(myPreferences, Context.MODE_PRIVATE);
@@ -175,6 +177,8 @@ public class SetTimeActivity extends AppCompatActivity {
             playSoundSetTime(setTimeItemList[currentIndex].soundCount);
         }
         mAdView = findViewById(R.id.adViewBannerSetTimeActivity);
+
+
         adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
@@ -260,6 +264,7 @@ public class SetTimeActivity extends AppCompatActivity {
                     }
                     case MotionEvent.ACTION_UP: {
                         ((ImageButton) v).setAlpha((float) 1.0);
+                        handlerNoConnection.removeCallbacksAndMessages(null);
                         if (player != null) {
                             player.release();
                         }
@@ -380,9 +385,9 @@ public class SetTimeActivity extends AppCompatActivity {
                     case MotionEvent.ACTION_UP: {
                         ((ImageButton) v).setAlpha((float) 1.0);
                         // View getCurrentRecycleView = recycleViewSetTime.findViewHolderForItemId(setTimeAdapter.getItemId(currentIndex)).itemView;
-                        System.out.println("Inside buttonSetTimeDone*****"+currentIndex);
+                        System.out.println("Inside buttonSetTimeDone*****" + currentIndex);
 
-                       // View getCurrentRecycleView = recycleViewSetTime.findViewHolderForAdapterPosition(currentIndex).itemView;
+                        // View getCurrentRecycleView = recycleViewSetTime.findViewHolderForAdapterPosition(currentIndex).itemView;
                         //-------------------------------------------
 
                         //Get hand angles set by user.
@@ -447,9 +452,9 @@ public class SetTimeActivity extends AppCompatActivity {
                         tempArraylist.set(currentIndex, tempSetTimeItem);
                         setTimeItemList = tempArraylist.toArray(setTimeItemList);
                         System.out.println("-------------------------------------------");
-                        System.out.println("setTimeItemList currentindex"+currentIndex);
-                        System.out.println("setTimeItemList SetHourHAnd"+setTimeItemList[currentIndex].getSetHourHand());
-                        System.out.println("setTimeItemList setminutehand"+setTimeItemList[currentIndex].getSetMinuteHand());
+                        System.out.println("setTimeItemList currentindex" + currentIndex);
+                        System.out.println("setTimeItemList SetHourHAnd" + setTimeItemList[currentIndex].getSetHourHand());
+                        System.out.println("setTimeItemList setminutehand" + setTimeItemList[currentIndex].getSetMinuteHand());
 
 //                        System.out.println("---Current list object hour***" + setTimeItemList[currentIndex].setHourHand);
 //                        System.out.println("---Current list object minute***" + setTimeItemList[currentIndex].setMinuteHand);
@@ -497,6 +502,7 @@ public class SetTimeActivity extends AppCompatActivity {
         if (player != null) {
             player.release();
         }
+        handlerNoConnection.removeCallbacksAndMessages(null);
         super.onBackPressed();
     }
 
@@ -639,6 +645,14 @@ public class SetTimeActivity extends AppCompatActivity {
         }
     }
 
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null &&
+                cm.getActiveNetworkInfo().isConnectedOrConnecting();
+    }
+
     //Show interstitial Ads
     public void showHideLoader(boolean adFlag) {
         if (adFlag) {
@@ -653,62 +667,79 @@ public class SetTimeActivity extends AppCompatActivity {
     public void showInterstitialAds(Boolean fromHome) {
         System.out.println("Inside showInterstitialAds---");
         showHideLoader(true);
-        InterstitialAd.load(this, Constant.INTERSTITIAL_ID, adRequest, new InterstitialAdLoadCallback() {
-            @Override
-            public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-                // The mInterstitialAd reference will be null until
-                // an ad is loaded.
-                mInterstitialAd = interstitialAd;
-                mInterstitialAd.show(SetTimeActivity.this);
 
-                // Log.i(TAG, "onAdLoaded");
-                mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-                    @Override
-                    public void onAdDismissedFullScreenContent() {
-                        // Called when fullscreen content is dismissed.
-                        Log.i("TAG", "The ad was dismissed.");
+        if (isOnline()) {
+            InterstitialAd.load(this, Constant.INTERSTITIAL_ID, adRequest, new InterstitialAdLoadCallback() {
+                @Override
+                public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                    // The mInterstitialAd reference will be null until
+                    // an ad is loaded.
+                    mInterstitialAd = interstitialAd;
+                    mInterstitialAd.show(SetTimeActivity.this);
+
+                    // Log.i(TAG, "onAdLoaded");
+                    mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                        @Override
+                        public void onAdDismissedFullScreenContent() {
+                            // Called when fullscreen content is dismissed.
+                            Log.i("TAG", "The ad was dismissed.");
 //                        if (fromHome) {
 //                            Log.i("playCrad", "The ad was dismissed---if");
 //                            SetTimeActivity.super.onBackPressed();
 //                            showHideLoader(false);
 //                        } else {
-                        Log.i("playCrad", "The ad was dismissed-----else.");
-                        showHideLoader(false);
-                        if (getSoundFlag == true) {
-                            if (player != null) {
-                                player.release();
+                            Log.i("playCrad", "The ad was dismissed-----else.");
+                            showHideLoader(false);
+                            if (getSoundFlag == true) {
+                                if (player != null) {
+                                    player.release();
+                                }
+                                playSoundSetTime(setTimeItemList[currentIndex].soundCount);
                             }
-                            playSoundSetTime(setTimeItemList[currentIndex].soundCount);
+                            //   }
                         }
-                        //   }
+
+                        @Override
+                        public void onAdFailedToShowFullScreenContent(AdError adError) {
+                            // Called when fullscreen content failed to show.
+                            showHideLoader(false);
+                            Log.d("TAG", "The ad failed to show.");
+                        }
+
+                        @Override
+                        public void onAdShowedFullScreenContent() {
+                            //showHideLoader(false);
+                            // Called when fullscreen content is shown.
+                            // Make sure to set your reference to null so you don't
+                            // show it a second time.
+                            mInterstitialAd = null;
+                            // Log.d("TAG", "The ad was shown.");
+                        }
+                    });
+
+                }
+
+                @Override
+                public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                    // Handle the error
+                    showHideLoader(false);
+                    mInterstitialAd = null;
+                }
+            });
+        } else {
+            handlerNoConnection.postDelayed(new Runnable() {
+                public void run() {
+//                    System.out.println("myHandler: here!"); // Do your work here
+                    //  handler.postDelayed(this, Constant.adTimeDelayPlayClock);
+                    showHideLoader(false);
+                    if (getSoundFlag == true) {
+                        if (player != null) {
+                            player.release();
+                        }
+                        playSoundSetTime(setTimeItemList[currentIndex].soundCount);
                     }
-
-                    @Override
-                    public void onAdFailedToShowFullScreenContent(AdError adError) {
-                        // Called when fullscreen content failed to show.
-                        showHideLoader(false);
-                        Log.d("TAG", "The ad failed to show.");
-                    }
-
-                    @Override
-                    public void onAdShowedFullScreenContent() {
-                        //showHideLoader(false);
-                        // Called when fullscreen content is shown.
-                        // Make sure to set your reference to null so you don't
-                        // show it a second time.
-                        mInterstitialAd = null;
-                        // Log.d("TAG", "The ad was shown.");
-                    }
-                });
-
-            }
-
-            @Override
-            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                // Handle the error
-                showHideLoader(false);
-                mInterstitialAd = null;
-            }
-        });
+                }
+            }, Constant.loaderWhenNoInternet);
+        }
     }
 }

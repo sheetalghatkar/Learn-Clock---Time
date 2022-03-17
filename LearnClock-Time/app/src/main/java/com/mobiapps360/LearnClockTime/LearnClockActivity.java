@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.icu.text.SymbolTable;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
@@ -78,6 +79,7 @@ public class LearnClockActivity extends AppCompatActivity {
     View viewLearnLoader;
     AdRequest adRequest;
     private InterstitialAd mInterstitialAd;
+    Handler handlerNoConnection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +102,7 @@ public class LearnClockActivity extends AppCompatActivity {
                 new LearnClockDataModel("➤ Use the phrase " + "<b>" + "quarter to" + "</b>" + " when the minute hand completes " + "<b>" + "45 minutes" + "</b>" + " on the dial.", R.drawable.learn_clock_12),
                 new LearnClockDataModel("", R.drawable.learn_clock_13)
         };
+        handlerNoConnection = new Handler();
         txtViewDescTxt = findViewById(R.id.txtViewDescTxt);
         imgViewDesc = findViewById(R.id.imgViewDesc);
         card_desc = findViewById(R.id.card_desc);
@@ -286,6 +289,7 @@ public class LearnClockActivity extends AppCompatActivity {
                         if (player != null) {
                             player.release();
                         }
+                        handlerNoConnection.removeCallbacksAndMessages(null);
                         LearnClockActivity.super.onBackPressed();
                     }
                 }
@@ -380,13 +384,23 @@ public class LearnClockActivity extends AppCompatActivity {
             player.stop();
         }
     }
+
     @Override
     public void onBackPressed() {
-       // System.out.println("--onBackPressed--");
+        // System.out.println("--onBackPressed--");
         if (player != null) {
             player.release();
         }
+        handlerNoConnection.removeCallbacksAndMessages(null);
         super.onBackPressed();
+    }
+
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null &&
+                cm.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 
     //Show interstitial Ads
@@ -404,56 +418,64 @@ public class LearnClockActivity extends AppCompatActivity {
 
     public void showInterstitialAds(Boolean fromHome) {
         showHideLoader(true);
-        InterstitialAd.load(this, Constant.INTERSTITIAL_ID, adRequest, new InterstitialAdLoadCallback() {
-            @Override
-            public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-                // The mInterstitialAd reference will be null until
-                // an ad is loaded.
-                mInterstitialAd = interstitialAd;
-                mInterstitialAd.show(LearnClockActivity.this);
+        if (isOnline()) {
+            InterstitialAd.load(this, Constant.INTERSTITIAL_ID, adRequest, new InterstitialAdLoadCallback() {
+                @Override
+                public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                    // The mInterstitialAd reference will be null until
+                    // an ad is loaded.
+                    mInterstitialAd = interstitialAd;
+                    mInterstitialAd.show(LearnClockActivity.this);
 
-                // Log.i(TAG, "onAdLoaded");
-                mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-                    @Override
-                    public void onAdDismissedFullScreenContent() {
-                        // Called when fullscreen content is dismissed.
-                        Log.i("TAG", "The ad was dismissed.");
-                        if (fromHome) {
-                            Log.i("playCrad", "The ad was dismissed---if");
-                            LearnClockActivity.super.onBackPressed();
-                            showHideLoader(false);
-                        } else {
-                            Log.i("playCrad", "The ad was dismissed-----else.");
-                            showHideLoader(false);
+                    // Log.i(TAG, "onAdLoaded");
+                    mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                        @Override
+                        public void onAdDismissedFullScreenContent() {
+                            // Called when fullscreen content is dismissed.
+                            Log.i("TAG", "The ad was dismissed.");
+                            if (fromHome) {
+                                Log.i("playCrad", "The ad was dismissed---if");
+                                LearnClockActivity.super.onBackPressed();
+                                showHideLoader(false);
+                            } else {
+                                Log.i("playCrad", "The ad was dismissed-----else.");
+                                showHideLoader(false);
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onAdFailedToShowFullScreenContent(AdError adError) {
-                        // Called when fullscreen content failed to show.
-                        showHideLoader(false);
-                        Log.d("TAG", "The ad failed to show.");
-                    }
+                        @Override
+                        public void onAdFailedToShowFullScreenContent(AdError adError) {
+                            // Called when fullscreen content failed to show.
+                            showHideLoader(false);
+                            Log.d("TAG", "The ad failed to show.");
+                        }
 
-                    @Override
-                    public void onAdShowedFullScreenContent() {
-                        //showHideLoader(false);
-                        // Called when fullscreen content is shown.
-                        // Make sure to set your reference to null so you don't
-                        // show it a second time.
-                        mInterstitialAd = null;
-                        // Log.d("TAG", "The ad was shown.");
-                    }
-                });
+                        @Override
+                        public void onAdShowedFullScreenContent() {
+                            //showHideLoader(false);
+                            // Called when fullscreen content is shown.
+                            // Make sure to set your reference to null so you don't
+                            // show it a second time.
+                            mInterstitialAd = null;
+                            // Log.d("TAG", "The ad was shown.");
+                        }
+                    });
 
-            }
+                }
 
-            @Override
-            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                // Handle the error
-                showHideLoader(false);
-                mInterstitialAd = null;
-            }
-        });
+                @Override
+                public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                    // Handle the error
+                    showHideLoader(false);
+                    mInterstitialAd = null;
+                }
+            });
+        } else {
+            handlerNoConnection.postDelayed(new Runnable() {
+                public void run() {
+                    showHideLoader(false);
+                }
+            }, Constant.loaderWhenNoInternet);
+        }
     }
 }
