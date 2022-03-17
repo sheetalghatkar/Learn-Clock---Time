@@ -451,7 +451,7 @@ public class SetTimeActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-       // System.out.println("--onBackPressed--");
+        // System.out.println("--onBackPressed--");
         if (player != null) {
             player.release();
         }
@@ -570,6 +570,7 @@ public class SetTimeActivity extends AppCompatActivity {
     }
 
     public void playResultSound(String soundResultStr) {
+        System.out.println("i am playResultSound" + soundResultStr);
         if (MainActivity.sharedPreferences.getBoolean(soundLearnActivity, false)) {
             int idSoundBg = getApplicationContext().getResources().getIdentifier("com.mobiapps360.LearnClockTime:raw/" + soundResultStr, null, null);
             try {
@@ -578,18 +579,19 @@ public class SetTimeActivity extends AppCompatActivity {
                 // System.out.println("Medi player exception:--" + e);
                 Log.e("Music Exception", "catch button click sound play");
             }
+            System.out.println("i am player" + player);
+            player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                public void onPrepared(MediaPlayer mp) {
+                    player.start();
+                }
+            });
+            player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    player.release();
+                }
+            });
         }
-        player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            public void onPrepared(MediaPlayer mp) {
-                player.start();
-            }
-        });
-        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                player.release();
-            }
-        });
     }
 
     //Show interstitial Ads
