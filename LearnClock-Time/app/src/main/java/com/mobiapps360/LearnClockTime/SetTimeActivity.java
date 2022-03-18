@@ -216,7 +216,7 @@ public class SetTimeActivity extends AppCompatActivity {
             }
         });
 
-
+        btnBackward.setVisibility(View.INVISIBLE);
         setTimeAdapter = new SetTimeAdapter(this);
         setTimeAdapter.setListMenuItem(setTimeItemList);
         recycleViewSetTime.setAdapter(setTimeAdapter);
@@ -327,17 +327,18 @@ public class SetTimeActivity extends AppCompatActivity {
                             }
                             currentIndex = 0;
                             btnForward.setImageResource(R.drawable.next_question);
+                            System.out.println("Inside  INVISIBLE****");
                             btnBackward.setVisibility(View.INVISIBLE);
                             recycleViewSetTime.getLayoutManager().smoothScrollToPosition(recycleViewSetTime, new RecyclerView.State(), 0);
                         } else {
                             btnForward.setImageResource(R.drawable.next_question);
                             btnBackward.setVisibility(View.VISIBLE);
                             recycleViewSetTime.getLayoutManager().smoothScrollToPosition(recycleViewSetTime, new RecyclerView.State(), currentIndex + 1);
-                            increaseCount_playSound();
                         }
                         Constant.setTimeStaticHourHand = String.valueOf((int) setTimeItemList[currentIndex].getSetHourHand());
                         Constant.setTimeStaticMinuteHand = String.valueOf((int) setTimeItemList[currentIndex].getSetMinuteHand());
                         txtViewStrTimeSetTime.setText(Html.fromHtml(setTimeItemList[currentIndex].timeString));
+                        increaseCount_playSound();
                     }
                 }
                 return true;
@@ -363,6 +364,7 @@ public class SetTimeActivity extends AppCompatActivity {
                             btnForward.setImageResource(R.drawable.next_question);
                         } else {
                             btnBackward.setVisibility(View.VISIBLE);
+                            btnForward.setImageResource(R.drawable.next_question);
                             recycleViewSetTime.getLayoutManager().smoothScrollToPosition(recycleViewSetTime, new RecyclerView.State(), currentIndex - 1);
                         }
                         Constant.setTimeStaticHourHand = String.valueOf((int) setTimeItemList[currentIndex].getSetHourHand());
@@ -522,6 +524,7 @@ public class SetTimeActivity extends AppCompatActivity {
             }
             playSoundSetTime(setTimeItemList[currentIndex].soundCount);
         }
+        System.out.println("Result done button:"+currentIndex+""+setTimeItemList[currentIndex].result);
         GradientDrawable gradientDrawable = (GradientDrawable) cardViewDoneButton.getBackground();
         if (setTimeItemList[currentIndex].result == 0) {
             gradientDrawable.setStroke(4, Color.parseColor("#1e90ff"));
