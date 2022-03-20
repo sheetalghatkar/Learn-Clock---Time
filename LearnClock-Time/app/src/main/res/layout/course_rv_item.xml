@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardViewGuessTm"
@@ -22,8 +20,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
-
     <LinearLayout
         android:id="@+id/linearLayoutGuessTime"
         android:layout_width="match_parent"
@@ -36,14 +32,14 @@
             android:id="@+id/txtCount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
             android:background="#00FFFFFF"
             android:text="1/60"
+            android:textAlignment="textEnd"
             android:textColor="@color/white"
             android:textSize="18dp"
             android:textStyle="bold"
-            android:textAlignment="textEnd"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -60,12 +56,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="30dp"
+            android:background="@null"
             android:orientation="horizontal">
 
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardViewOption1"
-                android:layout_width="165dp"
+                android:layout_width="147dp"
                 android:layout_height="55dp"
                 android:layout_gravity="center"
                 android:layout_margin="5dp"
@@ -82,9 +79,10 @@
 
                 <TextView
                     android:id="@+id/txtViewOption1"
-                    android:layout_width="165dp"
-                    android:layout_height="55dp"
-                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textAlignment="center"
                     android:text="TextView"
                     android:textColor="@color/black"
                     android:textSize="16sp"
@@ -99,7 +97,7 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardViewOption2"
-                android:layout_width="165dp"
+                android:layout_width="147dp"
                 android:layout_height="55dp"
                 android:layout_gravity="center"
                 android:layout_margin="5dp"
@@ -117,9 +115,10 @@
 
                 <TextView
                     android:id="@+id/txtViewOption2"
-                    android:layout_width="165dp"
-                    android:layout_height="55dp"
-                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textAlignment="center"
                     android:text="TextView"
                     android:textColor="@color/black"
                     android:textSize="16sp"
@@ -141,11 +140,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
+            android:background="@null"
             android:orientation="horizontal">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardViewOption3"
-                android:layout_width="165dp"
+                android:layout_width="147dp"
                 android:layout_height="55dp"
                 android:layout_gravity="center"
                 android:layout_margin="5dp"
@@ -163,9 +163,10 @@
 
                 <TextView
                     android:id="@+id/txtViewOption3"
-                    android:layout_width="165dp"
-                    android:layout_height="55dp"
-                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textAlignment="center"
                     android:text="TextView"
                     android:textColor="@color/black"
                     android:textSize="16sp"
@@ -179,7 +180,7 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardViewOption4"
-                android:layout_width="165dp"
+                android:layout_width="147dp"
                 android:layout_height="55dp"
                 android:layout_gravity="center"
                 android:layout_margin="5dp"
@@ -197,9 +198,10 @@
 
                 <TextView
                     android:id="@+id/txtViewOption4"
-                    android:layout_width="165dp"
-                    android:layout_height="55dp"
-                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textAlignment="center"
                     android:text="TextView"
                     android:textColor="@color/black"
                     android:textSize="16sp"

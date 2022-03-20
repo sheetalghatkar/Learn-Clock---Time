@@ -74,23 +74,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycleViewSetTime"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="10dp"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btnSetTimeBack" />
 
     <TextView
         android:id="@+id/txt_instruct"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="-20dp"
+        android:layout_marginTop="0dp"
         android:shadowColor="@color/text_shadow"
         android:shadowDx="5"
         android:shadowDy="5"
@@ -136,7 +125,7 @@
         android:layout_height="37dp"
         android:background="@null"
         android:scaleType="fitCenter"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="5dp"
         app:layout_constraintBottom_toBottomOf="@+id/imgVwSetTimeTimeTitle"
         app:layout_constraintLeft_toRightOf="@+id/imgVwSetTimeTimeTitle"
         app:layout_constraintTop_toTopOf="@+id/imgVwSetTimeTimeTitle"
@@ -206,6 +195,19 @@
         app:layout_constraintTop_toTopOf="@+id/cardViewDoneButton"
         app:layout_constraintBottom_toBottomOf="@+id/cardViewDoneButton"
         app:srcCompat="@drawable/next_question" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycleViewSetTime"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="45dp"
+        android:layout_marginEnd="0dp"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnSetTimeBack" />
+
 
 
     <View
